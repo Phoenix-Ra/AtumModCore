@@ -1,0 +1,83 @@
+buildscript {
+    repositories {
+        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = "https://repo.spongepowered.org/maven" }
+        jcenter()
+        mavenCentral()
+        maven { url = 'https://jitpack.io' }
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
+
+version = '1.0.0'
+group = 'me.phoenixra'
+archivesBaseName = 'atummodcore'
+
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+}
+
+minecraft {
+
+    mappings channel: 'snapshot', version: '20171003-1.12'
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'fml.coreMods.load', 'me.phoenixra.atumodcore.fml.FMLPlugin'
+        }
+        server {
+            workingDirectory project.file('run')
+            property 'fml.coreMods.load', 'me.phoenixra.atumodcore.fml.FMLPlugin'
+        }
+    }
+
+}
+
+dependencies {
+
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2855'
+
+    compileOnly('org.spongepowered:mixin:0.8.4') {
+        exclude module: 'guava'
+        exclude module: 'commons-io'
+        exclude module: 'gson'
+    }
+
+    //annotations
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'org.jetbrains:annotations:23.0.0'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.jetbrains:annotations:23.0.0'
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    testAnnotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+
+    compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+mixin {
+    add sourceSets.main, "fancymenu.general.mixin-refmap.json"
+}
+
+jar {
+    manifest {
+        attributes "ForceLoadAsMod": "true"
+        attributes "FMLCorePluginContainsFMLMod": "true"
+        attributes "FMLCorePlugin": "me.phoenixra.atumodcore.fml.FMLPlugin"
+        attributes "TweakClass": "org.spongepowered.asm.launch.MixinTweaker"
+        attributes "TweakOrder": "0"
+    }
+}
+
+
+jar.finalizedBy('reobfJar')
