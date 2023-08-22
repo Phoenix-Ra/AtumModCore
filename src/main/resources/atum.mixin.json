@@ -1,14 +1,12 @@
 {
   "required": true,
-  "package": "me.phoenixra.atumodcore.mixin",
+  "package": "me.phoenixra.atumodcore.mod.mixin",
   "compatibilityLevel": "JAVA_8",
   "minVersion": "0.8",
-  "client": [
-    "client.MixinMinecraft"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   },
   "refmap": "atum.mixin-refmap.json",
-  "plugin": "me.phoenixra.atumodcore.mixin.AtumMixinPlugin"
+  "plugin": "me.phoenixra.atumodcore.mod.mixin.AtumMixinPlugin"
 }

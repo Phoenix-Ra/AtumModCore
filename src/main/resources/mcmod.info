@@ -1,15 +1,14 @@
 [
-{
-  "modid": "atummodcore",
-  "name": "AtumModCore",
-  "description": "A library mod",
-  "version": "1.6.0",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["PhoenixRa"],
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+    "modid": "atumodcore",
+    "name": "Atum Mod Core",
+    "description": "This is the library for mods",
+    "version": "1.0.0",
+    "mcversion": "1.12",
+    "authorList": ["PhoenixRa"],
+    "credits": "PhoenixRa",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]
