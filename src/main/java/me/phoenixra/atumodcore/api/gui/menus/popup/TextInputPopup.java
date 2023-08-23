@@ -1,9 +1,9 @@
 package me.phoenixra.atumodcore.api.gui.menus.popup;
 import me.phoenixra.atumodcore.api.gui.elements.GuiElementTextField;
 import me.phoenixra.atumodcore.api.gui.elements.GuiElementButton;
-import me.phoenixra.atumodcore.mod.input.CharacterFilter;
-import me.phoenixra.atumodcore.mod.input.KeyboardData;
-import me.phoenixra.atumodcore.mod.input.KeyboardHandler;
+import me.phoenixra.atumodcore.api.misc.CharacterFilter;
+import me.phoenixra.atumodcore.core.input.KeyboardData;
+import me.phoenixra.atumodcore.core.input.KeyboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;

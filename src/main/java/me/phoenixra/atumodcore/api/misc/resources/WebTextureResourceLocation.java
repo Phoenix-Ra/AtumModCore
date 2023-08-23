@@ -1,6 +1,6 @@
 package me.phoenixra.atumodcore.api.misc.resources;
 
-import me.phoenixra.atumodcore.mod.input.CharacterFilter;
+import me.phoenixra.atumodcore.api.misc.CharacterFilter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
@@ -84,9 +84,6 @@ public class WebTextureResourceLocation implements ITextureResourceLocation {
     }
 
     private String filterUrl(String url) {
-        CharacterFilter c = new CharacterFilter();
-        c.addAllowedCharacters("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
-                "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".");
-        return c.filterForAllowedChars(url.toLowerCase());
+        return CharacterFilter.URL_FILTER.filterForAllowedChars(url);
     }
 }

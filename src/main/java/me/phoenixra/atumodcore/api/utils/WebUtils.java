@@ -1,5 +1,6 @@
 package me.phoenixra.atumodcore.api.utils;
-import me.phoenixra.atumodcore.mod.input.CharacterFilter;
+import me.phoenixra.atumodcore.api.misc.CharacterFilter;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -69,15 +70,7 @@ public class WebUtils {
         return l;
     }
 
-    public static String filterURL(String url) {
-        if (url == null) {
-            return null;
-        }
-        CharacterFilter f = new CharacterFilter();
-        f.addAllowedCharacters("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-                "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r","s", "t", "u", "v", "w", "x", "y", "z",
-                "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-                "-", ".", "_", "~", ":", "/", "?", "#", "[", "]", "@", "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "%", "=");
-        return f.filterForAllowedChars(url);
+    public static String filterURL(@NotNull String url) {
+       return CharacterFilter.URL_FILTER.filterForAllowedChars(url);
     }
 }

@@ -1,7 +1,7 @@
 package me.phoenixra.atumodcore.api.gui.handlers;
 
 import me.phoenixra.atumodcore.api.gui.menus.popup.Popup;
-import me.phoenixra.atumodcore.mod.input.MouseInput;
+import me.phoenixra.atumodcore.core.input.MouseInput;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;

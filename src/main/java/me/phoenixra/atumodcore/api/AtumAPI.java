@@ -5,6 +5,7 @@ import me.phoenixra.atumodcore.api.config.ConfigManager;
 import me.phoenixra.atumodcore.api.config.ConfigType;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
+import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +15,15 @@ import java.io.File;
 import java.util.Map;
 
 public interface AtumAPI {
+
+    /**
+     * Create an input handler
+     *
+     * @param atumMod The mod.
+     * @return The handler
+     */
+    @NotNull
+    InputHandler createInputHandler(@NotNull AtumMod atumMod);
 
     /**
      * Create a config manager
@@ -98,6 +108,9 @@ public interface AtumAPI {
     double evaluate(@NotNull AtumMod atumMod,
                     @NotNull String expression,
                     @NotNull PlaceholderContext context);
+
+
+    AtumMod getCoreMod();
 
     static AtumAPI getInstance() {
         return Instance.get();

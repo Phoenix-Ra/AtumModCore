@@ -1,6 +1,6 @@
 package me.phoenixra.atumodcore.api.misc.animation;
 
-import me.phoenixra.atumodcore.mod.input.CharacterFilter;
+import me.phoenixra.atumodcore.api.misc.CharacterFilter;
 import me.phoenixra.atumodcore.api.utils.NumberUtils;
 import me.phoenixra.atumodcore.api.utils.ResourceUtils;
 import net.minecraft.client.Minecraft;
@@ -169,7 +169,7 @@ public class AnimationRenderer  implements IAnimationRenderer {
             }
         }
 
-        CharacterFilter charFilter = CharacterFilter.getIntegerCharacterFiler();
+        CharacterFilter charFilter = CharacterFilter.INTEGER_FILTER;
 
         List<String> nonNumberNames = new ArrayList<String>();
         List<String> numberNames = new ArrayList<String>();

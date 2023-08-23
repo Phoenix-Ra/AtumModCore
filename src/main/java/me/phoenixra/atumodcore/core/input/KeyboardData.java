@@ -1,4 +1,4 @@
-package me.phoenixra.atumodcore.mod.input;
+package me.phoenixra.atumodcore.core.input;
 
 public class KeyboardData {
     public final int keycode;

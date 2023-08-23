@@ -1,10 +1,10 @@
 package me.phoenixra.atumodcore.api.gui.elements;
 
 import me.phoenixra.atumodcore.api.gui.IGuiElement;
-import me.phoenixra.atumodcore.mod.input.CharacterFilter;
-import me.phoenixra.atumodcore.mod.input.KeyboardData;
-import me.phoenixra.atumodcore.mod.input.KeyboardHandler;
-import me.phoenixra.atumodcore.mod.input.MouseInput;
+import me.phoenixra.atumodcore.api.misc.CharacterFilter;
+import me.phoenixra.atumodcore.core.input.KeyboardData;
+import me.phoenixra.atumodcore.core.input.KeyboardHandler;
+import me.phoenixra.atumodcore.core.input.MouseInput;
 import me.phoenixra.atumodcore.api.utils.MathUtils;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;

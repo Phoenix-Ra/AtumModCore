@@ -1,6 +1,6 @@
 package me.phoenixra.atumodcore.api.gui.menus.scroll;
 
-import me.phoenixra.atumodcore.mod.input.MouseInput;
+import me.phoenixra.atumodcore.core.input.MouseInput;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -41,7 +41,7 @@ public class ScrollArea extends Gui {
         this.height = height;
         this.x = x;
         this.y = y;
-        MouseInput.registerMouseListener(this::onMouseScroll);
+        //MouseInput.registerMouseListener(this::onMouseScroll);
     }
 
     public void render() {
@@ -79,19 +79,19 @@ public class ScrollArea extends Gui {
 
     protected void renderScrollbar() {
         if (this.height >= this.entryheight) return;
-        int mouseX = MouseInput.getMouseX();
-        int mouseY = MouseInput.getMouseY();
+        int mouseX = 1;//MouseInput.getMouseX();
+        int mouseY = 1;//MouseInput.getMouseY();
 
         //update grabber hover state
         this.grabberHovered = ((this.x + this.width) <= mouseX) && ((this.x + this.width + grabberwidth) >= mouseX) && ((this.y + this.scrollpos) <= mouseY) && ((this.y + this.scrollpos + grabberheight) >= mouseY);
 
         //Update grabber pressed state
-        if (this.isGrabberHovered() && MouseInput.isLeftMouseDown()) {
+        if (this.isGrabberHovered()){ //&& MouseInput.isLeftMouseDown()) {
             this.grabberPressed = true;
         }
-        if (!MouseInput.isLeftMouseDown()) {
+       /* if (!MouseInput.isLeftMouseDown()) {
             this.grabberPressed = false;
-        }
+        }*/
 
         //Render scroll grabber
         if (this.enableScrolling) {
@@ -126,19 +126,19 @@ public class ScrollArea extends Gui {
             this.handleGrabberScrolling();
             return;
         }
-        this.startY = MouseInput.getMouseY();
+        this.startY = 1;//MouseInput.getMouseY();
         this.startPos = this.scrollpos;
 
     }
 
     public boolean isAreaHovered() {
-        int mouseX = MouseInput.getMouseX();
-        int mouseY = MouseInput.getMouseY();
+        int mouseX = 1;//MouseInput.getMouseX();
+        int mouseY = 1;//MouseInput.getMouseY();
         return (this.x <= mouseX) && ((this.x + this.width + this.grabberwidth) >= mouseX) && (this.y <= mouseY) && ((this.y + this.height) >= mouseY);
     }
 
     protected void handleGrabberScrolling() {
-        int i = this.startY - MouseInput.getMouseY();
+        int i = this.startY - 1;//MouseInput.getMouseY();
         int scroll = this.startPos - i;
 
         if (scroll < 0) {
@@ -184,9 +184,9 @@ public class ScrollArea extends Gui {
         return this.grabberPressed;
     }
 
-    public void onMouseScroll(MouseInput.MouseData d) {
+    public void onMouseScroll(){//MouseInput.MouseData d) {
         if(!this.isAreaHovered()) return;
-        int i = d.deltaZ / 120;
+        int i = 1;//d.deltaZ / 120;
         int scroll = this.scrollpos - i * 7;
         if (scroll < 0) {
             this.scrollpos = 0;

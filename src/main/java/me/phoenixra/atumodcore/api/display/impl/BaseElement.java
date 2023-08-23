@@ -7,6 +7,8 @@ import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
+import me.phoenixra.atumodcore.api.tuples.PairRecord;
+import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -17,6 +19,11 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     private String id = UUID.randomUUID().toString();
     @Getter
     private DisplayLayer layer;
+    private int originX;
+    private int originY;
+    private int originWidth;
+    private int originHeight;
+
     @Getter
     private int x;
     @Getter
@@ -25,21 +32,24 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     private int width;
     @Getter
     private int height;
+
+    private boolean fixRatio = false;
+
     @Getter @Setter
     private DisplayCanvas elementOwner;
 
-    public BaseElement(
-                       @NotNull DisplayLayer layer,
+    public BaseElement(@NotNull DisplayLayer layer,
                        int x,
                        int y,
                        int width,
                        int height,
                        @NotNull DisplayCanvas elementOwner){
         this.layer = layer;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        this.x = this.originX = x;
+        this.y = this.originY = y;
+        this.width = this.originWidth = width;
+        this.height = this.originHeight = height;
+
         this.elementOwner = elementOwner;
     }
     public BaseElement(@NotNull DisplayCanvas elementOwner){
@@ -54,20 +64,25 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         }
         ConfigVariable<?> x = variables.get("posX");
         if(x != null){
-            this.x = Integer.parseInt(x.getValue().toString());
+            this.x = this.originX = Integer.parseInt(x.getValue().toString());
         }
         ConfigVariable<?> y = variables.get("posY");
         if(y != null){
-            this.y = Integer.parseInt(y.getValue().toString());
+            this.y = this.originY = Integer.parseInt(y.getValue().toString());
         }
         ConfigVariable<?> width = variables.get("width");
         if(width != null){
-            this.width = Integer.parseInt(width.getValue().toString());
+            this.width = this.originWidth = Integer.parseInt(width.getValue().toString());
         }
         ConfigVariable<?> height = variables.get("height");
         if(height != null){
-            this.height = Integer.parseInt(height.getValue().toString());
+            this.height = this.originHeight = Integer.parseInt(height.getValue().toString());
         }
+        ConfigVariable<?> fixRatio = variables.get("fixRatio");
+        if(fixRatio != null){
+            this.fixRatio = Boolean.parseBoolean(fixRatio.getValue().toString());
+        }
+
     }
 
     @Override
@@ -76,10 +91,12 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         if(layer != null){
             this.layer = DisplayLayer.valueOf(layer.toUpperCase());
         }
-        this.x = config.getInt("posX");
-        this.y = config.getInt("posY");
-        this.width = config.getInt("width");
-        this.height = config.getInt("height");
+        this.x = this.originX = config.getInt("posX");
+        this.y = this.originY = config.getInt("posY");
+        this.width = this.originWidth = config.getInt("width");
+        this.height = this.originHeight = config.getInt("height");
+        this.fixRatio = config.getBool("fixRatio");
+
     }
 
 
@@ -95,6 +112,15 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
             return canvas.getId().equals(getId());
         }
         return super.equals(obj);
+    }
+
+    @Override
+    public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+        int[] coords = RenderUtils.fixCoordinates(originX,originY,originWidth,originHeight,fixRatio);
+        x = coords[0];
+        y = coords[1];
+        width = coords[2];
+        height = coords[3];
     }
 
     @Override

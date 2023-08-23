@@ -1,6 +1,6 @@
 package me.phoenixra.atumodcore.api.display.font;
 
-import me.phoenixra.atumodcore.api.display.DisplayElementColor;
+import me.phoenixra.atumodcore.api.misc.AtumColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
@@ -13,7 +13,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -247,7 +246,7 @@ public class DisplayFont {
      * @param y     The y position of the text.
      * @param color The color of the text.
      */
-    public void drawString(String text, float x, float y, DisplayElementColor color) {
+    public void drawString(String text, float x, float y, AtumColor color) {
         if(!isLoaded()) return;
         renderString(text, x, y, color, false);
     }
@@ -260,7 +259,7 @@ public class DisplayFont {
      * @param y     The y position of the text.
      * @param color The color of the text.
      */
-    public void drawStringWithShadow(String text, float x, float y, DisplayElementColor color) {
+    public void drawStringWithShadow(String text, float x, float y, AtumColor color) {
         if(!isLoaded()) return;
         GL11.glTranslated(0.5, 0.5, 0);
         renderString(text, x, y, color, true);
@@ -278,7 +277,7 @@ public class DisplayFont {
      * @param color  The color of the text.
      */
     private void renderString(String text, float x, float y,
-                              DisplayElementColor color, boolean shadow) {
+                              AtumColor color, boolean shadow) {
         // Returns if the text is empty.
         if (text.length() == 0) return;
 

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.phoenixra.atumodcore.api.gui.IGuiElement;
 import me.phoenixra.atumodcore.api.gui.handlers.ButtonHandler;
-import me.phoenixra.atumodcore.mod.input.MouseInput;
+import me.phoenixra.atumodcore.core.input.MouseInput;
 import me.phoenixra.atumodcore.api.misc.animation.IAnimationRenderer;
 import me.phoenixra.atumodcore.api.misc.resources.ExternalTextureResourceLocation;
 import me.phoenixra.atumodcore.mod.sound.SoundHandler;

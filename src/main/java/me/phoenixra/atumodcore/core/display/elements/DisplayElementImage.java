@@ -3,10 +3,9 @@ package me.phoenixra.atumodcore.core.display.elements;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
-import me.phoenixra.atumodcore.api.display.DisplayElementColor;
+import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
-import me.phoenixra.atumodcore.mod.AtumModCore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
@@ -16,7 +15,7 @@ import java.util.HashMap;
 
 public class DisplayElementImage extends BaseElement {
     private Runnable imageBinder;
-    private DisplayElementColor color;
+    private AtumColor color = AtumColor.WHITE;
     private int textureX;
     private int textureY;
     private int textureWidth;
@@ -29,6 +28,7 @@ public class DisplayElementImage extends BaseElement {
 
     @Override
     public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+        super.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
         imageBinder.run();
         color.useColor();
         if(textureHeight==0||textureWidth==0){
@@ -68,7 +68,7 @@ public class DisplayElementImage extends BaseElement {
         }
         String color = config.getStringOrNull("settings.color");
         if(color!=null){
-            this.color = DisplayElementColor.fromHex(color,true);
+            this.color = AtumColor.fromHex(color);
         }
         this.textureX = config.getInt("settings.textureX");
         this.textureY = config.getInt("settings.textureY");
@@ -80,7 +80,7 @@ public class DisplayElementImage extends BaseElement {
     protected BaseElement onClone(BaseElement clone) {
         DisplayElementImage cloneImage = (DisplayElementImage) clone;
         if(cloneImage.color!=null) {
-            cloneImage.color = new DisplayElementColor(cloneImage.color.getRed(), cloneImage.color.getGreen(), cloneImage.color.getBlue(), cloneImage.color.getAlpha());
+            cloneImage.color = new AtumColor(cloneImage.color.getRed(), cloneImage.color.getGreen(), cloneImage.color.getBlue(), cloneImage.color.getAlpha());
         }
         return cloneImage;
     }

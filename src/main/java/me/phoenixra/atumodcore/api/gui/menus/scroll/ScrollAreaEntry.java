@@ -1,6 +1,6 @@
 package me.phoenixra.atumodcore.api.gui.menus.scroll;
 
-import me.phoenixra.atumodcore.mod.input.MouseInput;
+import me.phoenixra.atumodcore.core.input.MouseInput;
 import net.minecraft.client.gui.Gui;
 
 public abstract class ScrollAreaEntry extends Gui {
@@ -27,8 +27,8 @@ public abstract class ScrollAreaEntry extends Gui {
     }
 
     public boolean isHovered() {
-        int mx = MouseInput.getMouseX();
-        int my = MouseInput.getMouseY();
+        int mx = 1;//MouseInput.getMouseX();
+        int my = 1;//MouseInput.getMouseY();
         return (this.x <= mx) && (this.y <= my) && ((this.x + this.parent.width) >= mx) && ((this.y + this.getHeight()) >= my);
     }
 

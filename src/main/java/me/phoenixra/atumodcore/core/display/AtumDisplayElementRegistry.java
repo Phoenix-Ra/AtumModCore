@@ -11,9 +11,7 @@ import me.phoenixra.atumodcore.api.display.DisplayLayer;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.registry.Registry;
-import me.phoenixra.atumodcore.core.display.elements.DisplayElementCanvas;
-import me.phoenixra.atumodcore.core.display.elements.DisplayElementImage;
-import me.phoenixra.atumodcore.core.display.elements.DisplayElementText;
+import me.phoenixra.atumodcore.core.display.elements.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,6 +30,8 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
         register("canvas", new DisplayElementCanvas(null));
         register("image", new DisplayElementImage(null));
         register("text", new DisplayElementText(null));
+        register("button", new DisplayElementButton(null));
+        register("progress_bar", new DisplayElementProgressBar(null));
     }
     @Override
     public @Nullable DisplayElement getElementById(@NotNull String id) {
@@ -67,6 +67,7 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
                 continue;
             }
             BaseElement elementBaseElement = ((BaseElement) elementElement).clone();
+            elementBaseElement.setElementOwner(canvas);
             elementBaseElement.updateVariables(elementSection);
             canvas.addElement(elementBaseElement);
         }

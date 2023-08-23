@@ -1,5 +1,6 @@
 package me.phoenixra.atumodcore.api.utils;
 
+import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -118,17 +119,136 @@ public class RenderUtils {
         BLANK = r;
         return r;
     }
+
+
+    public static void drawRect(int posX, int posY, int width, int height, AtumColor color) {
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        //draw
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        color.useColor();
+        GlStateManager.disableDepth();
+        buffer.begin(7, DefaultVertexFormats.POSITION);
+        buffer.pos(posX,
+                (double) posY + height,
+                0
+        ).endVertex();
+        buffer.pos((double) posX + width,
+                (double) posY + height,
+                0
+        ).endVertex();
+        buffer.pos((double) posX + width,
+                posY,
+                0
+        ).endVertex();
+        buffer.pos(posX,
+                posY,
+                0
+        ).endVertex();
+        tessellator.draw();
+
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.enableDepth();
+        GlStateManager.color(1f, 1f, 1f);
+    }
+
+    protected static void drawOutline(int x, int y, int width, int height,
+                                      AtumColor color) {
+        drawRect( x, y, width, 1, color);
+        drawRect(x, y+1, 1, height-2, color);
+        drawRect(x + width - 1, y+1, 1, height-2, color);
+        drawRect( x, y + height - 1, width, 1, color);
+    }
+
+
+
+    public static void drawCustomBar(int x, int y, int width, int height,
+                                     double value,
+                                     AtumColor colorBarLight,
+                                     AtumColor colorBarDark,
+                                     boolean outlined) {
+        drawCustomBar(x, y, width, height, value, AtumColor.WHITE, AtumColor.WHITE, colorBarLight, colorBarDark, outlined, AtumColor.BLACK);
+    }
+
+
+    public static void drawCustomBar(int x, int y, int width, int height,
+                                     double value,
+                                     AtumColor colorGroundLight,
+                                     AtumColor colorGroundDark,
+                                     AtumColor colorBarLight,
+                                     AtumColor colorBarDark) {
+        drawCustomBar(x, y, width, height, value, colorGroundLight, colorGroundDark, colorBarLight, colorBarDark, true, AtumColor.BLACK);
+    }
+
+
+    public static void drawCustomBar(int x, int y, int width, int height,
+                                     double value,
+                                     AtumColor colorGroundLight,
+                                     AtumColor colorGroundDark,
+                                     AtumColor colorBarLight,
+                                     AtumColor colorBarDark,
+                                     boolean outlined) {
+        drawCustomBar(x, y, width, height, value, colorGroundLight, colorGroundDark, colorBarLight, colorBarDark, outlined, AtumColor.BLACK);
+    }
+
+
+    public static void drawCustomBar(int x, int y, int width, int height,
+                                     double value,
+                                     AtumColor colorGroundLight,
+                                     AtumColor colorGroundDark,
+                                     AtumColor colorBarLight,
+                                     AtumColor colorBarDark,
+                                     AtumColor colorOutline) {
+        drawCustomBar(x, y, width, height, value, colorGroundLight, colorGroundDark, colorBarLight, colorBarDark, true, colorOutline);
+    }
+
+
+    public static void drawCustomBar(int x, int y, int width, int height,
+                                     double value,
+                                     AtumColor colorGroundLight,
+                                     AtumColor colorGroundDark,
+                                     AtumColor colorBarLight,
+                                     AtumColor colorBarDark,
+                                     boolean outlined,
+                                     AtumColor colorOutline) {
+        if (value < 0.0D) {
+            value = 0.0D;
+        }else if (value > 100D) {
+            value = 100D;
+        }
+
+        int offset = 1;
+
+        int filledWidth = width;
+        filledWidth = width - (offset * 2);
+        if (filledWidth < 0)
+            filledWidth = 0;
+        int filledHeight = width;
+        filledHeight = height - (offset * 2);
+        if (filledHeight < 0)
+            filledHeight = 0;
+
+        int percentFilled = (int) Math.round(value / 100.0D * filledWidth);
+
+        if (outlined)
+            drawOutline(x, y, width, height, colorOutline);
+        int halfedFilledHeight = filledHeight / 2;
+
+        drawRect(x + offset, y + offset, percentFilled, halfedFilledHeight, colorBarLight);
+        drawRect(x + offset, y + offset + halfedFilledHeight, percentFilled, filledHeight - halfedFilledHeight, colorBarDark);
+
+        if (colorGroundDark != null && colorGroundLight != null && filledWidth - percentFilled > 0) {
+            drawRect(x + offset + percentFilled, y + offset, filledWidth - percentFilled, halfedFilledHeight, colorGroundLight);
+            drawRect(x + offset + percentFilled, y + offset + halfedFilledHeight, filledWidth - percentFilled, filledHeight - halfedFilledHeight, colorGroundDark);
+        }
+    }
+
     public static void drawCompleteImage(int posX, int posY, int width, int height)
     {
-        double scaleX = (scaleFactorCache/windowRatioXCache);
-        double scaleY = (scaleFactorCache/windowRatioYCache);
-        posX = (int) (posX / scaleX);
-        posY = (int) (posY / scaleY);
-        width = (int) (width / scaleX);
-        height = (int) (height / scaleY);
-        glPushMatrix();
         GlStateManager.enableBlend();
-
+        GlStateManager.enableAlpha();
         glTranslatef(posX, posY, 0);
         glBegin(GL_QUADS);
 
@@ -141,8 +261,6 @@ public class RenderUtils {
         glTexCoord2f(1, 0);
         glVertex3f(width, 0, 0);
         glEnd();
-
-        glPopMatrix();
     }
 
     public static void drawPartialImage(int posX,
@@ -154,12 +272,6 @@ public class RenderUtils {
                                         int imagePartWidth,
                                         int imagePartHeight)
     {
-        double scaleX = (scaleFactorCache/windowRatioXCache);
-        double scaleY = (scaleFactorCache/windowRatioYCache);
-        posX = (int) (posX / scaleX);
-        posY = (int) (posY / scaleY);
-        width = (int) (width / scaleX);
-        height = (int) (height / scaleY);
         double imageWidth = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
         double imageHeight = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
 
@@ -171,9 +283,8 @@ public class RenderUtils {
         double uvHeight = einsTeilerHeight * imagePartHeight;
         double uvY = einsTeilerHeight * imageY;
 
-        glPushMatrix();
         GlStateManager.enableBlend();
-
+        GlStateManager.enableAlpha();
         glTranslatef(posX, posY, 0);
         glBegin(GL_QUADS);
 
@@ -187,10 +298,35 @@ public class RenderUtils {
         glVertex3f(width, 0, 0);
         glEnd();
 
-        glPopMatrix();
     }
 
 
+    public static int[] fixCoordinates(int x, int y, int width, int height, boolean fixRatio) {
+        double scaleX = (scaleFactorCache/windowRatioXCache);
+        double scaleY = (scaleFactorCache/windowRatioYCache);
+        if(fixRatio){
+            if(scaleX < scaleY){
+                scaleX = scaleY;
+            }else{
+                scaleY = scaleX;
+            }
+        }
+        return new int[]{
+                (int) (x / scaleX),
+                (int) (y / scaleY),
+                (int) (width / scaleX),
+                (int) (height / scaleY)
+        };
+    }
+    public static int[] fixCoordinates(int x, int y) {
+        double scaleX = (scaleFactorCache/windowRatioXCache);
+        double scaleY = (scaleFactorCache/windowRatioYCache);
+
+        return new int[]{
+                (int) (x / scaleX),
+                (int) (y / scaleY)
+        };
+    }
     public static int getScaleFactor(){
         Minecraft mc = Minecraft.getMinecraft();
         int scaledWidth = mc.displayWidth;

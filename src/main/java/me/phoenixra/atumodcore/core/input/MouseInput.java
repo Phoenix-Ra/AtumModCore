@@ -1,4 +1,4 @@
-package me.phoenixra.atumodcore.mod.input;
+package me.phoenixra.atumodcore.core.input;
 
 import me.phoenixra.atumodcore.api.utils.ResourceUtils;
 import net.minecraft.client.Minecraft;
@@ -8,6 +8,8 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
@@ -23,44 +25,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 public class MouseInput {
-    private static Cursor VRESIZE_CURSOR;
-    private static Cursor HRESIZE_CURSOR;
+    private static Cursor RESIZE_VERTICAL_CURSOR;
+    private static Cursor RESIZE_HORIZONTAL_CURSOR;
 
-    private static boolean leftClicked = false;
-    private static boolean rightClicked  = false;
-    private static Map<String, Boolean> vanillainput = new HashMap<String, Boolean>();
-    private static boolean ignoreBlocked = false;
-
-    private static boolean useRenderScale = false;
-    private static float renderScale = 1.0F;
+    private static Map<String, Boolean> vanillainput = new HashMap<>();
 
     private static List<Consumer<MouseData>> listeners = new ArrayList<Consumer<MouseData>>();
 
     public static void init() {
-        VRESIZE_CURSOR = loadCursor(new ResourceLocation("atum", "cursor/vresize.png"), 32, 32, 16, 16);
-        HRESIZE_CURSOR = loadCursor(new ResourceLocation("atum", "cursor/hresize.png"), 32, 32, 16, 16);
+        RESIZE_VERTICAL_CURSOR = loadCursor(new ResourceLocation("atumodcore", "cursor/vresize.png"), 32, 32, 16, 16);
+        RESIZE_HORIZONTAL_CURSOR = loadCursor(new ResourceLocation("atumodcore", "cursor/hresize.png"), 32, 32, 16, 16);
 
         MinecraftForge.EVENT_BUS.register(new MouseInput());
     }
 
-    public static boolean isLeftMouseDown() {
-        return leftClicked;
-    }
-
-    public static boolean isRightMouseDown() {
-        return rightClicked;
-    }
 
     public static int getMouseX() {
         ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
         int i1 = scaledresolution.getScaledWidth();
         int x = Mouse.getX() * i1 / Minecraft.getMinecraft().displayWidth;
 
-        if (useRenderScale) {
+      /*  if (useRenderScale) {
             return (int)(x / renderScale);
         } else {
             return x;
-        }
+        }*/
+        return x;
     }
 
     public static int getMouseY() {
@@ -68,32 +58,35 @@ public class MouseInput {
         int j1 = scaledresolution.getScaledHeight();
         int y = j1 - Mouse.getY() * j1 / Minecraft.getMinecraft().displayHeight - 1;
 
-        if (useRenderScale) {
+        /*if (useRenderScale) {
             return (int)(y / renderScale);
         } else {
             return y;
-        }
+        }*/
+        return y;
     }
 
     public static void setRenderScale(float scale) {
-        renderScale = scale;
-        useRenderScale = true;
+        /*renderScale = scale;
+        useRenderScale = true;*/
     }
 
     public static void resetRenderScale() {
-        useRenderScale = false;
+        //useRenderScale = false;
     }
 
-    public static void setCursor(CursorType cursor) {
+    public static void setCursor(@NotNull CursorType cursor) {
         try {
-            if (cursor == null) {
-                resetCursor();
-            }
-            if (cursor == CursorType.HRESIZE) {
-                Mouse.setNativeCursor(HRESIZE_CURSOR);
-            }
-            if (cursor == CursorType.VRESIZE) {
-                Mouse.setNativeCursor(VRESIZE_CURSOR);
+            switch (cursor) {
+                case DEFAULT:
+                    resetCursor();
+                    break;
+                case VRESIZE:
+                    Mouse.setNativeCursor(RESIZE_VERTICAL_CURSOR);
+                    break;
+                case HRESIZE:
+                    Mouse.setNativeCursor(RESIZE_HORIZONTAL_CURSOR);
+                    break;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,16 +122,13 @@ public class MouseInput {
         }
         return null;
     }
-
-    public static enum CursorType {
-        VRESIZE,
-        HRESIZE;
+    public static boolean isLeftMouseDown() {
+        return false;
     }
 
-    /**
-     * Blocks the vanilla mouse input.<br>
-     * Blocked inputs are reset when the screen changes or no screen is active.
-     */
+    public static boolean isRightMouseDown() {
+        return false;
+    }
     public static void blockVanillaInput(String category) {
         vanillainput.put(category, true);
     }
@@ -148,14 +138,16 @@ public class MouseInput {
     }
 
     public static boolean isVanillaInputBlocked() {
-        if (ignoreBlocked) {
-            return false;
-        }
+
         return vanillainput.containsValue(true);
     }
 
     public static void ignoreBlockedVanillaInput(boolean ignore) {
-        ignoreBlocked = ignore;
+    }
+    public static enum CursorType {
+        DEFAULT,
+        VRESIZE,
+        HRESIZE;
     }
 
     public static void registerMouseListener(Consumer<MouseData> c) {
@@ -169,37 +161,21 @@ public class MouseInput {
             c.accept(new MouseData(getMouseX(), getMouseY(), Mouse.getEventDX(), Mouse.getEventDY(), Mouse.getEventDWheel()));
         }
 
-        int i = Mouse.getEventButton();
-        if ((i == 0) && Mouse.getEventButtonState()) {
-            leftClicked = true;
-        }
-        if ((i == 1) && Mouse.getEventButtonState()) {
-            rightClicked = true;
-        }
-        if ((i == 0) && !Mouse.getEventButtonState()) {
-            leftClicked = false;
-        }
-        if ((i == 1) && !Mouse.getEventButtonState()) {
-            rightClicked = false;
-        }
-
-        if (isVanillaInputBlocked()) {
+        /*if (isVanillaInputBlocked()) {
             e.setCanceled(true);
-        }
+        }*/
     }
 
     @SubscribeEvent
     public void onScreenInit(GuiScreenEvent.InitGuiEvent.Pre e) {
         //Reset values on screen init
-        leftClicked = false;
-        rightClicked = false;
 
         vanillainput.clear();
     }
 
     @SubscribeEvent
     public void onTick(ClientTickEvent e) {
-        if ((Minecraft.getMinecraft() != null) && (Minecraft.getMinecraft().currentScreen == null)) {
+        if (Minecraft.getMinecraft().currentScreen == null) {
             vanillainput.clear();
         }
     }

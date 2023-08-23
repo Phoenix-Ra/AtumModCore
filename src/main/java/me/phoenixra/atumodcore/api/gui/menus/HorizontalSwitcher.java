@@ -1,7 +1,7 @@
 package me.phoenixra.atumodcore.api.gui.menus;
 
 import me.phoenixra.atumodcore.api.gui.elements.GuiElementImageButton;
-import me.phoenixra.atumodcore.mod.input.MouseInput;
+import me.phoenixra.atumodcore.core.input.MouseInput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;

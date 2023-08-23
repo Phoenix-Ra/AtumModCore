@@ -1,16 +1,10 @@
 package me.phoenixra.atumodcore.mod;
 
 import lombok.Getter;
-import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.ConfigType;
 import me.phoenixra.atumodcore.api.gui.handlers.ButtonHandler;
 import me.phoenixra.atumodcore.api.gui.handlers.PopupHandler;
-import me.phoenixra.atumodcore.core.AtumAPIImpl;
-import me.phoenixra.atumodcore.mod.input.KeyboardHandler;
-import me.phoenixra.atumodcore.mod.input.MouseInput;
-import me.phoenixra.atumodcore.mod.resourcepack.PackHandler;
 import me.phoenixra.atumodcore.mod.sound.SoundHandler;
 import me.phoenixra.atumodcore.mod.test.TestMenu;
 import net.minecraft.client.gui.GuiMainMenu;
@@ -22,8 +16,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 @Mod(modid = "atumodcore", acceptedMinecraftVersions="[1.12,1.12.2]",name = "AtumModCore", version ="1.0.0")
 public class AtumModCore extends AtumMod {
@@ -44,8 +37,6 @@ public class AtumModCore extends AtumMod {
             );
 
             PopupHandler.init();
-
-            KeyboardHandler.init();
 
             SoundHandler.init();
 
@@ -74,28 +65,29 @@ public class AtumModCore extends AtumMod {
     @SubscribeEvent
     public void onRenderOverlay(GuiOpenEvent event){
         if(event.getGui() instanceof GuiMainMenu){
-            event.setGui(new TestMenu());
+            event.setGui(new TestMenu(this));
         }
     }
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return "AtumModCore";
     }
 
     @Override
+    public @NotNull String getModID() {
+        return "atumodcore";
+    }
+
+    @Override
     public boolean isDebugEnabled() {
-        return true;
+        return false;
     }
 
     @Mod.EventHandler
     private void onClientSetup(FMLPostInitializationEvent e) {
 
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
-
-            //PackHandler.init();
-            MouseInput.init();
             getLogger().info("[AtumModCore] Client-side libs ready to use!");
-
             PostLoadingHandler.runPostLoadingEvents();
 
 

@@ -1,4 +1,4 @@
-package me.phoenixra.atumodcore.mod.input;
+package me.phoenixra.atumodcore.core.input;
 
 import me.phoenixra.atumodcore.api.utils.MathUtils;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -55,6 +55,7 @@ public class KeyboardHandler {
 
     @SubscribeEvent
     public void onKeyPressPost(GuiScreenEvent.KeyboardInputEvent.Post e) {
+        System.out.println("Key Pressed: " + Keyboard.getEventKey() + " " + Keyboard.getEventCharacter());
         keycode = Keyboard.getEventKey();
         typedChar = Keyboard.getEventCharacter();
 
