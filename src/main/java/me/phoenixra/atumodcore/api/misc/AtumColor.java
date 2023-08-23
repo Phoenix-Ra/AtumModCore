@@ -1,79 +1,132 @@
 package me.phoenixra.atumodcore.api.misc;
 
+import lombok.Getter;
 import net.minecraft.client.renderer.GlStateManager;
-import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
 
 public class AtumColor {
+    public static final AtumColor WHITE = new AtumColor(1,1,1,1);
+    public static final AtumColor BLACK = new AtumColor(0,0,0,1);
+    public static final AtumColor RED = new AtumColor(1,0,0,1);
+    public static final AtumColor GREEN = new AtumColor(0,1,0,1);
+    public static final AtumColor BLUE = new AtumColor(0,0,1,1);
+    public static final AtumColor YELLOW = new AtumColor(1,1,0,1);
+    public static final AtumColor CYAN = new AtumColor(0,1,1,1);
+    public static final AtumColor MAGENTA = new AtumColor(1,0,1,1);
+    public static final AtumColor GRAY = new AtumColor(0.5f,0.5f,0.5f,1);
+    public static final AtumColor DARK_GRAY = new AtumColor(0.25f,0.25f,0.25f,1);
+    public static final AtumColor LIGHT_GRAY = new AtumColor(0.75f,0.75f,0.75f,1);
+    public static final AtumColor ORANGE = new AtumColor(1,0.5f,0,1);
+    public static final AtumColor PINK = new AtumColor(1,0.68f,0.68f,1);
+    public static final AtumColor PURPLE = new AtumColor(0.5f,0,0.5f,1);
+    public static final AtumColor BROWN = new AtumColor(0.5f,0.25f,0,1);
 
-    private int red;
-    private int green;
-    private int blue;
-    private int alpha;
-    public AtumColor(int red, int green, int blue, int alpha){
+    @Getter
+    private float red;
+    @Getter
+    private float green;
+    @Getter
+    private float blue;
+    @Getter
+    private float alpha;
+
+    public AtumColor(float red, float green, float blue, float alpha) {
         this.red = red;
         this.green = green;
         this.blue = blue;
         this.alpha = alpha;
     }
-    public AtumColor(int red, int green, int blue){
-        this(red, green, blue, 255);
-    }
-    public AtumColor(Color color){
-        this(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-    }
-    public AtumColor(int color, boolean hasAlpha){
-        this(color >> 16 & 0xFF, color >> 8 & 0xFF, color & 0xFF,hasAlpha ? color >> 24 & 0xFF : 255);
-    }
-    public AtumColor(String hex){
-        this(
-                Integer.valueOf(hex.substring(0, 2), 16),
-                Integer.valueOf(hex.substring(2, 4), 16),
-                Integer.valueOf(hex.substring(4, 6), 16),
-                hex.length() == 8 ? Integer.valueOf(hex.substring(6, 8), 16) : 255
-        );
+    public AtumColor(float red, float green, float blue) {
+        this(red, green, blue, 1);
     }
 
 
+    public int toInt() {
+        return ((int) (red * 255) << 16) | ((int) (green * 255) << 8) | (int) (blue * 255) | ((int) (alpha * 255) << 24);
+    }
     public void useColor(){
-        GlStateManager.color(
-                (float)red/255,
-                (float)green/255,
-                (float)blue/255,
-                (float)alpha/255
-        );
+        GlStateManager.color(red, green, blue, alpha);
     }
 
-
-    public Color toColor(){
-        return new Color(red, green, blue, alpha);
-    }
-
-
-    @Nullable
+    //from string hex rgba
     public static AtumColor fromHex(String hex) {
         try {
-            hex = hex.replace("#", "");
+            hex = hex.substring(1);
+
             if (hex.length() == 6) {
-                return new AtumColor(new Color(
+
+                return AtumColor.from(
                         Integer.valueOf(hex.substring(0, 2), 16),
                         Integer.valueOf(hex.substring(2, 4), 16),
-                        Integer.valueOf(hex.substring(4, 6), 16),
-                        255)
+                        Integer.valueOf(hex.substring(4, 6), 16)
                 );
             }
             if (hex.length() == 8) {
-                return new AtumColor( new Color(
+                return AtumColor.from(
                         Integer.valueOf(hex.substring(0, 2), 16),
                         Integer.valueOf(hex.substring(2, 4), 16),
                         Integer.valueOf(hex.substring(4, 6), 16),
-                        Integer.valueOf(hex.substring(6, 8), 16))
+                        Integer.valueOf(hex.substring(6, 8), 16)
                 );
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return AtumColor.WHITE;
+    }
+
+    public static AtumColor from(float red, float green, float blue, float alpha) {
+        return new AtumColor(
+                red / 255,
+                green / 255,
+                blue / 255,
+                alpha / 255
+        );
+    }
+    public static AtumColor from(float red, float green, float blue) {
+        return new AtumColor(
+                red / 255,
+                green / 255,
+                blue / 255
+        );
+    }
+    //from int rgba where a >0 <=1
+    public static AtumColor from(int color, boolean hasAlpha) {
+        if(hasAlpha){
+            return new AtumColor(
+                    (color >> 16 & 0xFF) / 255f,
+                    (color >> 8 & 0xFF) / 255f,
+                    (color & 0xFF) / 255f
+            );
+        }
+        return new AtumColor(
+                (color >> 16 & 0xFF) / 255f,
+                (color >> 8 & 0xFF) / 255f,
+                (color & 0xFF) / 255f,
+                (color >> 24 & 0xFF) / 255f
+        );
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof AtumColor){
+            AtumColor color = (AtumColor) obj;
+            return color.red == red && color.green == green && color.blue == blue && color.alpha == alpha;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return toInt();
+    }
+
+    @Override
+    public String toString() {
+        return "DisplayElementColor{" +
+                "red=" + red +
+                ", green=" + green +
+                ", blue=" + blue +
+                ", alpha=" + alpha +
+                '}';
     }
 }
