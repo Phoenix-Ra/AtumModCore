@@ -9,7 +9,7 @@ import java.util.HashSet;
 public interface DisplayCanvas extends DisplayElement{
 
     void addElement(@NotNull DisplayElement element);
-
+    void removeElement(@NotNull DisplayElement element);
     @NotNull
     HashSet<DisplayElement> getDisplayedElements();
 

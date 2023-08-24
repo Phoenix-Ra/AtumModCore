@@ -7,7 +7,7 @@ import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import org.jetbrains.annotations.NotNull;
 
-public class DisplayElementProgressBar extends BaseElement {
+public class ElementProgressBar extends BaseElement {
 
     private AtumColor barColorLight = AtumColor.WHITE;
     private AtumColor barColorDark = AtumColor.BLACK;
@@ -16,7 +16,7 @@ public class DisplayElementProgressBar extends BaseElement {
     private boolean outlined;
 
     private int timer;
-    public DisplayElementProgressBar(@NotNull DisplayCanvas elementOwner) {
+    public ElementProgressBar(@NotNull DisplayCanvas elementOwner) {
         super(elementOwner);
     }
 
@@ -60,12 +60,15 @@ public class DisplayElementProgressBar extends BaseElement {
         if(progressExpression!=null){
             this.progressExpression = progressExpression;
         }
-        this.outlined = config.getBool("settings.outlined");
+        Boolean outlined = config.getBoolOrNull("settings.outlined");
+        if(outlined!=null){
+            this.outlined = outlined;
+        }
     }
 
     @Override
     protected BaseElement onClone(BaseElement clone) {
-        DisplayElementProgressBar cloneImage = (DisplayElementProgressBar) clone;
+        ElementProgressBar cloneImage = (ElementProgressBar) clone;
         if(cloneImage.barColorLight!=null) {
             cloneImage.barColorLight = new AtumColor(cloneImage.barColorLight.getRed(), cloneImage.barColorLight.getGreen(), cloneImage.barColorLight.getBlue(), cloneImage.barColorLight.getAlpha());
         }

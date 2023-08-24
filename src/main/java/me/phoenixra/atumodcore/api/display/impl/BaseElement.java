@@ -91,11 +91,26 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         if(layer != null){
             this.layer = DisplayLayer.valueOf(layer.toUpperCase());
         }
-        this.x = this.originX = config.getInt("posX");
-        this.y = this.originY = config.getInt("posY");
-        this.width = this.originWidth = config.getInt("width");
-        this.height = this.originHeight = config.getInt("height");
-        this.fixRatio = config.getBool("fixRatio");
+        Integer x = config.getIntOrNull("posX");
+        if(x != null){
+            this.x = this.originX = x;
+        }
+        Integer y = config.getIntOrNull("posY");
+        if(y != null){
+            this.y = this.originY = y;
+        }
+        Integer width = config.getIntOrNull("width");
+        if(width != null){
+            this.width = this.originWidth = width;
+        }
+        Integer height = config.getIntOrNull("height");
+        if(height != null){
+            this.height = this.originHeight = height;
+        }
+        Boolean fixRatio = config.getBoolOrNull("fixRatio");
+        if(fixRatio != null){
+            this.fixRatio = fixRatio;
+        }
 
     }
 

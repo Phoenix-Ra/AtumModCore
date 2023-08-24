@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class DisplayElementImage extends BaseElement {
+public class ElementImage extends BaseElement {
     private Runnable imageBinder;
     private AtumColor color = AtumColor.WHITE;
     private int textureX;
@@ -21,7 +21,7 @@ public class DisplayElementImage extends BaseElement {
     private int textureWidth;
     private int textureHeight;
 
-    public DisplayElementImage(@NotNull DisplayCanvas elementOwner) {
+    public ElementImage(@NotNull DisplayCanvas elementOwner) {
         super(elementOwner);
 
     }
@@ -70,15 +70,27 @@ public class DisplayElementImage extends BaseElement {
         if(color!=null){
             this.color = AtumColor.fromHex(color);
         }
-        this.textureX = config.getInt("settings.textureX");
-        this.textureY = config.getInt("settings.textureY");
-        this.textureWidth = config.getInt("settings.textureWidth");
-        this.textureHeight = config.getInt("settings.textureHeight");
+        Integer textureX = config.getIntOrNull("settings.textureX");
+        if(textureX!=null){
+            this.textureX = textureX;
+        }
+        Integer textureY = config.getIntOrNull("settings.textureY");
+        if(textureY!=null){
+            this.textureY = textureY;
+        }
+        Integer textureWidth = config.getIntOrNull("settings.textureWidth");
+        if(textureWidth!=null){
+            this.textureWidth = textureWidth;
+        }
+        Integer textureHeight = config.getIntOrNull("settings.textureHeight");
+        if(textureHeight!=null){
+            this.textureHeight = textureHeight;
+        }
     }
 
     @Override
     protected BaseElement onClone(BaseElement clone) {
-        DisplayElementImage cloneImage = (DisplayElementImage) clone;
+        ElementImage cloneImage = (ElementImage) clone;
         if(cloneImage.color!=null) {
             cloneImage.color = new AtumColor(cloneImage.color.getRed(), cloneImage.color.getGreen(), cloneImage.color.getBlue(), cloneImage.color.getAlpha());
         }

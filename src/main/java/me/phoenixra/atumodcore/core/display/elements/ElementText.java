@@ -11,14 +11,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 
-public class DisplayElementText extends BaseElement {
+public class ElementText extends BaseElement {
     private DisplayFont font;
     private String text = "EMPTY TEXT";
 
     private int fontSize = 20;
 
 
-    public DisplayElementText(@NotNull DisplayCanvas elementOwner) {
+    public ElementText(@NotNull DisplayCanvas elementOwner) {
         super(elementOwner);
     }
 
@@ -35,14 +35,17 @@ public class DisplayElementText extends BaseElement {
 
     @Override
     protected BaseElement onClone(BaseElement clone) {
-        DisplayElementText cloneText = (DisplayElementText) clone;
+        ElementText cloneText = (ElementText) clone;
         return cloneText;
     }
 
     @Override
     public void updateVariables(@NotNull Config config) {
         super.updateVariables(config);
-        this.fontSize = config.getIntOrDefault("settings.fontSize",20);
+        Integer fontSize = config.getIntOrNull("settings.fontSize");
+        if(fontSize!=null){
+            this.fontSize = fontSize;
+        }
         String fontName = config.getStringOrNull("settings.font");
         if(fontName!=null){
             try(InputStream stream = getClass().getResourceAsStream("/assets/atumodcore/fonts/"+fontName)) {

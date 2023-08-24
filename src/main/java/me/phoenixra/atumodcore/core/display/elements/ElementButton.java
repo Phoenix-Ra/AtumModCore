@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class DisplayElementButton extends BaseElement {
+public class ElementButton extends BaseElement {
 
     private Runnable imageBinder;
     private float[] brightnessDefault = new float[]{1.0f,1.0f,1.0f};
@@ -24,7 +24,7 @@ public class DisplayElementButton extends BaseElement {
     private int textureHeight;
 
     private boolean clicked;
-    public DisplayElementButton(@NotNull DisplayCanvas elementOwner) {
+    public ElementButton(@NotNull DisplayCanvas elementOwner) {
         super(elementOwner);
     }
 
@@ -109,15 +109,27 @@ public class DisplayElementButton extends BaseElement {
                     Float.parseFloat(brightness.split(";")[2])
             };
         }
-        this.textureX = config.getInt("settings.textureX");
-        this.textureY = config.getInt("settings.textureY");
-        this.textureWidth = config.getInt("settings.textureWidth");
-        this.textureHeight = config.getInt("settings.textureHeight");
+        Integer textureX = config.getIntOrNull("settings.textureX");
+        if(textureX!=null){
+            this.textureX = textureX;
+        }
+        Integer textureY = config.getIntOrNull("settings.textureY");
+        if(textureY!=null){
+            this.textureY = textureY;
+        }
+        Integer textureWidth = config.getIntOrNull("settings.textureWidth");
+        if(textureWidth!=null){
+            this.textureWidth = textureWidth;
+        }
+        Integer textureHeight = config.getIntOrNull("settings.textureHeight");
+        if(textureHeight!=null){
+            this.textureHeight = textureHeight;
+        }
     }
 
     @Override
     protected BaseElement onClone(BaseElement clone) {
-        DisplayElementButton cloneImage = (DisplayElementButton) clone;
+        ElementButton cloneImage = (ElementButton) clone;
         return cloneImage;
     }
 

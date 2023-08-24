@@ -115,11 +115,26 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
         if(layer != null){
             this.layer = DisplayLayer.valueOf(layer.toUpperCase());
         }
-        this.x = this.originX = config.getInt("posX");
-        this.y = this.originY = config.getInt("posY");
-        this.width = this.originWidth = config.getInt("width");
-        this.height = this.originHeight = config.getInt("height");
-        this.fixRatio = config.getBool("fixRatio");
+        Integer x = config.getIntOrNull("posX");
+        if(x != null){
+            this.x = this.originX = x;
+        }
+        Integer y = config.getIntOrNull("posY");
+        if(y != null){
+            this.y = this.originY = y;
+        }
+        Integer width = config.getIntOrNull("width");
+        if(width != null){
+            this.width = this.originWidth = width;
+        }
+        Integer height = config.getIntOrNull("height");
+        if(height != null){
+            this.height = this.originHeight = height;
+        }
+        Boolean fixRatio = config.getBoolOrNull("fixRatio");
+        if(fixRatio != null){
+            this.fixRatio = fixRatio;
+        }
 
     }
 
@@ -134,11 +149,23 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
             list.add(element);
             elements.put(element.getLayer(), list);
         }
+        updateDisplayedElements();
+    }
+
+    @Override
+    public void removeElement(@NotNull DisplayElement element) {
+        Set<DisplayElement> list = elements.get(element.getLayer());
+        if(list != null){
+            list.remove(element);
+        }
+        updateDisplayedElements();
+    }
+
+    private void updateDisplayedElements(){
         displayedElements.clear();
         //add to displayedElements
         for(DisplayLayer displayLayer : DisplayLayer.valuesOrderedFromHighest()){
             Set<DisplayElement> list = elements.get(displayLayer);
-            System.out.println("layer loading: "+displayLayer + " list: "+list);
             if(list == null){
                 continue;
             }
@@ -149,12 +176,10 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
                 }
             }
         }
-        System.out.println("Displayed elements: " + displayedElements+"\n Elements: "+elements);
         //add to reversed set
         displayedElementsReversed.clear();
         displayedElementsReversed.addAll(displayedElements);
         Collections.reverse(displayedElementsReversed);
-
     }
 
     @Override
