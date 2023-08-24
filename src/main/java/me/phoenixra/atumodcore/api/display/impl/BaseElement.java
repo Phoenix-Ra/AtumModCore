@@ -7,6 +7,7 @@ import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
+import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +57,16 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         this(DisplayLayer.MIDDLE, 0, 0, 0, 0, elementOwner);
     }
 
+
+    @Override
+    public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+        int[] coords = RenderUtils.fixCoordinates(originX,originY,originWidth,originHeight,fixRatio);
+        x = coords[0];
+        y = coords[1];
+        width = coords[2];
+        height = coords[3];
+    }
+
     @Override
     public void updateVariables(@NotNull HashMap<String, ConfigVariable<?>> variables) {
         ConfigVariable<?> layer = variables.get("layer");
@@ -91,21 +102,37 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         if(layer != null){
             this.layer = DisplayLayer.valueOf(layer.toUpperCase());
         }
-        Integer x = config.getIntOrNull("posX");
+        String x = config.getStringOrNull("posX");
         if(x != null){
-            this.x = this.originX = x;
+            this.x = this.originX = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    x,
+                    PlaceholderContext.of(config)
+            );
         }
-        Integer y = config.getIntOrNull("posY");
+        String y = config.getStringOrNull("posY");
         if(y != null){
-            this.y = this.originY = y;
+            this.y = this.originY = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    y,
+                    PlaceholderContext.of(config)
+            );
         }
-        Integer width = config.getIntOrNull("width");
+        String width = config.getStringOrNull("width");
         if(width != null){
-            this.width = this.originWidth = width;
+            this.width = this.originWidth = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    width,
+                    PlaceholderContext.of(config)
+            );
         }
-        Integer height = config.getIntOrNull("height");
+        String height = config.getStringOrNull("height");
         if(height != null){
-            this.height = this.originHeight = height;
+            this.height = this.originHeight = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    height,
+                    PlaceholderContext.of(config)
+            );
         }
         Boolean fixRatio = config.getBoolOrNull("fixRatio");
         if(fixRatio != null){
@@ -121,6 +148,11 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     }
 
     @Override
+    public void onRemove() {
+        //empty to not implement it everywhere
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if(obj instanceof BaseElement){
             BaseElement canvas = (BaseElement) obj;
@@ -130,21 +162,12 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     }
 
     @Override
-    public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
-        int[] coords = RenderUtils.fixCoordinates(originX,originY,originWidth,originHeight,fixRatio);
-        x = coords[0];
-        y = coords[1];
-        width = coords[2];
-        height = coords[3];
-    }
-
-    @Override
     public int hashCode() {
         return getId().hashCode();
     }
 
     @Override
-    public BaseElement clone() {
+    public DisplayElement clone() {
         try {
             BaseElement clone = (BaseElement) super.clone();
             clone.id = UUID.randomUUID().toString();

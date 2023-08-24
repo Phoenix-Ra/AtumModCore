@@ -3,6 +3,7 @@ package me.phoenixra.atumodcore.api;
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.config.ConfigManager;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
+import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.core.AtumAPIImpl;
 import net.minecraft.client.Minecraft;
@@ -26,6 +27,8 @@ public abstract class AtumMod {
 
     @Getter
     private DisplayElementRegistry displayElementRegistry;
+    @Getter
+    private DisplayActionRegistry displayActionRegistry;
 
     @Getter
     private InputHandler inputHandler;
@@ -45,6 +48,7 @@ public abstract class AtumMod {
             inputHandler = AtumAPI.getInstance().getCoreMod().getInputHandler();
             configManager = AtumAPI.getInstance().createConfigManager(this);
             dataFolder =  new File(Minecraft.getMinecraft().mcDataDir,"config/" + getName());
+            displayActionRegistry = AtumAPI.getInstance().createDisplayActionRegistry(this);
             displayElementRegistry = AtumAPI.getInstance().createDisplayElementRegistry(this);
         } else {
             dataFolder =  new File("");

@@ -19,19 +19,10 @@ public class BaseScreen extends GuiMainMenu {
     public BaseScreen(@NotNull AtumMod atumMod, @NotNull DisplayCanvas canvas) {
         this.atumMod = atumMod;
         this.canvas = canvas;
+        this.canvas.setAttachedGuiScreen(this);
     }
     @Override
     public void initGui() {
-        atumMod.getInputHandler().addListenerOnPress(
-                it ->{
-                    canvas.onPress(it);
-                }
-        );
-        atumMod.getInputHandler().addListenerOnRelease(
-                it ->{
-                    canvas.onRelease(it);
-                }
-        );
     }
 
     @Override

@@ -5,6 +5,7 @@ import me.phoenixra.atumodcore.api.config.ConfigManager;
 import me.phoenixra.atumodcore.api.config.ConfigType;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
+import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import org.apache.logging.log4j.Logger;
@@ -97,7 +98,8 @@ public interface AtumAPI {
 
     @NotNull
     DisplayElementRegistry createDisplayElementRegistry(@NotNull AtumMod atumMod);
-
+    @NotNull
+    DisplayActionRegistry createDisplayActionRegistry(@NotNull AtumMod atumMod);
     /**
      * Evaluate an expression.
      *

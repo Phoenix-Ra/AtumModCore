@@ -143,14 +143,13 @@ public class AtumConfig implements Config {
 
     @Override
     public @Nullable List<Boolean> getBoolListOrNull(@NotNull String path) {
-        List<Boolean> list = getList(path, Boolean.class);
-        return list;
+        return getList(path, Boolean.class);
     }
 
     @Override
     public @Nullable String getStringOrNull(@NotNull String path) {
         Object obj = get(path);
-        return (obj instanceof String)? (String) obj : null;
+        return obj != null ? obj.toString() : null;
     }
 
     @Override

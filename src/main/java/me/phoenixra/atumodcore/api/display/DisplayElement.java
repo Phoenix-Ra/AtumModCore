@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public interface DisplayElement {
+public interface DisplayElement extends Cloneable{
 
     String getId();
     int getX();
@@ -27,6 +27,7 @@ public interface DisplayElement {
     default void onRelease(InputReleaseEvent event){
 
     }
+    void onRemove();
 
     @NotNull DisplayLayer getLayer();
 
@@ -48,5 +49,7 @@ public interface DisplayElement {
                 && element.getY() <= getY()
                 &&  element.getY() + element.getHeight() >= getY() + getHeight();
     }
+
+    DisplayElement clone();
 
 }

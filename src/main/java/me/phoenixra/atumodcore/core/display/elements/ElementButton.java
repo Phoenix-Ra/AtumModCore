@@ -2,9 +2,12 @@ package me.phoenixra.atumodcore.core.display.elements;
 
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
+import me.phoenixra.atumodcore.api.display.actions.ActionData;
+import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
+import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,6 +26,7 @@ public class ElementButton extends BaseElement {
     private int textureWidth;
     private int textureHeight;
 
+    DisplayAction actionOnClick;
     private boolean clicked;
     public ElementButton(@NotNull DisplayCanvas elementOwner) {
         super(elementOwner);
@@ -109,21 +113,66 @@ public class ElementButton extends BaseElement {
                     Float.parseFloat(brightness.split(";")[2])
             };
         }
-        Integer textureX = config.getIntOrNull("settings.textureX");
+        String textureX = config.getStringOrNull("settings.textureX");
         if(textureX!=null){
-            this.textureX = textureX;
+            this.textureX = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    textureX,
+                    PlaceholderContext.of(config)
+            );
         }
-        Integer textureY = config.getIntOrNull("settings.textureY");
+        String textureY = config.getStringOrNull("settings.textureY");
         if(textureY!=null){
-            this.textureY = textureY;
+            this.textureY = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    textureY,
+                    PlaceholderContext.of(config)
+            );
         }
-        Integer textureWidth = config.getIntOrNull("settings.textureWidth");
+        String textureWidth = config.getStringOrNull("settings.textureWidth");
         if(textureWidth!=null){
-            this.textureWidth = textureWidth;
+            this.textureWidth = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    textureWidth,
+                    PlaceholderContext.of(config)
+            );
         }
-        Integer textureHeight = config.getIntOrNull("settings.textureHeight");
+        String textureHeight = config.getStringOrNull("settings.textureHeight");
         if(textureHeight!=null){
-            this.textureHeight = textureHeight;
+            this.textureHeight = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    textureHeight,
+                    PlaceholderContext.of(config)
+            );
+        }
+        String actionOnClick = config.getStringOrNull("settings.action-onClick");
+        if(actionOnClick!=null){
+            this.actionOnClick = config.getAtumMod().getDisplayActionRegistry().getActionById(actionOnClick);
+        }
+    }
+
+    @Override
+    public void onPress(InputPressEvent event) {
+        super.onPress(event);
+        clicked = true;
+    }
+
+    @Override
+    public void onRelease(InputReleaseEvent event) {
+        super.onRelease(event);
+        if(!clicked) return;
+        clicked = false;
+        if(actionOnClick!=null){
+            actionOnClick.perform(
+                    new ActionData(
+                            Minecraft.getMinecraft(),
+                            getElementOwner().getAttachedGuiScreen(),
+                            getElementOwner(),
+                            this,
+                            event.getMouseX(),
+                            event.getMouseY()
+                    )
+            );
         }
     }
 
@@ -131,18 +180,5 @@ public class ElementButton extends BaseElement {
     protected BaseElement onClone(BaseElement clone) {
         ElementButton cloneImage = (ElementButton) clone;
         return cloneImage;
-    }
-
-    @Override
-    public void onPress(InputPressEvent event) {
-        super.onPress(event);
-        clicked = true;
-        System.out.println("Pressed");
-    }
-
-    @Override
-    public void onRelease(InputReleaseEvent event) {
-        super.onRelease(event);
-        clicked = false;
     }
 }

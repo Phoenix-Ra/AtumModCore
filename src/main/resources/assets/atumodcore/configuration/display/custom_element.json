@@ -1,0 +1,20 @@
+{
+  "config_version": 1,
+  "id": "test",
+  "type": "canvas",
+  "layer": "MIDDLE",
+  "width": 1920,
+  "height": 1080,
+  "elements": {
+    "image_main": {
+      "type": "image",
+      "layer": "BACKGROUND",
+      "width": 1920,
+      "height": 1080,
+      "settings": {
+        "image": "atumodcore:textures/test.png",
+        "color": "#ffffff"
+      }
+    }
+  }
+}

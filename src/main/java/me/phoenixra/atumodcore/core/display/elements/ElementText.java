@@ -34,12 +34,6 @@ public class ElementText extends BaseElement {
     }
 
     @Override
-    protected BaseElement onClone(BaseElement clone) {
-        ElementText cloneText = (ElementText) clone;
-        return cloneText;
-    }
-
-    @Override
     public void updateVariables(@NotNull Config config) {
         super.updateVariables(config);
         Integer fontSize = config.getIntOrNull("settings.fontSize");
@@ -58,6 +52,12 @@ public class ElementText extends BaseElement {
         if(text!=null){
             this.text = text;
         }
+    }
+
+    @Override
+    protected BaseElement onClone(BaseElement clone) {
+        ElementText cloneText = (ElementText) clone;
+        return cloneText;
     }
 
 

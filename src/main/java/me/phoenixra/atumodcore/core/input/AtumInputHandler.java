@@ -7,11 +7,11 @@ import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
+import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
-import me.phoenixra.atumodcore.api.utils.ResourceUtils;
-import me.phoenixra.atumodcore.api.utils.TextureUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -28,6 +28,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -36,11 +37,16 @@ public class AtumInputHandler implements InputHandler {
     private static Cursor RESIZE_VERTICAL_CURSOR;
     private static Cursor RESIZE_HORIZONTAL_CURSOR;
 
-    private List<Consumer<InputPressEvent>> onPressListeners = new ArrayList<>();
-    private List<Consumer<InputReleaseEvent>> onReleaseListeners = new ArrayList<>();
+    private HashMap<String,Consumer<InputPressEvent>> onPressListeners = new HashMap<>();
+    private HashMap<String,Consumer<InputReleaseEvent>> onReleaseListeners = new HashMap<>();
 
     @Getter
     private boolean inputBlocked = false;
+
+
+    private PairRecord<Integer, Integer> lastMousePos = new PairRecord<>(0, 0);
+    private int mouseXCache, mouseYCache;
+    private int scaleFactorCache;
 
     public AtumInputHandler(AtumMod atumMod) {
         this.atumMod = atumMod;
@@ -102,19 +108,18 @@ public class AtumInputHandler implements InputHandler {
     }
     @SubscribeEvent
     public void onMouseClicked(GuiScreenEvent.MouseInputEvent.Pre e) {
-
         int i = Mouse.getEventButton();
         //update cached scale factor
         RenderUtils.getScaleFactor();
-        int[] pos = RenderUtils.fixCoordinates(Mouse.getX(), Mouse.getY());
+        PairRecord<Integer,Integer> pos = getMousePosition();
 
         if(Mouse.getEventButtonState()){
             if(i == 0){
                 callOnPressListeners(
                         new InputPressEvent(
                                 InputType.MOUSE_LEFT,
-                                pos[0],
-                                pos[1],
+                                pos.getFirst(),
+                                pos.getSecond(),
                                 Mouse.getEventDX(),
                                 Mouse.getEventDY(),
                                 Mouse.getEventDWheel()
@@ -124,8 +129,8 @@ public class AtumInputHandler implements InputHandler {
                 callOnPressListeners(
                         new InputPressEvent(
                                 InputType.MOUSE_RIGHT,
-                                pos[0],
-                                pos[1],
+                                pos.getFirst(),
+                                pos.getSecond(),
                                 Mouse.getEventDX(),
                                 Mouse.getEventDY(),
                                 Mouse.getEventDWheel()
@@ -137,8 +142,8 @@ public class AtumInputHandler implements InputHandler {
                 callOnReleaseListeners(
                         new InputReleaseEvent(
                                 InputType.MOUSE_LEFT,
-                                pos[0],
-                                pos[1],
+                                pos.getFirst(),
+                                pos.getSecond(),
                                 Mouse.getEventDX(),
                                 Mouse.getEventDY(),
                                 Mouse.getEventDWheel()
@@ -148,8 +153,8 @@ public class AtumInputHandler implements InputHandler {
                 callOnReleaseListeners(
                         new InputReleaseEvent(
                                 InputType.MOUSE_RIGHT,
-                                pos[0],
-                                pos[1],
+                                pos.getFirst(),
+                                pos.getSecond(),
                                 Mouse.getEventDX(),
                                 Mouse.getEventDY(),
                                 Mouse.getEventDWheel()
@@ -164,13 +169,21 @@ public class AtumInputHandler implements InputHandler {
     }
 
     private void callOnPressListeners(InputPressEvent e) {
-        for (Consumer<InputPressEvent> c : onPressListeners) {
-            c.accept(e);
+        for (Consumer<InputPressEvent> c : onPressListeners.values()) {
+            try {
+                c.accept(e);
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
         }
     }
     private void callOnReleaseListeners(InputReleaseEvent e) {
-        for (Consumer<InputReleaseEvent> c : onReleaseListeners) {
-            c.accept(e);
+        for (Consumer<InputReleaseEvent> c : onReleaseListeners.values()) {
+            try {
+                c.accept(e);
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -194,6 +207,26 @@ public class AtumInputHandler implements InputHandler {
     }
 
     @Override
+    public PairRecord<Integer, Integer> getMousePosition() {
+        int newScaleFactor = RenderUtils.getScaleFactor();
+        if(mouseXCache == Mouse.getX() && mouseYCache == Mouse.getY() && scaleFactorCache == newScaleFactor){
+            return lastMousePos;
+        }
+        int scaledWidth = Minecraft.getMinecraft().displayWidth;
+        int scaledHeight = Minecraft.getMinecraft().displayHeight;
+        scaledWidth =  MathHelper.ceil((double) scaledWidth / (double) newScaleFactor);
+        scaledHeight =  MathHelper.ceil((double) scaledHeight / (double) newScaleFactor);
+        mouseXCache = Mouse.getX();
+        mouseYCache = Mouse.getY();
+        scaleFactorCache = newScaleFactor;
+        lastMousePos = new PairRecord<>(
+                mouseXCache * scaledWidth / Minecraft.getMinecraft().displayWidth,
+                scaledHeight - mouseYCache * scaledHeight / Minecraft.getMinecraft().displayHeight - 1
+        );
+        return lastMousePos;
+    }
+
+    @Override
     public void blockInput() {
         inputBlocked = true;
     }
@@ -204,13 +237,20 @@ public class AtumInputHandler implements InputHandler {
     }
 
     @Override
-    public void addListenerOnPress(Consumer<InputPressEvent> listener) {
-        onPressListeners.add(listener);
+    public void addListenerOnPress(String id, Consumer<InputPressEvent> listener) {
+        onPressListeners.put(id,listener);
+    }
+    @Override
+    public void addListenerOnRelease(String id, Consumer<InputReleaseEvent> listener) {
+        onReleaseListeners.put(id,listener);
     }
 
     @Override
-    public void addListenerOnRelease(Consumer<InputReleaseEvent> listener) {
-        onReleaseListeners.add(listener);
+    public void removeListenerOnPress(String id) {
+        onPressListeners.remove(id);
     }
-
+    @Override
+    public void removeListenerOnRelease(String id) {
+        onReleaseListeners.remove(id);
+    }
 }

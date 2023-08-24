@@ -5,6 +5,7 @@ import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
+import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -70,21 +71,37 @@ public class ElementImage extends BaseElement {
         if(color!=null){
             this.color = AtumColor.fromHex(color);
         }
-        Integer textureX = config.getIntOrNull("settings.textureX");
+        String textureX = config.getStringOrNull("settings.textureX");
         if(textureX!=null){
-            this.textureX = textureX;
+            this.textureX = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    textureX,
+                    PlaceholderContext.of(config)
+            );
         }
-        Integer textureY = config.getIntOrNull("settings.textureY");
+        String textureY = config.getStringOrNull("settings.textureY");
         if(textureY!=null){
-            this.textureY = textureY;
+            this.textureY = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    textureY,
+                    PlaceholderContext.of(config)
+            );
         }
-        Integer textureWidth = config.getIntOrNull("settings.textureWidth");
+        String textureWidth = config.getStringOrNull("settings.textureWidth");
         if(textureWidth!=null){
-            this.textureWidth = textureWidth;
+            this.textureWidth = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    textureWidth,
+                    PlaceholderContext.of(config)
+            );
         }
-        Integer textureHeight = config.getIntOrNull("settings.textureHeight");
+        String textureHeight = config.getStringOrNull("settings.textureHeight");
         if(textureHeight!=null){
-            this.textureHeight = textureHeight;
+            this.textureHeight = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    textureHeight,
+                    PlaceholderContext.of(config)
+            );
         }
     }
 

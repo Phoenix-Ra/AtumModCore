@@ -1,7 +1,9 @@
 package me.phoenixra.atumodcore.api.display.impl;
 
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
+import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
@@ -10,6 +12,9 @@ import me.phoenixra.atumodcore.api.display.DisplayLayer;
 import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
+import me.phoenixra.atumodcore.api.placeholders.PlaceholderManager;
+import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
+import me.phoenixra.atumodcore.api.placeholders.types.injectable.StaticPlaceholder;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,13 +45,17 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
 
     @Getter @Setter
     private DisplayCanvas elementOwner;
+    @Getter @Setter
+    private BaseScreen attachedGuiScreen;
 
+    @Getter
     private HashMap<DisplayLayer, LinkedHashSet<DisplayElement>> elements = new HashMap<>();
 
     @Getter
     private HashSet<DisplayElement> displayedElements = new LinkedHashSet<>();
     private List<DisplayElement> displayedElementsReversed = new ArrayList<>();
 
+    private boolean initialized = false;
     public BaseCanvas(@NotNull DisplayLayer layer,
                       int x,
                       int y,
@@ -60,6 +69,7 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
         this.height = this.originHeight = height;
 
         this.elementOwner = elementOwner == null ? this : elementOwner;
+
     }
     public BaseCanvas(@NotNull DisplayLayer layer,
                       int x,
@@ -73,6 +83,28 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
     }
     public BaseCanvas(){
         this(DisplayLayer.MIDDLE, 0, 0, 0, 0, null);
+    }
+
+
+    @Override
+    public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+        if(!initialized){
+            AtumAPI.getInstance().getCoreMod().getInputHandler().addListenerOnPress(id+"-press",
+                    this::onPress
+            );
+            AtumAPI.getInstance().getCoreMod().getInputHandler().addListenerOnRelease(id+"-release",
+                    this::onRelease
+            );
+            initialized = true;
+        }
+        int[] coords = RenderUtils.fixCoordinates(originX,originY,originWidth,originHeight,fixRatio);
+        x = coords[0];
+        y = coords[1];
+        width = coords[2];
+        height = coords[3];
+        for(DisplayElement element : displayedElementsReversed){
+            element.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
+        }
     }
 
     @Override
@@ -110,26 +142,55 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
 
     @Override
     public void updateVariables(@NotNull Config config) {
-
+        config.addInjectablePlaceholder(
+                Lists.newArrayList(
+                        new StaticPlaceholder("canvas_x",()-> String.valueOf(originX)),
+                        new StaticPlaceholder("canvas_y",()-> String.valueOf(originY)),
+                        new StaticPlaceholder("canvas_width",()-> String.valueOf(originWidth)),
+                        new StaticPlaceholder("canvas_height",()-> String.valueOf(originHeight)),
+                        new StaticPlaceholder("mouse_x", ()-> String.valueOf(
+                                config.getAtumMod().getInputHandler().getMousePosition().getFirst()
+                        )),
+                        new StaticPlaceholder("mouse_y", ()-> String.valueOf(
+                                config.getAtumMod().getInputHandler().getMousePosition().getSecond()
+                        ))
+                )
+        );
         String layer = config.getStringOrNull("layer");
         if(layer != null){
             this.layer = DisplayLayer.valueOf(layer.toUpperCase());
         }
-        Integer x = config.getIntOrNull("posX");
+        String x = config.getStringOrNull("posX");
         if(x != null){
-            this.x = this.originX = x;
+            this.x = this.originX = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    x,
+                    PlaceholderContext.of(config)
+            );
         }
-        Integer y = config.getIntOrNull("posY");
+        String y = config.getStringOrNull("posY");
         if(y != null){
-            this.y = this.originY = y;
+            this.y = this.originY = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    y,
+                    PlaceholderContext.of(config)
+            );
         }
-        Integer width = config.getIntOrNull("width");
+        String width = config.getStringOrNull("width");
         if(width != null){
-            this.width = this.originWidth = width;
+            this.width = this.originWidth = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    width,
+                    PlaceholderContext.of(config)
+            );
         }
-        Integer height = config.getIntOrNull("height");
+        String height = config.getStringOrNull("height");
         if(height != null){
-            this.height = this.originHeight = height;
+            this.height = this.originHeight = (int) config.getAtumMod().getApi().evaluate(
+                    config.getAtumMod(),
+                    height,
+                    PlaceholderContext.of(config)
+            );
         }
         Boolean fixRatio = config.getBoolOrNull("fixRatio");
         if(fixRatio != null){
@@ -181,7 +242,6 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
         displayedElementsReversed.addAll(displayedElements);
         Collections.reverse(displayedElementsReversed);
     }
-
     @Override
     public DisplayElement getHoveredElement(int mouseX, int mouseY) {
 
@@ -205,18 +265,6 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
     }
 
     @Override
-    public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
-        int[] coords = RenderUtils.fixCoordinates(originX,originY,originWidth,originHeight,fixRatio);
-        x = coords[0];
-        y = coords[1];
-        width = coords[2];
-        height = coords[3];
-        for(DisplayElement element : displayedElementsReversed){
-            element.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
-        }
-    }
-
-    @Override
     public boolean isHovered(int mouseX, int mouseY) {
         return getElementOwner() == this ? isCoordinateInElement(mouseX, mouseY) :
                 getElementOwner().getHoveredElement(mouseX, mouseY) == this;
@@ -225,7 +273,6 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
     @Override
     public void onPress(InputPressEvent event) {
         if(event.getType() == InputType.MOUSE_LEFT || event.getType() == InputType.MOUSE_RIGHT){
-            System.out.println("PRESSSSSSED mouseX: "+event.getMouseX()+" mouseY: "+event.getMouseY());
             DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
             if(element != null){
                 element.onPress(event);
@@ -244,6 +291,17 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
     }
 
     @Override
+    public void onRemove() {
+        for(DisplayElement element : displayedElements){
+            element.onRemove();
+        }
+        AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnPress(id+"-press");
+        AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnRelease(id+"-release");
+    }
+
+
+
+    @Override
     public boolean equals(Object obj) {
         if(obj instanceof BaseCanvas){
             BaseCanvas canvas = (BaseCanvas) obj;
@@ -259,7 +317,7 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
 
 
     @Override
-    public BaseCanvas clone() {
+    public DisplayElement clone() {
         try {
             BaseCanvas clone = (BaseCanvas) super.clone();
             clone.id = UUID.randomUUID().toString();
