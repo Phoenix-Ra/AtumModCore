@@ -16,29 +16,74 @@
           "color": "#ffffff"
         }
       },
+      "button_main": {
+        "type": "button",
+        "layer": "FOREGROUND",
+        "posX": 500,
+        "width": 200,
+        "height": 200,
+        "fixRatio": true,
+        "settings": {
+          "image": "atumodcore:textures/button.png",
+          "brightness": "1.0;1.0;1.0",
+          "brightness-onHover": "0.85;0.85;0.85",
+          "brightness-onClick": "20.0;20.0;20.0",
+          "action-onClick": "open_multiplayer"
+        }
+      },
+      "progressBar_main": {
+        "type": "progress_bar",
+        "layer": "FOREGROUND",
+        "posX": 1000,
+        "posY": 1000,
+        "width": 400,
+        "height": 50,
+        "settings": {
+          "color-light": "#000eef",
+          "color-dark": "#000eef",
+          "outlined": true
+        }
+      },
       "text_main": {
         "type": "text",
         "layer": "MIDDLE",
-        "width": 222,
-        "height": 222,
         "settings": {
           "font": "main_menu.ttf",
-          "color": "#4dbcaf",
+          "fontSize": 50,
           "text": "HELLO WORLD!"
         }
       },
-      "progressBar_load": {
-        "type": "progress_bar",
+      "text_main3": {
+        "type": "text",
         "layer": "MIDDLE",
-        "posX": 200,
-        "posY": 1000,
-        "width": 600,
-        "height": 280,
+        "posX": 100,
+        "posY": 80,
         "settings": {
-          "bar_image": "atumodcore:textures/screen/loading/bar_image.png",
-          "bar_fill_color": "#FFFFFF",
-          "color": "#FFFFFF",
-          "progress_value": "%minecraft_load_progress%"
+          "font": "main_menu.ttf",
+          "fontSize": 30,
+          "text": "Deaddy!"
+        }
+      },
+      "text_main5": {
+        "type": "text",
+        "layer": "MIDDLE",
+        "posX": 100,
+        "posY": 120,
+        "settings": {
+          "font": "main_menu.ttf",
+          "fontSize": 30,
+          "text": "&cFFF WORLD!"
+        }
+      },
+      "text_main7": {
+        "type": "text",
+        "layer": "MIDDLE",
+        "posX": 100,
+        "posY": 160,
+        "settings": {
+          "font": "main_menu.ttf",
+          "fontSize": 30,
+          "text": "&6&lHEY!"
         }
       }
     }

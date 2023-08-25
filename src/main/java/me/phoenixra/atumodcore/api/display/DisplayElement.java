@@ -21,12 +21,6 @@ public interface DisplayElement extends Cloneable{
     void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY);
 
     boolean isHovered(int mouseX, int mouseY);
-    default void onPress(InputPressEvent event){
-
-    }
-    default void onRelease(InputReleaseEvent event){
-
-    }
     void onRemove();
 
     @NotNull DisplayLayer getLayer();

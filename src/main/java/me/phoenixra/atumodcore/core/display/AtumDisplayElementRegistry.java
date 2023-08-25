@@ -47,6 +47,7 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
         }
         BaseCanvas canvas = (BaseCanvas) (element).clone();
         canvas.updateVariables(config);
+        canvas.setTriggers(atumMod.getDisplayTriggerRegistry().compile(config.getSubsection("triggers")));
 
         getAtumMod().getLogger().info("Found canvas: " + canvas);
         for(Config elementSection : config.getSubsectionList("elements")){
@@ -64,6 +65,7 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
             BaseElement elementBaseElement = (BaseElement)( elementElement).clone();
             elementBaseElement.setElementOwner(canvas);
             elementBaseElement.updateVariables(elementSection);
+            elementBaseElement.setTriggers(atumMod.getDisplayTriggerRegistry().compile(elementSection.getSubsection("triggers")));
             canvas.addElement(elementBaseElement);
         }
         return canvas;

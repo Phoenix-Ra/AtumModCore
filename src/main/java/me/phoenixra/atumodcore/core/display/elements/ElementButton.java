@@ -2,7 +2,7 @@ package me.phoenixra.atumodcore.core.display.elements;
 
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
-import me.phoenixra.atumodcore.api.display.actions.ActionData;
+import me.phoenixra.atumodcore.api.display.triggers.TriggerData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
@@ -25,8 +25,6 @@ public class ElementButton extends BaseElement {
     private int textureY;
     private int textureWidth;
     private int textureHeight;
-
-    DisplayAction actionOnClick;
     private boolean clicked;
     public ElementButton(@NotNull DisplayCanvas elementOwner) {
         super(elementOwner);
@@ -143,35 +141,6 @@ public class ElementButton extends BaseElement {
                     config.getAtumMod(),
                     textureHeight,
                     PlaceholderContext.of(config)
-            );
-        }
-        String actionOnClick = config.getStringOrNull("settings.action-onClick");
-        if(actionOnClick!=null){
-            this.actionOnClick = config.getAtumMod().getDisplayActionRegistry().getActionById(actionOnClick);
-        }
-    }
-
-    @Override
-    public void onPress(InputPressEvent event) {
-        super.onPress(event);
-        clicked = true;
-    }
-
-    @Override
-    public void onRelease(InputReleaseEvent event) {
-        super.onRelease(event);
-        if(!clicked) return;
-        clicked = false;
-        if(actionOnClick!=null){
-            actionOnClick.perform(
-                    new ActionData(
-                            Minecraft.getMinecraft(),
-                            getElementOwner().getAttachedGuiScreen(),
-                            getElementOwner(),
-                            this,
-                            event.getMouseX(),
-                            event.getMouseY()
-                    )
             );
         }
     }

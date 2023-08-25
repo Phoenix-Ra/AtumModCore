@@ -9,6 +9,9 @@ import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
+import me.phoenixra.atumodcore.api.display.triggers.DisplayTrigger;
+import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
+import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
@@ -16,6 +19,7 @@ import me.phoenixra.atumodcore.api.placeholders.PlaceholderManager;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.placeholders.types.injectable.StaticPlaceholder;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,6 +46,8 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
     private int height;
 
     private boolean fixRatio = false;
+    @Getter @Setter
+    private List<DisplayTrigger> triggers = new ArrayList<>();
 
     @Getter @Setter
     private DisplayCanvas elementOwner;
@@ -54,6 +60,7 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
     @Getter
     private HashSet<DisplayElement> displayedElements = new LinkedHashSet<>();
     private List<DisplayElement> displayedElementsReversed = new ArrayList<>();
+
 
     private boolean initialized = false;
     public BaseCanvas(@NotNull DisplayLayer layer,
@@ -105,6 +112,7 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
         for(DisplayElement element : displayedElementsReversed){
             element.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
         }
+        triggers.forEach(DisplayTrigger::onElementDraw);
     }
 
     @Override
@@ -270,28 +278,27 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
                 getElementOwner().getHoveredElement(mouseX, mouseY) == this;
     }
 
-    @Override
     public void onPress(InputPressEvent event) {
-        if(event.getType() == InputType.MOUSE_LEFT || event.getType() == InputType.MOUSE_RIGHT){
-            DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
-            if(element != null){
-                element.onPress(event);
-            }
+        DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
+        if(element != null){
+            MinecraftForge.EVENT_BUS.post(new ElementInputPressEvent(element,event));
+        }else{
+            MinecraftForge.EVENT_BUS.post(new ElementInputPressEvent(this,event));
         }
     }
 
-    @Override
     public void onRelease(InputReleaseEvent event) {
-        if(event.getType() == InputType.MOUSE_LEFT || event.getType() == InputType.MOUSE_RIGHT){
-            DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
-            if(element != null){
-                element.onRelease(event);
-            }
+        DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
+        if(element != null){
+            MinecraftForge.EVENT_BUS.post(new ElementInputReleaseEvent(element,event));
+        }else{
+            MinecraftForge.EVENT_BUS.post(new ElementInputReleaseEvent(this,event));
         }
     }
 
     @Override
     public void onRemove() {
+        triggers.clear();
         for(DisplayElement element : displayedElements){
             element.onRemove();
         }

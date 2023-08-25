@@ -8,6 +8,7 @@ import me.phoenixra.atumodcore.api.config.ConfigType;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
+import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerRegistry;
 import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.core.config.AtumConfigManager;
@@ -15,6 +16,7 @@ import me.phoenixra.atumodcore.core.config.AtumConfigSection;
 import me.phoenixra.atumodcore.core.config.AtumLoadableConfig;
 import me.phoenixra.atumodcore.core.display.AtumDisplayActionRegistry;
 import me.phoenixra.atumodcore.core.display.AtumDisplayElementRegistry;
+import me.phoenixra.atumodcore.core.display.AtumDisplayTriggerRegistry;
 import me.phoenixra.atumodcore.core.input.AtumInputHandler;
 import me.phoenixra.atumodcore.core.misc.ExpressionEvaluator;
 import org.apache.logging.log4j.LogManager;
@@ -75,6 +77,11 @@ public class AtumAPIImpl implements AtumAPI {
     @Override
     public @NotNull DisplayActionRegistry createDisplayActionRegistry(@NotNull AtumMod atumMod) {
         return new AtumDisplayActionRegistry(atumMod);
+    }
+
+    @Override
+    public @NotNull DisplayTriggerRegistry createDisplayTriggerRegistry(@NotNull AtumMod atumMod) {
+        return new AtumDisplayTriggerRegistry(atumMod);
     }
 
     @Override

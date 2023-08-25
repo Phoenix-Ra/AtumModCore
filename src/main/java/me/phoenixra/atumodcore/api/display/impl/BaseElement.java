@@ -7,12 +7,19 @@ import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
+import me.phoenixra.atumodcore.api.display.triggers.DisplayTrigger;
+import me.phoenixra.atumodcore.api.display.triggers.TriggerData;
+import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
+import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
+import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public abstract class BaseElement implements DisplayElement, Cloneable {
@@ -35,6 +42,8 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     private int height;
 
     private boolean fixRatio = false;
+    @Getter @Setter
+    private List<DisplayTrigger> triggers = new ArrayList<>();
 
     @Getter @Setter
     private DisplayCanvas elementOwner;
@@ -65,6 +74,8 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         y = coords[1];
         width = coords[2];
         height = coords[3];
+
+        triggers.forEach(DisplayTrigger::onElementDraw);
     }
 
     @Override
@@ -93,7 +104,6 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         if(fixRatio != null){
             this.fixRatio = Boolean.parseBoolean(fixRatio.getValue().toString());
         }
-
     }
 
     @Override
@@ -149,6 +159,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
     @Override
     public void onRemove() {
+        triggers.clear();
         //empty to not implement it everywhere
     }
 
