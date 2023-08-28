@@ -1,15 +1,14 @@
-package me.phoenixra.atumodcore.api.display.triggers;
+package me.phoenixra.atumodcore.api.display.actions;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import org.jetbrains.annotations.Nullable;
 
 @Data @AllArgsConstructor @Builder
-public class TriggerData {
+public class ActionData {
     @Nullable
     private DisplayElement attachedElement;
     @Nullable
@@ -20,8 +19,8 @@ public class TriggerData {
 
 
 
-    public static TriggerData empty(){
-        return new TriggerData(null, null, 0, 0);
+    public static ActionData empty(){
+        return new ActionData(null, null, 0, 0);
     }
 
 

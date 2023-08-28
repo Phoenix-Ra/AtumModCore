@@ -9,6 +9,8 @@ import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.core.display.elements.*;
+import me.phoenixra.atumodcore.core.display.elements.canvas.ElementDefaultCanvas;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,15 +23,24 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
     private HashMap<String, DisplayElement> registry = new HashMap<>();
     public AtumDisplayElementRegistry(AtumMod atumMod) {
         this.atumMod = atumMod;
-        register("canvas", new ElementCanvas(null));
-        register("image", new ElementImage(null));
-        register("text", new ElementText(null));
-        register("button", new ElementButton(null));
-        register("progress_bar", new ElementProgressBar(null));
+        register("canvas", new ElementDefaultCanvas(atumMod,null));
+        register("image", new ElementImage(atumMod,null));
+        register("text", new ElementText(atumMod,null));
+        register("button", new ElementButton(atumMod,null));
+        register("progress_bar", new ElementProgressBar(atumMod,null));
     }
     @Override
     public @Nullable DisplayElement getElementById(@NotNull String id) {
         return registry.get(id.toLowerCase());
+    }
+
+    @Override
+    public @Nullable DisplayCanvas getCanvasById(@NotNull String id) {
+        DisplayElement element = this.getElementById(id);
+        if(!(element instanceof DisplayCanvas)){
+            return null;
+        }
+        return (DisplayCanvas) element;
     }
 
     @Override
@@ -47,8 +58,6 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
         }
         BaseCanvas canvas = (BaseCanvas) (element).clone();
         canvas.updateVariables(config);
-        canvas.setTriggers(atumMod.getDisplayTriggerRegistry().compile(config.getSubsection("triggers")));
-
         getAtumMod().getLogger().info("Found canvas: " + canvas);
         for(Config elementSection : config.getSubsectionList("elements")){
             String elementType = elementSection.getStringOrDefault("type", "image");
@@ -65,7 +74,6 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
             BaseElement elementBaseElement = (BaseElement)( elementElement).clone();
             elementBaseElement.setElementOwner(canvas);
             elementBaseElement.updateVariables(elementSection);
-            elementBaseElement.setTriggers(atumMod.getDisplayTriggerRegistry().compile(elementSection.getSubsection("triggers")));
             canvas.addElement(elementBaseElement);
         }
         return canvas;
@@ -74,6 +82,11 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
     @Override
     public void register(@NotNull String id, @NotNull DisplayElement element) {
         registry.put(id, element);
+    }
+
+    @Override
+    public void unregister(@NotNull String id) {
+        registry.remove(id);
     }
 
 }

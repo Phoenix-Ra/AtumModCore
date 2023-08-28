@@ -13,6 +13,7 @@ public interface InputHandler {
     void setCursorType(@NotNull CursorType cursor);
 
     PairRecord<Integer,Integer> getMousePosition();
+    PairRecord<Integer,Integer> getMouseOriginPosition();
 
     void blockInput();
     void unblockInput();

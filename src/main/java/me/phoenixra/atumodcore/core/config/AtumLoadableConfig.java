@@ -66,7 +66,6 @@ public class AtumLoadableConfig extends AtumConfig implements LoadableConfig {
                     Objects.requireNonNullElse(mapFromJar.get("config_version"),
                             0).toString()
             );
-
             InputStreamReader reader = new InputStreamReader(file.toURI().toURL().openStream());
             String s = ConfigTypeHandler.readToString(reader);
             Map<String, Object> mapFromDir = ConfigTypeHandler.toMap(getAtumMod(), getType(), s);
@@ -121,7 +120,7 @@ public class AtumLoadableConfig extends AtumConfig implements LoadableConfig {
     @Override
     public String getResourcePath() {
         String path = subDirectoryPath.replace(" ","").isEmpty() ?
-                getFileName() : subDirectoryPath + getFileName();
+                getFileName() : subDirectoryPath +"/"+ getFileName();
         return "/" + path;
     }
 

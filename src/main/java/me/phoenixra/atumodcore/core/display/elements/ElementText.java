@@ -1,5 +1,6 @@
 package me.phoenixra.atumodcore.core.display.elements;
 
+import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
@@ -18,13 +19,12 @@ public class ElementText extends BaseElement {
     private int fontSize = 20;
 
 
-    public ElementText(@NotNull DisplayCanvas elementOwner) {
-        super(elementOwner);
+    public ElementText(@NotNull AtumMod atumMod, @NotNull DisplayCanvas elementOwner) {
+        super(atumMod, elementOwner);
     }
 
     @Override
-    public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
-        super.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
+    protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
         font.drawString(
                 StringUtils.format(text),
                 getX(),

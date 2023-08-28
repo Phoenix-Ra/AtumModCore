@@ -4,158 +4,94 @@ import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
 import me.phoenixra.atumodcore.api.AtumAPI;
+import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
+import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
-import me.phoenixra.atumodcore.api.display.triggers.DisplayTrigger;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
-import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
-import me.phoenixra.atumodcore.api.placeholders.PlaceholderManager;
-import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.placeholders.types.injectable.StaticPlaceholder;
-import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
+public abstract class BaseCanvas extends BaseElement implements DisplayCanvas {
 
-    @Getter
-    private String id = UUID.randomUUID().toString();
-    @Getter
-    private DisplayLayer layer;
-    private int originX;
-    private int originY;
-    private int originWidth;
-    private int originHeight;
-
-    @Getter
-    private int x;
-    @Getter
-    private int y;
-    @Getter
-    private int width;
-    @Getter
-    private int height;
-
-    private boolean fixRatio = false;
-    @Getter @Setter
-    private List<DisplayTrigger> triggers = new ArrayList<>();
-
-    @Getter @Setter
-    private DisplayCanvas elementOwner;
     @Getter @Setter
     private BaseScreen attachedGuiScreen;
 
-    @Getter
     private HashMap<DisplayLayer, LinkedHashSet<DisplayElement>> elements = new HashMap<>();
 
     @Getter
     private HashSet<DisplayElement> displayedElements = new LinkedHashSet<>();
     private List<DisplayElement> displayedElementsReversed = new ArrayList<>();
 
+    @Getter
+    private LoadableConfig settingsConfig = null;
+
 
     private boolean initialized = false;
-    public BaseCanvas(@NotNull DisplayLayer layer,
+    public BaseCanvas(@NotNull AtumMod atumMod,@NotNull DisplayLayer layer,
                       int x,
                       int y,
                       int width,
                       int height,
                       @Nullable DisplayCanvas elementOwner){
-        this.layer = layer;
-        this.x = this.originX = x;
-        this.y = this.originY = y;
-        this.width = this.originWidth = width;
-        this.height = this.originHeight = height;
+        super(atumMod,layer, x, y, width, height, elementOwner);
 
-        this.elementOwner = elementOwner == null ? this : elementOwner;
+        this.setElementOwner(elementOwner == null ? this : elementOwner);
 
     }
-    public BaseCanvas(@NotNull DisplayLayer layer,
+    public BaseCanvas(@NotNull AtumMod atumMod,
+                      @NotNull DisplayLayer layer,
                       int x,
                       int y,
                       int width,
                       int height){
-       this(layer, x, y, width, height, null);
+       this(atumMod,layer, x, y, width, height, null);
     }
-    public BaseCanvas(@Nullable DisplayCanvas elementOwner){
-        this(DisplayLayer.MIDDLE, 0, 0, 0, 0, elementOwner);
+    public BaseCanvas(@NotNull AtumMod atumMod, @Nullable DisplayCanvas elementOwner){
+        this(atumMod,DisplayLayer.MIDDLE, 0, 0, 0, 0, elementOwner);
     }
-    public BaseCanvas(){
-        this(DisplayLayer.MIDDLE, 0, 0, 0, 0, null);
+    public BaseCanvas(@NotNull AtumMod atumMod){
+        this(atumMod,DisplayLayer.MIDDLE, 0, 0, 0, 0, null);
     }
 
 
     @Override
     public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
-        if(!initialized){
-            AtumAPI.getInstance().getCoreMod().getInputHandler().addListenerOnPress(id+"-press",
+        if(!initialized && getElementOwner() == this){
+            AtumAPI.getInstance().getCoreMod().getInputHandler().addListenerOnPress(getId()+"-press",
                     this::onPress
             );
-            AtumAPI.getInstance().getCoreMod().getInputHandler().addListenerOnRelease(id+"-release",
+            AtumAPI.getInstance().getCoreMod().getInputHandler().addListenerOnRelease(getId()+"-release",
                     this::onRelease
             );
             initialized = true;
         }
-        int[] coords = RenderUtils.fixCoordinates(originX,originY,originWidth,originHeight,fixRatio);
-        x = coords[0];
-        y = coords[1];
-        width = coords[2];
-        height = coords[3];
+        super.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
         for(DisplayElement element : displayedElementsReversed){
             element.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
         }
-        triggers.forEach(DisplayTrigger::onElementDraw);
     }
-
     @Override
     public void updateVariables(@NotNull HashMap<String, ConfigVariable<?>> variables) {
-        ConfigVariable<?> id = variables.get("id");
-        if(id != null){
-            this.id = id.getValue().toString();
-        }
-        ConfigVariable<?> layer = variables.get("layer");
-        if(layer != null){
-            this.layer = DisplayLayer.valueOf(layer.getValue().toString().toUpperCase());
-        }
-        ConfigVariable<?> x = variables.get("posX");
-        if(x != null){
-            this.x = this.originX = Integer.parseInt(x.getValue().toString());
-        }
-        ConfigVariable<?> y = variables.get("posY");
-        if(y != null){
-            this.y = this.originY = Integer.parseInt(y.getValue().toString());
-        }
-        ConfigVariable<?> width = variables.get("width");
-        if(width != null){
-            this.width = this.originWidth = Integer.parseInt(width.getValue().toString());
-        }
-        ConfigVariable<?> height = variables.get("height");
-        if(height != null){
-            this.height = this.originHeight = Integer.parseInt(height.getValue().toString());
-        }
-        ConfigVariable<?> fixRatio = variables.get("fixRatio");
-        if(fixRatio != null){
-            this.fixRatio = Boolean.parseBoolean(fixRatio.getValue().toString());
-        }
+       super.updateVariables(variables);
 
     }
 
     @Override
     public void updateVariables(@NotNull Config config) {
+        if(config instanceof LoadableConfig) settingsConfig = (LoadableConfig) config;
         config.addInjectablePlaceholder(
                 Lists.newArrayList(
-                        new StaticPlaceholder("canvas_x",()-> String.valueOf(originX)),
-                        new StaticPlaceholder("canvas_y",()-> String.valueOf(originY)),
-                        new StaticPlaceholder("canvas_width",()-> String.valueOf(originWidth)),
-                        new StaticPlaceholder("canvas_height",()-> String.valueOf(originHeight)),
                         new StaticPlaceholder("mouse_x", ()-> String.valueOf(
                                 config.getAtumMod().getInputHandler().getMousePosition().getFirst()
                         )),
@@ -164,46 +100,7 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
                         ))
                 )
         );
-        String layer = config.getStringOrNull("layer");
-        if(layer != null){
-            this.layer = DisplayLayer.valueOf(layer.toUpperCase());
-        }
-        String x = config.getStringOrNull("posX");
-        if(x != null){
-            this.x = this.originX = (int) config.getAtumMod().getApi().evaluate(
-                    config.getAtumMod(),
-                    x,
-                    PlaceholderContext.of(config)
-            );
-        }
-        String y = config.getStringOrNull("posY");
-        if(y != null){
-            this.y = this.originY = (int) config.getAtumMod().getApi().evaluate(
-                    config.getAtumMod(),
-                    y,
-                    PlaceholderContext.of(config)
-            );
-        }
-        String width = config.getStringOrNull("width");
-        if(width != null){
-            this.width = this.originWidth = (int) config.getAtumMod().getApi().evaluate(
-                    config.getAtumMod(),
-                    width,
-                    PlaceholderContext.of(config)
-            );
-        }
-        String height = config.getStringOrNull("height");
-        if(height != null){
-            this.height = this.originHeight = (int) config.getAtumMod().getApi().evaluate(
-                    config.getAtumMod(),
-                    height,
-                    PlaceholderContext.of(config)
-            );
-        }
-        Boolean fixRatio = config.getBoolOrNull("fixRatio");
-        if(fixRatio != null){
-            this.fixRatio = fixRatio;
-        }
+        super.updateVariables(config);
 
     }
 
@@ -227,6 +124,18 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
         if(list != null){
             list.remove(element);
         }
+        element.onRemove();
+        updateDisplayedElements();
+    }
+
+    @Override
+    public void clearElements() {
+        for (LinkedHashSet<DisplayElement> list : elements.values()) {
+            for (DisplayElement element : list) {
+                element.onRemove();
+            }
+        }
+        elements.clear();
         updateDisplayedElements();
     }
 
@@ -278,18 +187,39 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
                 getElementOwner().getHoveredElement(mouseX, mouseY) == this;
     }
 
-    public void onPress(InputPressEvent event) {
+    @Override
+    public void setActive(boolean active) {
+        super.setActive(active);
+        //all elements
+        for(LinkedHashSet<DisplayElement> list : elements.values()){
+            for(DisplayElement element : list){
+                element.setActive(active);
+            }
+        }
+    }
+
+    protected void onPress(InputPressEvent event) {
+
         DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
         if(element != null){
+            if(element instanceof BaseCanvas){
+                ((BaseCanvas) element).onPress(event);
+                return;
+            }
             MinecraftForge.EVENT_BUS.post(new ElementInputPressEvent(element,event));
         }else{
             MinecraftForge.EVENT_BUS.post(new ElementInputPressEvent(this,event));
         }
     }
 
-    public void onRelease(InputReleaseEvent event) {
+    protected void onRelease(InputReleaseEvent event) {
+
         DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
         if(element != null){
+            if(element instanceof BaseCanvas){
+                ((BaseCanvas) element).onRelease(event);
+                return;
+            }
             MinecraftForge.EVENT_BUS.post(new ElementInputReleaseEvent(element,event));
         }else{
             MinecraftForge.EVENT_BUS.post(new ElementInputReleaseEvent(this,event));
@@ -298,12 +228,17 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
 
     @Override
     public void onRemove() {
-        triggers.clear();
-        for(DisplayElement element : displayedElements){
-            element.onRemove();
+        MinecraftForge.EVENT_BUS.unregister(this);
+        for(LinkedHashSet<DisplayElement> list : elements.values()){
+            for(DisplayElement element : list){
+                element.onRemove();
+                element.setActive(false);
+            }
         }
-        AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnPress(id+"-press");
-        AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnRelease(id+"-release");
+        AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnPress(getId()+"-press");
+        AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnRelease(getId()+"-release");
+        setActive(false);
+        elements.clear();
     }
 
 
@@ -317,26 +252,28 @@ public abstract class BaseCanvas implements DisplayCanvas, Cloneable {
         return super.equals(obj);
     }
 
-    @Override
-    public int hashCode() {
-        return getId().hashCode();
-    }
-
 
     @Override
     public DisplayElement clone() {
-        try {
-            BaseCanvas clone = (BaseCanvas) super.clone();
-            clone.id = UUID.randomUUID().toString();
-            clone.elements = new HashMap<>();
-            clone.displayedElements = new LinkedHashSet<>();
-            return onClone(clone);
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
+        BaseCanvas clone = (BaseCanvas) super.clone();
+        HashMap<DisplayLayer, LinkedHashSet<DisplayElement>> map = clone.elements;
+        clone.elements = new HashMap<>();
+        clone.setElementOwner(clone);
+        clone.initialized = false;
+        for(Map.Entry<DisplayLayer, LinkedHashSet<DisplayElement>> entry : map.entrySet()){
+            for(DisplayElement element : entry.getValue()){
+                DisplayElement clonedElement = element.clone();
+                clonedElement.setElementOwner(clone);
+                clone.addElement(clonedElement);
+            }
         }
+        return onClone(clone);
     }
+
+    @Override
+    protected final BaseElement onClone(BaseElement clone) {
+        return clone;
+    }
+
     protected abstract BaseCanvas onClone(BaseCanvas clone);
-
-
-
 }

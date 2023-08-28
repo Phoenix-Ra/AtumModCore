@@ -17,6 +17,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -31,11 +32,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class AtumInputHandler implements InputHandler {
     private final AtumMod atumMod;
     private static Cursor RESIZE_VERTICAL_CURSOR;
     private static Cursor RESIZE_HORIZONTAL_CURSOR;
+    private static Cursor POSITIONING_CURSOR;
 
     private HashMap<String,Consumer<InputPressEvent>> onPressListeners = new HashMap<>();
     private HashMap<String,Consumer<InputReleaseEvent>> onReleaseListeners = new HashMap<>();
@@ -56,6 +59,7 @@ public class AtumInputHandler implements InputHandler {
     private void init() {
         RESIZE_VERTICAL_CURSOR = loadCursor(getClass().getResourceAsStream("/assets/atumodcore/cursor/vresize.png"), 32, 32, 16, 16);
         RESIZE_HORIZONTAL_CURSOR = loadCursor(getClass().getResourceAsStream("/assets/atumodcore/cursor/hresize.png"), 32, 32, 16, 16);
+        POSITIONING_CURSOR = loadCursor(getClass().getResourceAsStream("/assets/atumodcore/cursor/positioning.png"), 32, 32, 16, 16);
 
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -169,7 +173,7 @@ public class AtumInputHandler implements InputHandler {
     }
 
     private void callOnPressListeners(InputPressEvent e) {
-        for (Consumer<InputPressEvent> c : onPressListeners.values()) {
+        for (Consumer<InputPressEvent> c : new ArrayList<>(onPressListeners.values())) {
             try {
                 c.accept(e);
             }catch (Exception ex){
@@ -178,7 +182,7 @@ public class AtumInputHandler implements InputHandler {
         }
     }
     private void callOnReleaseListeners(InputReleaseEvent e) {
-        for (Consumer<InputReleaseEvent> c : onReleaseListeners.values()) {
+        for (Consumer<InputReleaseEvent> c : new ArrayList<>(onReleaseListeners.values())) {
             try {
                 c.accept(e);
             }catch (Exception ex){
@@ -199,6 +203,9 @@ public class AtumInputHandler implements InputHandler {
                     break;
                 case RESIZE_HORIZONTAL:
                     Mouse.setNativeCursor(RESIZE_HORIZONTAL_CURSOR);
+                    break;
+                case POSITIONING:
+                    Mouse.setNativeCursor(POSITIONING_CURSOR);
                     break;
             }
         }catch (LWJGLException e) {
@@ -224,6 +231,11 @@ public class AtumInputHandler implements InputHandler {
                 scaledHeight - mouseYCache * scaledHeight / Minecraft.getMinecraft().displayHeight - 1
         );
         return lastMousePos;
+    }
+
+    @Override
+    public PairRecord<Integer, Integer> getMouseOriginPosition() {
+        return new PairRecord<>(Mouse.getX(), Minecraft.getMinecraft().displayHeight - Mouse.getY() - 1);
     }
 
     @Override

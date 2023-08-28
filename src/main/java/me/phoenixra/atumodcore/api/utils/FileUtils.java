@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -295,7 +296,8 @@ public class FileUtils {
 
         try {
             URI uri = atumMod.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-            FileSystem fileSystem = FileSystems.newFileSystem(URI.create("jar:" + uri), Collections.emptyMap());
+            System.out.println(uri);
+            FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
             Stream<Path> streamFiles = java.nio.file.Files.walk(fileSystem.getPath(dir));
             files = streamFiles
                     .filter(Objects::nonNull)
@@ -315,6 +317,7 @@ public class FileUtils {
             fileSystem.close();
         } catch (Exception ex) {
             atumMod.getLogger().warn("An error occurred while trying to load files: " + ex.getMessage());
+            ex.printStackTrace();
         }
 
         return files;

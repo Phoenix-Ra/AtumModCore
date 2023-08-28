@@ -2,6 +2,7 @@ package me.phoenixra.atumodcore.api.display;
 
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
+import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,6 +12,7 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
 
     void addElement(@NotNull DisplayElement element);
     void removeElement(@NotNull DisplayElement element);
+    void clearElements();
     @NotNull
     HashSet<DisplayElement> getDisplayedElements();
 
@@ -20,6 +22,8 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
 
     BaseScreen getAttachedGuiScreen();
     void setAttachedGuiScreen(@NotNull BaseScreen attachedGuiScreen);
+
+
     DisplayElement clone();
 
 }

@@ -28,6 +28,8 @@ public class MouseInput {
     private static Cursor RESIZE_VERTICAL_CURSOR;
     private static Cursor RESIZE_HORIZONTAL_CURSOR;
 
+    private static Cursor POSITIONING_CURSOR;
+
     private static Map<String, Boolean> vanillainput = new HashMap<>();
 
     private static List<Consumer<MouseData>> listeners = new ArrayList<Consumer<MouseData>>();
@@ -35,7 +37,7 @@ public class MouseInput {
     public static void init() {
         RESIZE_VERTICAL_CURSOR = loadCursor(new ResourceLocation("atumodcore", "cursor/vresize.png"), 32, 32, 16, 16);
         RESIZE_HORIZONTAL_CURSOR = loadCursor(new ResourceLocation("atumodcore", "cursor/hresize.png"), 32, 32, 16, 16);
-
+        POSITIONING_CURSOR = loadCursor(new ResourceLocation("atumodcore", "cursor/positioning.png"), 32, 32, 16, 16);
         MinecraftForge.EVENT_BUS.register(new MouseInput());
     }
 
@@ -43,37 +45,15 @@ public class MouseInput {
     public static int getMouseX() {
         ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
         int i1 = scaledresolution.getScaledWidth();
-        int x = Mouse.getX() * i1 / Minecraft.getMinecraft().displayWidth;
-
-      /*  if (useRenderScale) {
-            return (int)(x / renderScale);
-        } else {
-            return x;
-        }*/
-        return x;
+        return Mouse.getX() * i1 / Minecraft.getMinecraft().displayWidth;
     }
 
     public static int getMouseY() {
         ScaledResolution scaledresolution = new ScaledResolution(Minecraft.getMinecraft());
         int j1 = scaledresolution.getScaledHeight();
-        int y = j1 - Mouse.getY() * j1 / Minecraft.getMinecraft().displayHeight - 1;
-
-        /*if (useRenderScale) {
-            return (int)(y / renderScale);
-        } else {
-            return y;
-        }*/
-        return y;
+        return j1 - Mouse.getY() * j1 / Minecraft.getMinecraft().displayHeight - 1;
     }
 
-    public static void setRenderScale(float scale) {
-        /*renderScale = scale;
-        useRenderScale = true;*/
-    }
-
-    public static void resetRenderScale() {
-        //useRenderScale = false;
-    }
 
     public static void setCursor(@NotNull CursorType cursor) {
         try {

@@ -3,10 +3,8 @@ package me.phoenixra.atumodcore.api.display.impl;
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
-import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.misc.AtumDebugger;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
-import me.phoenixra.atumodcore.mod.AtumModCore;
 import net.minecraft.client.gui.GuiMainMenu;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class BaseScreen extends GuiMainMenu {
     @Getter
     private AtumMod atumMod;
+    @Getter
     private DisplayCanvas canvas;
 
     public BaseScreen(@NotNull AtumMod atumMod, @NotNull DisplayCanvas canvas) {

@@ -1,5 +1,6 @@
 package me.phoenixra.atumodcore.core.display.elements;
 
+import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
@@ -16,14 +17,13 @@ public class ElementProgressBar extends BaseElement {
     private boolean outlined;
 
     private int timer;
-    public ElementProgressBar(@NotNull DisplayCanvas elementOwner) {
-        super(elementOwner);
+    public ElementProgressBar(@NotNull AtumMod atumMod,
+                              @NotNull DisplayCanvas elementOwner) {
+        super(atumMod,elementOwner);
     }
 
     @Override
-    public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
-        super.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
-
+    protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
         timer++;
         if(timer>100){
             timer = 0;

@@ -1,10 +1,13 @@
 package me.phoenixra.atumodcore.api;
 
 import lombok.Getter;
+import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.ConfigManager;
+import me.phoenixra.atumodcore.api.config.ConfigType;
+import me.phoenixra.atumodcore.api.config.category.ConfigCategory;
+import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
-import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerRegistry;
 import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.core.AtumAPIImpl;
 import net.minecraft.client.Minecraft;
@@ -14,6 +17,8 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AtumMod {
 
@@ -30,8 +35,6 @@ public abstract class AtumMod {
     private DisplayElementRegistry displayElementRegistry;
     @Getter
     private DisplayActionRegistry displayActionRegistry;
-    @Getter
-    private DisplayTriggerRegistry displayTriggerRegistry;
     @Getter
     private InputHandler inputHandler;
 
@@ -50,9 +53,35 @@ public abstract class AtumMod {
             inputHandler = AtumAPI.getInstance().getCoreMod().getInputHandler();
             configManager = AtumAPI.getInstance().createConfigManager(this);
             dataFolder =  new File(Minecraft.getMinecraft().mcDataDir,"config/" + getName());
+            configManager.addConfigCategory(new ConfigCategory(
+                    this,
+                    ConfigType.JSON,
+                    "display",
+                    "display",
+                    true) {
+                private List<String> elements = new ArrayList<>();
+
+                @Override
+                protected void clear() {
+                    elements.forEach(it->displayElementRegistry.unregister(it));
+                }
+
+                @Override
+                protected void acceptConfig(@NotNull String id, @NotNull Config config) {
+                    if(displayElementRegistry.getElementById(id) != null) {
+                        getAtumMod().getLogger().warn("Display element with id " + id + " already added or is a default element!");
+                        return;
+                    }
+                    DisplayElement element = displayElementRegistry.compile(config);
+                    if (element != null) {
+                        displayElementRegistry.register(id, element);
+                        elements.add(id);
+                    }
+                }
+            });
+
             displayActionRegistry = AtumAPI.getInstance().createDisplayActionRegistry(this);
             displayElementRegistry = AtumAPI.getInstance().createDisplayElementRegistry(this);
-            displayTriggerRegistry = AtumAPI.getInstance().createDisplayTriggerRegistry(this);
         } else {
             dataFolder =  new File("");
         }

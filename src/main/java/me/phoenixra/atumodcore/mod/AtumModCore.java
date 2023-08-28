@@ -87,6 +87,7 @@ public class AtumModCore extends AtumMod {
     private void onClientSetup(FMLPostInitializationEvent e) {
 
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+            getConfigManager().reloadAllConfigCategories();
             getLogger().info("[AtumModCore] Client-side libs ready to use!");
             PostLoadingHandler.runPostLoadingEvents();
 

@@ -11,11 +11,14 @@ public interface DisplayElementRegistry{
 
     @Nullable
     DisplayElement getElementById(@NotNull String id);
+    @Nullable
+    DisplayCanvas getCanvasById(@NotNull String id);
 
     DisplayCanvas compile(@NotNull Config config);
 
 
     void register(@NotNull String id, @NotNull DisplayElement chain);
+    void unregister(@NotNull String id);
     /**
      * Get the mod.
      *

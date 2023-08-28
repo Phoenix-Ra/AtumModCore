@@ -9,6 +9,7 @@ public interface DisplayActionRegistry {
     DisplayAction getActionById(@NotNull String id);
 
     void register(@NotNull String id, @NotNull DisplayAction action);
+    void unregister(@NotNull String id);
     /**
      * Get the mod.
      *

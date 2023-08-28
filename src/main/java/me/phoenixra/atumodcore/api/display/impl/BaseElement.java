@@ -2,20 +2,18 @@ package me.phoenixra.atumodcore.api.display.impl;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
-import me.phoenixra.atumodcore.api.display.triggers.DisplayTrigger;
-import me.phoenixra.atumodcore.api.display.triggers.TriggerData;
-import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
-import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
+import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
-import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
-import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +24,17 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter
     private String id = UUID.randomUUID().toString();
     @Getter
+    private final AtumMod atumMod;
+    @Getter
     private DisplayLayer layer;
+
+    @Getter @Setter
     private int originX;
+    @Getter @Setter
     private int originY;
+    @Getter @Setter
     private int originWidth;
+    @Getter @Setter
     private int originHeight;
 
     @Getter
@@ -41,19 +46,27 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter
     private int height;
 
+    @Getter
     private boolean fixRatio = false;
     @Getter @Setter
-    private List<DisplayTrigger> triggers = new ArrayList<>();
+    private boolean active = true;
+
+    @Setter
+    private boolean outline;
 
     @Getter @Setter
     private DisplayCanvas elementOwner;
 
-    public BaseElement(@NotNull DisplayLayer layer,
+    private boolean initialized;
+
+    public BaseElement(@NotNull AtumMod atumMod,
+                       @NotNull DisplayLayer layer,
                        int x,
                        int y,
                        int width,
                        int height,
-                       @NotNull DisplayCanvas elementOwner){
+                       @Nullable DisplayCanvas elementOwner){
+        this.atumMod = atumMod;
         this.layer = layer;
         this.x = this.originX = x;
         this.y = this.originY = y;
@@ -62,21 +75,34 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
         this.elementOwner = elementOwner;
     }
-    public BaseElement(@NotNull DisplayCanvas elementOwner){
-        this(DisplayLayer.MIDDLE, 0, 0, 0, 0, elementOwner);
+    public BaseElement(@NotNull AtumMod atumMod, @NotNull DisplayCanvas elementOwner){
+        this(atumMod,DisplayLayer.MIDDLE, 0, 0, 0, 0, elementOwner);
     }
 
 
     @Override
     public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+        if(!initialized){
+            MinecraftForge.EVENT_BUS.register(this);
+            initialized = true;
+        }
         int[] coords = RenderUtils.fixCoordinates(originX,originY,originWidth,originHeight,fixRatio);
         x = coords[0];
         y = coords[1];
         width = coords[2];
         height = coords[3];
-
-        triggers.forEach(DisplayTrigger::onElementDraw);
+        onDraw(scaleFactor,scaleX,scaleY,mouseX,mouseY);
+        if(outline){
+            RenderUtils.drawDashedOutline(
+                    getX(),
+                    getY(),
+                    getWidth(),
+                    getHeight(),
+                    AtumColor.LIME
+            );
+        }
     }
+    protected abstract void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY);
 
     @Override
     public void updateVariables(@NotNull HashMap<String, ConfigVariable<?>> variables) {
@@ -150,8 +176,6 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         }
 
     }
-
-
     @Override
     public boolean isHovered(int mouseX, int mouseY) {
         return getElementOwner().getHoveredElement(mouseX, mouseY) == this;
@@ -159,15 +183,15 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
     @Override
     public void onRemove() {
-        triggers.clear();
+        MinecraftForge.EVENT_BUS.unregister(this);
         //empty to not implement it everywhere
     }
 
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof BaseElement){
-            BaseElement canvas = (BaseElement) obj;
-            return canvas.getId().equals(getId());
+            BaseElement element = (BaseElement) obj;
+            return element.getId().equals(getId());
         }
         return super.equals(obj);
     }
@@ -182,6 +206,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         try {
             BaseElement clone = (BaseElement) super.clone();
             clone.id = UUID.randomUUID().toString();
+            clone.initialized = false;
             return onClone(clone);
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

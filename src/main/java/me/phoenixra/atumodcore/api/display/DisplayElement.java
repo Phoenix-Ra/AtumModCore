@@ -1,6 +1,7 @@
 package me.phoenixra.atumodcore.api.display;
 
 
+import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
@@ -13,10 +14,21 @@ import java.util.HashMap;
 public interface DisplayElement extends Cloneable{
 
     String getId();
+
     int getX();
     int getY();
     int getWidth();
     int getHeight();
+
+    int getOriginX();
+    int getOriginY();
+    int getOriginWidth();
+    int getOriginHeight();
+
+    void setOriginX(int x);
+    void setOriginY(int y);
+    void setOriginWidth(int width);
+    void setOriginHeight(int height);
 
     void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY);
 
@@ -44,6 +56,14 @@ public interface DisplayElement extends Cloneable{
                 &&  element.getY() + element.getHeight() >= getY() + getHeight();
     }
 
+    boolean isActive();
+    void setActive(boolean active);
+
+    void setOutline(boolean outline);
+
     DisplayElement clone();
+
+
+    AtumMod getAtumMod();
 
 }

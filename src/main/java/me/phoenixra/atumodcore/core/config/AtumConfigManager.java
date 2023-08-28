@@ -33,9 +33,10 @@ public class AtumConfigManager implements ConfigManager {
             try {
                 entry.getValue().reload();
             }catch (Exception exception){
-                atumMod.getLogger().info(
-                        "Caught a &eException while trying to reload the config with name:"+ entry.getKey()
+                atumMod.getLogger().warn(
+                        "Caught an Exception while trying to reload the config with name:"+ entry.getKey()
                 );
+                exception.printStackTrace();
             }
         }
         removal.forEach(configs::remove);
@@ -50,9 +51,10 @@ public class AtumConfigManager implements ConfigManager {
         try {
             config.reload();
         }catch (Exception exception){
-            atumMod.getLogger().info(
-                    "Caught a &eException while trying to reload the config with name:"+ config.getName()
+            atumMod.getLogger().warn(
+                    "Caught an Exception while trying to reload the config with name:"+ config.getName()
             );
+            exception.printStackTrace();
         }
     }
 
@@ -67,9 +69,10 @@ public class AtumConfigManager implements ConfigManager {
             try {
                 entry.getValue().save();
             }catch (Exception exception){
-                atumMod.getLogger().info(
-                        "Caught a &eException while trying to save the config with name:"+ entry.getKey()
+                atumMod.getLogger().warn(
+                        "Caught an Exception while trying to save the config with name:"+ entry.getKey()
                 );
+                exception.printStackTrace();
             }
         }
         removal.forEach(configs::remove);
@@ -84,9 +87,10 @@ public class AtumConfigManager implements ConfigManager {
         try {
             config.save();
         }catch (Exception exception){
-            atumMod.getLogger().info(
-                    "Caught a &eException while trying to save the config with name:"+ config.getName()
+            atumMod.getLogger().warn(
+                    "Caught an Exception while trying to save the config with name:"+ config.getName()
             );
+            exception.printStackTrace();
         }
     }
 
@@ -108,9 +112,10 @@ public class AtumConfigManager implements ConfigManager {
             try {
                 entry.getValue().reload();
             }catch (Exception exception){
-                atumMod.getLogger().info(
-                        "Caught a &eException while trying to reload the config category with id:"+ entry.getKey()
+                atumMod.getLogger().warn(
+                        "Caught an Exception while trying to reload the config category with id:"+ entry.getKey()
                 );
+                exception.printStackTrace();
             }
         }
     }
@@ -124,9 +129,10 @@ public class AtumConfigManager implements ConfigManager {
         try {
             config.reload();
         }catch (Exception exception){
-            atumMod.getLogger().info(
-                    "Caught a &eException while trying to reload the config category with id:"+ config.getId()
+            atumMod.getLogger().warn(
+                    "Caught an Exception while trying to reload the config category with id:"+ config.getId()
             );
+            exception.printStackTrace();
         }
     }
 

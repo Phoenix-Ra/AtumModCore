@@ -1,23 +1,26 @@
 package me.phoenixra.atumodcore.core.display.elements;
 
+import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
-import me.phoenixra.atumodcore.api.display.triggers.TriggerData;
+import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
-import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
-import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
+import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
+import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class ElementButton extends BaseElement {
 
     private Runnable imageBinder;
+
     private float[] brightnessDefault = new float[]{1.0f,1.0f,1.0f};
     private float[] brightnessOnHover = new float[0];
     private float[] brightnessOnClick = new float[0];
@@ -25,14 +28,17 @@ public class ElementButton extends BaseElement {
     private int textureY;
     private int textureWidth;
     private int textureHeight;
+
+    private DisplayAction actionOnPress;
+    private DisplayAction actionOnRelease;
     private boolean clicked;
-    public ElementButton(@NotNull DisplayCanvas elementOwner) {
-        super(elementOwner);
+    public ElementButton(@NotNull AtumMod atumMod,
+                         @NotNull DisplayCanvas elementOwner) {
+        super(atumMod,elementOwner);
     }
 
     @Override
-    public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
-        super.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
+    protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
         imageBinder.run();
         if(clicked && brightnessOnClick.length==3){
             GlStateManager.color(
@@ -143,11 +149,51 @@ public class ElementButton extends BaseElement {
                     PlaceholderContext.of(config)
             );
         }
+        String actionOnPress = config.getStringOrNull("settings.action-onPress");
+        if(actionOnPress!=null){
+            this.actionOnPress = config.getAtumMod().getDisplayActionRegistry().getActionById(actionOnPress);
+        }
+        String actionOnRelease = config.getStringOrNull("settings.action-onRelease");
+        if(actionOnRelease!=null){
+            this.actionOnPress = config.getAtumMod().getDisplayActionRegistry().getActionById(actionOnRelease);
+        }
     }
 
     @Override
     protected BaseElement onClone(BaseElement clone) {
         ElementButton cloneImage = (ElementButton) clone;
         return cloneImage;
+    }
+
+    @SubscribeEvent
+    public void onPressed(ElementInputPressEvent event){
+        System.out.println("pressed. Active: "+isActive());
+        if(!isActive()) return;
+        if(event.getClickedElement().equals(this)) {
+            this.clicked = true;
+            if (actionOnPress != null)
+                actionOnPress.perform(
+                        ActionData.builder().attachedElement(this)
+                                .mouseX(event.getParentEvent().getMouseX())
+                                .mouseY(event.getParentEvent().getMouseY())
+                                .build()
+                );
+        }
+    }
+    @SubscribeEvent
+    public void onReleased(ElementInputReleaseEvent event){
+        if(!isActive()) return;
+        if(event.getClickedElement().equals(this)){
+            if(!clicked) return;
+            clicked = false;
+            if(actionOnRelease!=null){
+                actionOnRelease.perform(
+                        ActionData.builder().attachedElement(this)
+                                .mouseX(event.getParentEvent().getMouseX())
+                                .mouseY(event.getParentEvent().getMouseY())
+                                .build()
+                );
+            }
+        }
     }
 }

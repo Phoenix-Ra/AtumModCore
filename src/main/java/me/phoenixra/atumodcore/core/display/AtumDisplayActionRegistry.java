@@ -8,7 +8,6 @@ import me.phoenixra.atumodcore.core.display.actions.ActionOpenSettings;
 import me.phoenixra.atumodcore.core.display.actions.ActionOpenSingleplayer;
 import me.phoenixra.atumodcore.core.display.actions.ActionQuit;
 import me.phoenixra.atumodcore.core.display.actions.canvas.ActionAddElement;
-import me.phoenixra.atumodcore.core.display.actions.canvas.ActionModifyElement;
 import me.phoenixra.atumodcore.core.display.actions.canvas.ActionRemoveElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +23,6 @@ public class AtumDisplayActionRegistry implements DisplayActionRegistry {
     public AtumDisplayActionRegistry(AtumMod atumMod) {
         this.atumMod = atumMod;
 
-        register("modify_element", new ActionModifyElement());
         register("add_element", new ActionAddElement());
         register("remove_element", new ActionRemoveElement());
 
@@ -43,4 +41,9 @@ public class AtumDisplayActionRegistry implements DisplayActionRegistry {
     public void register(@NotNull String id, @NotNull DisplayAction action) {
         registry.put(id.toLowerCase(), action);
     }
+    @Override
+    public void unregister(@NotNull String id) {
+        registry.remove(id.toLowerCase());
+    }
+
 }

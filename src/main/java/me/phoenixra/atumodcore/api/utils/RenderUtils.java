@@ -154,12 +154,36 @@ public class RenderUtils {
         GlStateManager.color(1f, 1f, 1f);
     }
 
-    protected static void drawOutline(int x, int y, int width, int height,
-                                      AtumColor color) {
+    public static void drawOutline(int x, int y, int width, int height, AtumColor color) {
         drawRect( x, y, width, 1, color);
         drawRect(x, y+1, 1, height-2, color);
         drawRect(x + width - 1, y+1, 1, height-2, color);
         drawRect( x, y + height - 1, width, 1, color);
+    }
+    public static void drawDashedOutline(int x, int y, int width, int height, AtumColor color) {
+        GlStateManager.enableBlend();
+        GlStateManager.disableDepth();
+        GlStateManager.disableTexture2D();
+        color.useColor();
+        glTranslatef(x, y, 0);
+        glEnable(GL_LINE_STIPPLE);
+        glLineStipple(1, (short) 0x00FF);
+        glLineWidth(4f);
+        glBegin(GL_LINE_STRIP);
+
+        glVertex3f(0, 0, 0);
+        glVertex3f(0, height, 0);
+        glVertex3f(width, height, 0);
+        glVertex3f(width, 0, 0);
+        glVertex3f(0, 0, 0);
+        glEnd();
+        glLineWidth(1f);
+        glDisable(GL_LINE_STIPPLE);
+        glTranslatef(-x, -y, 0);
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.enableDepth();
+        GlStateManager.color(1f, 1f, 1f);
     }
 
 
@@ -261,6 +285,8 @@ public class RenderUtils {
         glTexCoord2f(1, 0);
         glVertex3f(width, 0, 0);
         glEnd();
+        glTranslatef(-posX, -posY, 0);
+        GlStateManager.disableBlend();
     }
 
     public static void drawPartialImage(int posX,
@@ -297,6 +323,8 @@ public class RenderUtils {
         glTexCoord2d(uvX + uvWidth, uvY);
         glVertex3f(width, 0, 0);
         glEnd();
+        glTranslatef(-posX, -posY, 0);
+        GlStateManager.disableBlend();
 
     }
 
@@ -306,9 +334,19 @@ public class RenderUtils {
         double scaleY = (scaleFactorCache/windowRatioYCache);
         if(fixRatio){
             if(scaleX < scaleY){
-                scaleX = scaleY;
+                return new int[]{
+                        (int) (x / scaleX),
+                        (int) (y / scaleY),
+                        (int) (width / scaleX),
+                        (int) (height / scaleX)
+                };
             }else{
-                scaleY = scaleX;
+                return new int[]{
+                        (int) (x / scaleX),
+                        (int) (y / scaleY),
+                        (int) (width / scaleY),
+                        (int) (height / scaleY)
+                };
             }
         }
         return new int[]{

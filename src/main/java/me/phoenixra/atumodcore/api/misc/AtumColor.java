@@ -8,6 +8,7 @@ public class AtumColor {
     public static final AtumColor BLACK = new AtumColor(0,0,0,1);
     public static final AtumColor RED = new AtumColor(1,0,0,1);
     public static final AtumColor GREEN = new AtumColor(0,1,0,1);
+    public static final AtumColor LIME = fromHex("#39FF14");
     public static final AtumColor BLUE = new AtumColor(0,0,1,1);
     public static final AtumColor YELLOW = new AtumColor(1,1,0,1);
     public static final AtumColor CYAN = new AtumColor(0,1,1,1);
