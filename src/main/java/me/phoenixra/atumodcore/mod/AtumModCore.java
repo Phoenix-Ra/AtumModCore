@@ -3,8 +3,6 @@ package me.phoenixra.atumodcore.mod;
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.ConfigType;
-import me.phoenixra.atumodcore.api.gui.handlers.ButtonHandler;
-import me.phoenixra.atumodcore.api.gui.handlers.PopupHandler;
 import me.phoenixra.atumodcore.mod.sound.SoundHandler;
 import me.phoenixra.atumodcore.mod.test.TestMenu;
 import net.minecraft.client.gui.GuiMainMenu;
@@ -36,12 +34,7 @@ public class AtumModCore extends AtumMod {
                     false
             );
 
-            PopupHandler.init();
-
             SoundHandler.init();
-
-            ButtonHandler.init();
-
 
 
             try {
