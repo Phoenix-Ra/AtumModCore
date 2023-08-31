@@ -7,6 +7,7 @@ import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ElementProgressBar extends BaseElement {
 
@@ -46,8 +47,8 @@ public class ElementProgressBar extends BaseElement {
 
 
     @Override
-    public void updateVariables(@NotNull Config config) {
-        super.updateVariables(config);
+    public void updateVariables(@NotNull Config config,@Nullable String configKey) {
+        super.updateVariables(config,configKey);
         String color = config.getStringOrNull("settings.color-light");
         if(color!=null){
             this.barColorLight = AtumColor.fromHex(color);

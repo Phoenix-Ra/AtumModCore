@@ -235,7 +235,7 @@ public class AtumInputHandler implements InputHandler {
 
     @Override
     public PairRecord<Integer, Integer> getMouseOriginPosition() {
-        return new PairRecord<>(Mouse.getX(), Minecraft.getMinecraft().displayHeight - Mouse.getY() - 1);
+        return new PairRecord<>(Mouse.getX(), Minecraft.getMinecraft().displayHeight - Mouse.getY());
     }
 
     @Override

@@ -24,6 +24,8 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter
     private String id = UUID.randomUUID().toString();
     @Getter
+    private String configKey = null;
+    @Getter
     private final AtumMod atumMod;
     @Getter
     private DisplayLayer layer;
@@ -105,35 +107,8 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     protected abstract void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY);
 
     @Override
-    public void updateVariables(@NotNull HashMap<String, ConfigVariable<?>> variables) {
-        ConfigVariable<?> layer = variables.get("layer");
-        if(layer != null){
-            this.layer = DisplayLayer.valueOf(layer.getValue().toString().toUpperCase());
-        }
-        ConfigVariable<?> x = variables.get("posX");
-        if(x != null){
-            this.x = this.originX = Integer.parseInt(x.getValue().toString());
-        }
-        ConfigVariable<?> y = variables.get("posY");
-        if(y != null){
-            this.y = this.originY = Integer.parseInt(y.getValue().toString());
-        }
-        ConfigVariable<?> width = variables.get("width");
-        if(width != null){
-            this.width = this.originWidth = Integer.parseInt(width.getValue().toString());
-        }
-        ConfigVariable<?> height = variables.get("height");
-        if(height != null){
-            this.height = this.originHeight = Integer.parseInt(height.getValue().toString());
-        }
-        ConfigVariable<?> fixRatio = variables.get("fixRatio");
-        if(fixRatio != null){
-            this.fixRatio = Boolean.parseBoolean(fixRatio.getValue().toString());
-        }
-    }
-
-    @Override
-    public void updateVariables(@NotNull Config config) {
+    public void updateVariables(@NotNull Config config, @Nullable String configKey) {
+        this.configKey = configKey;
         String layer = config.getStringOrNull("layer");
         if(layer != null){
             this.layer = DisplayLayer.valueOf(layer.toUpperCase());
@@ -207,6 +182,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
             BaseElement clone = (BaseElement) super.clone();
             clone.id = UUID.randomUUID().toString();
             clone.initialized = false;
+            clone.active = true;
             return onClone(clone);
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
@@ -54,13 +55,8 @@ public class ElementImage extends BaseElement {
     }
 
     @Override
-    public void updateVariables(@NotNull HashMap<String, ConfigVariable<?>> variables) {
-        super.updateVariables(variables);
-    }
-
-    @Override
-    public void updateVariables(@NotNull Config config) {
-        super.updateVariables(config);
+    public void updateVariables(@NotNull Config config, @Nullable String configKey) {
+        super.updateVariables(config,configKey);
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         String image = config.getStringOrNull("settings.image");
         if(image!=null){

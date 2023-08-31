@@ -8,12 +8,14 @@ import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
 import me.phoenixra.atumodcore.api.registry.Registrable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
 public interface DisplayElement extends Cloneable{
 
-    String getId();
+    @NotNull String getId();
+    @Nullable String getConfigKey();
 
     int getX();
     int getY();
@@ -40,8 +42,7 @@ public interface DisplayElement extends Cloneable{
     void setElementOwner(@NotNull DisplayCanvas elementOwner);
     @NotNull DisplayCanvas getElementOwner();
 
-    void updateVariables(@NotNull HashMap<String, ConfigVariable<?>> variables);
-    void updateVariables(@NotNull Config config);
+    void updateVariables(@NotNull Config config, @Nullable String configKey);
 
     default boolean isCoordinateInElement(int mouseX, int mouseY){
         return mouseX >= getX() &&

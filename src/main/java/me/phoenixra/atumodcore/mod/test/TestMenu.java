@@ -18,7 +18,6 @@ public class TestMenu extends BaseScreen {
                                 .getString("main_menu")
                 ).clone())
         );
-        System.out.println("TestMenu CONSTRUCTOR");
         if(instance != null) {
             instance.getCanvas().onRemove();
         }

@@ -57,9 +57,10 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
             return null;
         }
         BaseCanvas canvas = (BaseCanvas) (element).clone();
-        canvas.updateVariables(config);
+        canvas.updateVariables(config,null);
         getAtumMod().getLogger().info("Found canvas: " + canvas);
-        for(Config elementSection : config.getSubsectionList("elements")){
+        for(String key : config.getSubsection("elements").getKeys(false)){
+            Config elementSection = config.getSubsection("elements." + key);
             String elementType = elementSection.getStringOrDefault("type", "image");
             getAtumMod().getLogger().info("Found element: " + elementType);
             DisplayElement elementElement = this.getElementById(elementType);
@@ -73,7 +74,7 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
             }
             BaseElement elementBaseElement = (BaseElement)( elementElement).clone();
             elementBaseElement.setElementOwner(canvas);
-            elementBaseElement.updateVariables(elementSection);
+            elementBaseElement.updateVariables(elementSection, key);
             canvas.addElement(elementBaseElement);
         }
         return canvas;

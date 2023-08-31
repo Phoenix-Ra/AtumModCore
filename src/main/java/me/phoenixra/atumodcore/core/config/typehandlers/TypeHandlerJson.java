@@ -3,6 +3,7 @@ package me.phoenixra.atumodcore.core.config.typehandlers;
 import com.google.gson.*;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.ConfigType;
+import me.phoenixra.atumodcore.core.config.AtumConfigSection;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class TypeHandlerJson extends ConfigTypeHandler {
         protected Gson gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .disableHtmlEscaping()
-                .registerTypeAdapter(Config.class, this)
+                .registerTypeAdapter(AtumConfigSection.class, this)
                 .create();
 
 

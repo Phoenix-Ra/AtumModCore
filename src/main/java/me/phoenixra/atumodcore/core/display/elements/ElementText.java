@@ -9,6 +9,7 @@ import me.phoenixra.atumodcore.api.display.font.Fonts;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
 
@@ -34,8 +35,8 @@ public class ElementText extends BaseElement {
     }
 
     @Override
-    public void updateVariables(@NotNull Config config) {
-        super.updateVariables(config);
+    public void updateVariables(@NotNull Config config, @Nullable String configKey) {
+        super.updateVariables(config, configKey);
         Integer fontSize = config.getIntOrNull("settings.fontSize");
         if(fontSize!=null){
             this.fontSize = fontSize;

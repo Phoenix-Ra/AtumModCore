@@ -24,6 +24,9 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
     void setAttachedGuiScreen(@NotNull BaseScreen attachedGuiScreen);
 
 
+    boolean isSetupState();
+    void setSetupState(boolean setupState);
+
     DisplayElement clone();
 
 }

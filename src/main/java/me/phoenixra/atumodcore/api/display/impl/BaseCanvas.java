@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public abstract class BaseCanvas extends BaseElement implements DisplayCanvas {
+public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, Cloneable {
 
     @Getter @Setter
     private BaseScreen attachedGuiScreen;
@@ -81,14 +81,9 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas {
             element.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
         }
     }
-    @Override
-    public void updateVariables(@NotNull HashMap<String, ConfigVariable<?>> variables) {
-       super.updateVariables(variables);
-
-    }
 
     @Override
-    public void updateVariables(@NotNull Config config) {
+    public void updateVariables(@NotNull Config config, @Nullable String configKey) {
         if(config instanceof LoadableConfig) settingsConfig = (LoadableConfig) config;
         config.addInjectablePlaceholder(
                 Lists.newArrayList(
@@ -100,7 +95,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas {
                         ))
                 )
         );
-        super.updateVariables(config);
+        super.updateVariables(config, configKey);
 
     }
 
@@ -199,6 +194,9 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas {
     }
 
     protected void onPress(InputPressEvent event) {
+        if(!isActive() && !isSetupState()){
+            return;
+        }
 
         DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
         if(element != null){
@@ -213,6 +211,9 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas {
     }
 
     protected void onRelease(InputReleaseEvent event) {
+        if(!isActive() && !isSetupState()){
+            return;
+        }
 
         DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
         if(element != null){
@@ -228,17 +229,18 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas {
 
     @Override
     public void onRemove() {
-        MinecraftForge.EVENT_BUS.unregister(this);
+        super.onRemove();
         for(LinkedHashSet<DisplayElement> list : elements.values()){
             for(DisplayElement element : list){
                 element.onRemove();
-                element.setActive(false);
             }
         }
         AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnPress(getId()+"-press");
         AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnRelease(getId()+"-release");
         setActive(false);
         elements.clear();
+        displayedElements.clear();
+        displayedElementsReversed.clear();
     }
 
 
@@ -254,10 +256,12 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas {
 
 
     @Override
-    public DisplayElement clone() {
+    public final DisplayElement clone() {
         BaseCanvas clone = (BaseCanvas) super.clone();
         HashMap<DisplayLayer, LinkedHashSet<DisplayElement>> map = clone.elements;
         clone.elements = new HashMap<>();
+        clone.displayedElementsReversed = new ArrayList<>();
+        clone.displayedElements = new LinkedHashSet<>();
         clone.setElementOwner(clone);
         clone.initialized = false;
         for(Map.Entry<DisplayLayer, LinkedHashSet<DisplayElement>> entry : map.entrySet()){
@@ -267,7 +271,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas {
                 clone.addElement(clonedElement);
             }
         }
-        return onClone(clone);
+        return clone;
     }
 
     @Override

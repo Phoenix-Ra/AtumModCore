@@ -8,6 +8,7 @@ import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
+import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
@@ -16,6 +17,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ElementButton extends BaseElement {
 
@@ -85,8 +87,8 @@ public class ElementButton extends BaseElement {
 
 
     @Override
-    public void updateVariables(@NotNull Config config) {
-        super.updateVariables(config);
+    public void updateVariables(@NotNull Config config, @Nullable String configKey) {
+        super.updateVariables(config,configKey);
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         String image = config.getStringOrNull("settings.image");
         if(image!=null){
@@ -167,8 +169,8 @@ public class ElementButton extends BaseElement {
 
     @SubscribeEvent
     public void onPressed(ElementInputPressEvent event){
-        System.out.println("pressed. Active: "+isActive());
         if(!isActive()) return;
+        if(event.getParentEvent().getType() != InputType.MOUSE_LEFT) return;
         if(event.getClickedElement().equals(this)) {
             this.clicked = true;
             if (actionOnPress != null)
@@ -183,6 +185,7 @@ public class ElementButton extends BaseElement {
     @SubscribeEvent
     public void onReleased(ElementInputReleaseEvent event){
         if(!isActive()) return;
+        if(event.getParentEvent().getType() != InputType.MOUSE_LEFT) return;
         if(event.getClickedElement().equals(this)){
             if(!clicked) return;
             clicked = false;
