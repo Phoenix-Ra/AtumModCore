@@ -53,6 +53,12 @@ public class ElementText extends BaseElement {
         if(text!=null){
             this.text = text;
         }
+        if(getOriginWidth() == 0){
+            setOriginWidth(100);
+        }
+        if(getOriginHeight() == 0){
+            setOriginHeight(100);
+        }
     }
 
     @Override
