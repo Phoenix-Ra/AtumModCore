@@ -334,15 +334,21 @@ public class RenderUtils {
         double scaleY = (scaleFactorCache/windowRatioYCache);
         if(fixRatio){
             if(scaleX < scaleY){
+                boolean b = y > Display.getHeight()/2;
+                int heightDifference = (int) ((height / scaleX) - height/scaleY)/2;
+                System.out.println("YMORE heightDifference: " + heightDifference+" scaleX: "+scaleX+" scaleY: "+scaleY);
                 return new int[]{
                         (int) (x / scaleX),
-                        (int) (y / scaleY),
+                        (int) (y / scaleY) - (b ? heightDifference : -heightDifference),
                         (int) (width / scaleX),
                         (int) (height / scaleX)
                 };
-            }else{
+            }else if(scaleX > scaleY){
+                boolean b = x > Display.getWidth()/2;
+                int widthDifference = (int) ((width / scaleY) - width/scaleX)/2;
+                System.out.println("XMORE widthDifference: " + widthDifference+" scaleX: "+scaleX+" scaleY: "+scaleY);
                 return new int[]{
-                        (int) (x / scaleX),
+                        (int) (x / scaleX) - (b ? widthDifference : -widthDifference),
                         (int) (y / scaleY),
                         (int) (width / scaleY),
                         (int) (height / scaleY)
