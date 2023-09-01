@@ -95,6 +95,22 @@ public class ElementSetupCanvas extends BaseCanvas {
                         getAtumMod().getInputHandler().setCursorType(CursorType.RESIZE_HORIZONTAL);
                         mouseState = ElementSelectionState.RESIZING_RIGHT;
                         break;
+                    case RESIZING_TOP_LEFT:
+                        getAtumMod().getInputHandler().setCursorType(CursorType.RESIZE_TOP_LEFT);
+                        mouseState = ElementSelectionState.RESIZING_TOP_LEFT;
+                        break;
+                    case RESIZING_TOP_RIGHT:
+                        getAtumMod().getInputHandler().setCursorType(CursorType.RESIZE_TOP_RIGHT);
+                        mouseState = ElementSelectionState.RESIZING_TOP_RIGHT;
+                        break;
+                    case RESIZING_BOTTOM_LEFT:
+                        getAtumMod().getInputHandler().setCursorType(CursorType.RESIZE_TOP_RIGHT);
+                        mouseState = ElementSelectionState.RESIZING_BOTTOM_LEFT;
+                        break;
+                    case RESIZING_BOTTOM_RIGHT:
+                        getAtumMod().getInputHandler().setCursorType(CursorType.RESIZE_TOP_LEFT);
+                        mouseState = ElementSelectionState.RESIZING_BOTTOM_RIGHT;
+                        break;
                     case MOVING:
                         getAtumMod().getInputHandler().setCursorType(CursorType.POSITIONING);
                         mouseState = ElementSelectionState.MOVING;
@@ -260,23 +276,89 @@ public class ElementSetupCanvas extends BaseCanvas {
                 if (GeometryUtils.isPointInsideRectangle(
                         mouseX,
                         mouseY,
-                        rectX - rectWidth - 20,
-                        rectY - rectHeight / 2 - 20,
-                        20,
-                        20
+                        rectX,
+                        rectY+rectHeight/4,
+                        rectWidth/4,
+                        rectHeight/2
                 )) {
                     return RESIZING_LEFT;
                 }else if (
                         GeometryUtils.isPointInsideRectangle(
                                 mouseX,
                                 mouseY,
-                                rectX - 20,
-                                rectY - rectHeight / 2 - 20,
-                                20,
-                                20
+                                rectX+rectWidth-rectWidth/4,
+                                rectY+rectHeight/4,
+                                rectWidth/4,
+                                rectHeight/2
                         )
                 ) {
                     return RESIZING_RIGHT;
+                }else if (
+                        GeometryUtils.isPointInsideRectangle(
+                                mouseX,
+                                mouseY,
+                                rectX+rectWidth/4,
+                                rectY,
+                                rectWidth/2,
+                                rectHeight/4
+                        )
+                ) {
+                    return RESIZING_TOP;
+                }else if (
+                        GeometryUtils.isPointInsideRectangle(
+                                mouseX,
+                                mouseY,
+                                rectX+rectWidth/4,
+                                rectY+rectHeight-rectHeight/4,
+                                rectWidth/2,
+                                rectHeight/4
+                        )
+                ) {
+                    return RESIZING_BOTTOM;
+                }else if (
+                        GeometryUtils.isPointInsideRectangle(
+                                mouseX,
+                                mouseY,
+                                rectX,
+                                rectY,
+                                rectWidth/4,
+                                rectHeight/4
+                        )
+                ) {
+                    return RESIZING_TOP_LEFT;
+                }else if (
+                        GeometryUtils.isPointInsideRectangle(
+                                mouseX,
+                                mouseY,
+                                rectX+rectWidth-rectWidth/4,
+                                rectY,
+                                rectWidth/4,
+                                rectHeight/4
+                        )
+                ) {
+                    return RESIZING_TOP_RIGHT;
+                }else if (
+                        GeometryUtils.isPointInsideRectangle(
+                                mouseX,
+                                mouseY,
+                                rectX,
+                                rectY+rectHeight-rectHeight/4,
+                                rectWidth/4,
+                                rectHeight/4
+                        )
+                ) {
+                    return RESIZING_BOTTOM_LEFT;
+                }else if (
+                        GeometryUtils.isPointInsideRectangle(
+                                mouseX,
+                                mouseY,
+                                rectX+rectWidth-rectWidth/4,
+                                rectY+rectHeight-rectHeight/4,
+                                rectWidth/4,
+                                rectHeight/4
+                        )
+                ) {
+                    return RESIZING_BOTTOM_RIGHT;
                 } else {
                     return MOVING;
                 }
