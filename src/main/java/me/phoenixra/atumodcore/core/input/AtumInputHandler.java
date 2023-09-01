@@ -38,6 +38,8 @@ public class AtumInputHandler implements InputHandler {
     private final AtumMod atumMod;
     private static Cursor RESIZE_VERTICAL_CURSOR;
     private static Cursor RESIZE_HORIZONTAL_CURSOR;
+    private static Cursor RESIZE_TOP_LEFT_CURSOR;
+    private static Cursor RESIZE_TOP_RIGHT_CURSOR;
     private static Cursor POSITIONING_CURSOR;
 
     private HashMap<String,Consumer<InputPressEvent>> onPressListeners = new HashMap<>();
@@ -59,6 +61,12 @@ public class AtumInputHandler implements InputHandler {
     private void init() {
         RESIZE_VERTICAL_CURSOR = loadCursor(getClass().getResourceAsStream("/assets/atumodcore/cursor/vresize.png"), 32, 32, 16, 16);
         RESIZE_HORIZONTAL_CURSOR = loadCursor(getClass().getResourceAsStream("/assets/atumodcore/cursor/hresize.png"), 32, 32, 16, 16);
+        //WHY top_left and top_right are inverted?
+        // There is a weird issue with that, somehow the buffer
+        // see the image top right as top left and vice versa.
+        //So, just fixed it this way for now.
+        RESIZE_TOP_LEFT_CURSOR = loadCursor(getClass().getResourceAsStream("/assets/atumodcore/cursor/resize_top_right.png"), 32, 32, 16, 16);
+        RESIZE_TOP_RIGHT_CURSOR = loadCursor(getClass().getResourceAsStream("/assets/atumodcore/cursor/resize_top_left.png"), 32, 32, 16, 16);
         POSITIONING_CURSOR = loadCursor(getClass().getResourceAsStream("/assets/atumodcore/cursor/positioning.png"), 32, 32, 16, 16);
 
         MinecraftForge.EVENT_BUS.register(this);
@@ -206,6 +214,12 @@ public class AtumInputHandler implements InputHandler {
                     break;
                 case POSITIONING:
                     Mouse.setNativeCursor(POSITIONING_CURSOR);
+                    break;
+                case RESIZE_TOP_LEFT:
+                    Mouse.setNativeCursor(RESIZE_TOP_LEFT_CURSOR);
+                    break;
+                case RESIZE_TOP_RIGHT:
+                    Mouse.setNativeCursor(RESIZE_TOP_RIGHT_CURSOR);
                     break;
             }
         }catch (LWJGLException e) {
