@@ -13,6 +13,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -74,6 +75,8 @@ public class DisplayFont {
      * The random offset in obfuscated text.
      */
     private static int RANDOM_OFFSET = 1;
+
+    private final List<Runnable> afterLoad = new ArrayList<>();
 
     public DisplayFont(Font font) {
         this(font, 256);
@@ -207,6 +210,14 @@ public class DisplayFont {
                             boldDataState.set(true);
                         }else if(type == Font.ITALIC){
                             italicDataState.set(true);
+                        }
+                        if(regularDataState.get() && boldDataState.get() && italicDataState.get()){
+                            synchronized(afterLoad) {
+                                if (!afterLoad.isEmpty()) {
+                                    afterLoad.forEach(Runnable::run);
+                                    afterLoad.clear();
+                                }
+                            }
                         }
                     }
                 });
@@ -645,6 +656,10 @@ public class DisplayFont {
         return regularDataState.get() && boldDataState.get() && italicDataState.get();
     }
 
+    public void addAfterLoad(Runnable runnable){
+        afterLoad.add(runnable);
+    }
+
     /**
      * Class that holds the data for each character.
      */
@@ -685,4 +700,5 @@ public class DisplayFont {
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
         }
     }
+
 }
