@@ -51,7 +51,7 @@ public class PlayerUtils {
                 TextureUtil.uploadTextureImage(new DynamicTexture(skinImage).getGlTextureId(), skinImage);
             }catch (Exception e1){
                 Minecraft.getMinecraft().getTextureManager().bindTexture(
-                        new ResourceLocation("gtwclient:textures/gui/main_menu/default_head.png")
+                        new ResourceLocation("atumodcore:textures/default_head.png")
                 );
             }
         }
