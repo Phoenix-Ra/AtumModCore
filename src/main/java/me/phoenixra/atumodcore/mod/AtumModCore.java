@@ -3,11 +3,11 @@ package me.phoenixra.atumodcore.mod;
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.ConfigType;
+import me.phoenixra.atumodcore.api.utils.PlayerUtils;
 import me.phoenixra.atumodcore.mod.sound.SoundHandler;
-import me.phoenixra.atumodcore.mod.test.TestMenu;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -55,12 +55,7 @@ public class AtumModCore extends AtumMod {
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
     }
-    @SubscribeEvent
-    public void onRenderOverlay(GuiOpenEvent event){
-        if(event.getGui() instanceof GuiMainMenu){
-            event.setGui(new TestMenu(this));
-        }
-    }
+
     @Override
     public @NotNull String getName() {
         return "AtumModCore";
@@ -91,6 +86,10 @@ public class AtumModCore extends AtumMod {
     }
 
 
+    @SubscribeEvent
+    public void onPlayerJoin(EntityJoinWorldEvent event){
+        PlayerUtils.savePlayerSkin(Minecraft.getMinecraft().player.getLocationSkin());
+    }
 
     /**
      * ONLY WORKS CLIENT-SIDE! DOES NOTHING ON A SERVER!
