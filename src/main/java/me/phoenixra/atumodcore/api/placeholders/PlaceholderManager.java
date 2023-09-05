@@ -55,9 +55,10 @@ public class PlaceholderManager {
      * @param placeholder The arguments to register.
      */
     public static void registerPlaceholder(@NotNull final RegistrablePlaceholder placeholder) {
-        Set<RegistrablePlaceholder> pluginPlaceholders = new HashSet<>(REGISTERED_PLACEHOLDERS.get(placeholder.getAtumMod()));
-        pluginPlaceholders.add(placeholder);
-        REGISTERED_PLACEHOLDERS.put(placeholder.getAtumMod(), ImmutableSet.copyOf(pluginPlaceholders));
+        if (!REGISTERED_PLACEHOLDERS.containsKey(placeholder.getAtumMod())) {
+            REGISTERED_PLACEHOLDERS.put(placeholder.getAtumMod(), new HashSet<>());
+        }
+        REGISTERED_PLACEHOLDERS.get(placeholder.getAtumMod()).add(placeholder);
     }
 
     /**
@@ -95,7 +96,7 @@ public class PlaceholderManager {
                 }
             }
             if(f) continue;
-            for (RegistrablePlaceholder placeholder : REGISTERED_PLACEHOLDERS.get(atumMod)) {
+            for (RegistrablePlaceholder placeholder : REGISTERED_PLACEHOLDERS.getOrDefault(atumMod, new HashSet<>())) {
                 if (textToReplace.matches(placeholder.getPattern().pattern())) {
                     String replacement = placeholder.getValue(textToReplace, context);
                     if(replacement == null) break;
