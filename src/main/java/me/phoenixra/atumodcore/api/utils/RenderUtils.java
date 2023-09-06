@@ -333,7 +333,7 @@ public class RenderUtils {
         double scaleX = (scaleFactorCache/windowRatioXCache);
         double scaleY = (scaleFactorCache/windowRatioYCache);
         if(fixRatio){
-            if(scaleX < scaleY){
+            if(scaleX > scaleY){
                 boolean b = y > Display.getHeight()/2;
                 int heightDifference = (int) ((height / scaleX) - height/scaleY)/2;
                 return new int[]{
@@ -342,7 +342,7 @@ public class RenderUtils {
                         (int) (width / scaleX),
                         (int) (height / scaleX)
                 };
-            }else if(scaleX > scaleY){
+            }else if(scaleX <= scaleY){
                 boolean b = x > Display.getWidth()/2;
                 int widthDifference = (int) ((width / scaleY) - width/scaleX)/2;
                 return new int[]{
