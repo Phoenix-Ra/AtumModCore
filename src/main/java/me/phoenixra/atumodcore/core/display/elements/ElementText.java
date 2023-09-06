@@ -7,6 +7,7 @@ import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.display.font.DisplayFont;
 import me.phoenixra.atumodcore.api.display.font.Fonts;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
+import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +28,7 @@ public class ElementText extends BaseElement {
     @Override
     protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
         font.drawString(
-                StringUtils.format(text),
+                StringUtils.formatWithPlaceholders(getAtumMod(),text, PlaceholderContext.EMPTY),
                 getX(),
                 getY(),
                 AtumColor.WHITE
@@ -43,7 +44,7 @@ public class ElementText extends BaseElement {
         }
         String fontName = config.getStringOrNull("settings.font");
         if(fontName!=null){
-            try(InputStream stream = getClass().getResourceAsStream("/assets/atumodcore/fonts/"+fontName)) {
+            try(InputStream stream = getClass().getResourceAsStream("/assets/"+getAtumMod().getModID()+"/fonts/"+fontName)) {
                 font = Fonts.registerFont(fontName,fontSize,stream);
             }catch (Exception e){
                 e.printStackTrace();
