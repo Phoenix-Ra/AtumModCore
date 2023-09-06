@@ -33,6 +33,9 @@ public class ElementButton extends BaseElement {
 
     private DisplayAction actionOnPress;
     private DisplayAction actionOnRelease;
+
+    private String[] argsOnPress;
+    private String[] argsOnRelease;
     private boolean clicked;
     public ElementButton(@NotNull AtumMod atumMod,
                          @NotNull DisplayCanvas elementOwner) {
@@ -153,11 +156,21 @@ public class ElementButton extends BaseElement {
         }
         String actionOnPress = config.getStringOrNull("settings.action-onPress");
         if(actionOnPress!=null){
-            this.actionOnPress = config.getAtumMod().getDisplayActionRegistry().getActionById(actionOnPress);
+            String[] split = actionOnPress.split("@");
+            this.actionOnPress = config.getAtumMod().getDisplayActionRegistry()
+                    .getActionById(split[0]);
+            if(split.length>1){
+                this.argsOnPress = split[1].split(";");
+            }
         }
         String actionOnRelease = config.getStringOrNull("settings.action-onRelease");
         if(actionOnRelease!=null){
-            this.actionOnPress = config.getAtumMod().getDisplayActionRegistry().getActionById(actionOnRelease);
+            String[] split = actionOnRelease.split("@");
+            this.actionOnRelease = config.getAtumMod().getDisplayActionRegistry().
+                    getActionById(split[0]);
+            if(split.length>1){
+                this.argsOnRelease = split[1].split(";");
+            }
         }
     }
 
@@ -178,6 +191,7 @@ public class ElementButton extends BaseElement {
                         ActionData.builder().attachedElement(this)
                                 .mouseX(event.getParentEvent().getMouseX())
                                 .mouseY(event.getParentEvent().getMouseY())
+                                .args(argsOnPress)
                                 .build()
                 );
         }
@@ -194,6 +208,7 @@ public class ElementButton extends BaseElement {
                         ActionData.builder().attachedElement(this)
                                 .mouseX(event.getParentEvent().getMouseX())
                                 .mouseY(event.getParentEvent().getMouseY())
+                                .args(argsOnRelease)
                                 .build()
                 );
             }

@@ -15,12 +15,14 @@ public class ActionData {
     private Event attachedEvent;
     private int mouseX;
     private int mouseY;
+    @Nullable
+    private String[] args;
 
 
 
 
     public static ActionData empty(){
-        return new ActionData(null, null, 0, 0);
+        return new ActionData(null, null, 0, 0, null);
     }
 
 
