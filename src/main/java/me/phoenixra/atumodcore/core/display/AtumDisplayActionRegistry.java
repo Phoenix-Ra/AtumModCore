@@ -4,9 +4,7 @@ import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
-import me.phoenixra.atumodcore.core.display.actions.ActionOpenSettings;
-import me.phoenixra.atumodcore.core.display.actions.ActionOpenSingleplayer;
-import me.phoenixra.atumodcore.core.display.actions.ActionQuit;
+import me.phoenixra.atumodcore.core.display.actions.*;
 import me.phoenixra.atumodcore.core.display.actions.canvas.ActionAddElement;
 import me.phoenixra.atumodcore.core.display.actions.canvas.ActionRemoveElement;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +27,9 @@ public class AtumDisplayActionRegistry implements DisplayActionRegistry {
         register("quit", new ActionQuit());
         register("open_settings", new ActionOpenSettings());
         register("open_singleplayer", new ActionOpenSingleplayer());
-        register("open_multiplayer", new ActionOpenSingleplayer());
+        register("open_multiplayer", new ActionOpenMultiplayer());
+        register("open_link", new ActionOpenLink());
+        register("connect_to_server", new ActionConnectToServer());
     }
 
     @Override
