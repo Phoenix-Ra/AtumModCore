@@ -336,7 +336,6 @@ public class RenderUtils {
             if(scaleX < scaleY){
                 boolean b = y > Display.getHeight()/2;
                 int heightDifference = (int) ((height / scaleX) - height/scaleY)/2;
-                System.out.println("YMORE heightDifference: " + heightDifference+" scaleX: "+scaleX+" scaleY: "+scaleY);
                 return new int[]{
                         (int) (x / scaleX),
                         (int) (y / scaleY) - (b ? heightDifference : -heightDifference),
@@ -346,7 +345,6 @@ public class RenderUtils {
             }else if(scaleX > scaleY){
                 boolean b = x > Display.getWidth()/2;
                 int widthDifference = (int) ((width / scaleY) - width/scaleX)/2;
-                System.out.println("XMORE widthDifference: " + widthDifference+" scaleX: "+scaleX+" scaleY: "+scaleY);
                 return new int[]{
                         (int) (x / scaleX) - (b ? widthDifference : -widthDifference),
                         (int) (y / scaleY),
