@@ -54,34 +54,6 @@ public abstract class AtumMod {
             inputHandler = AtumAPI.getInstance().getCoreMod().getInputHandler();
             configManager = AtumAPI.getInstance().createConfigManager(this);
             dataFolder =  new File(Minecraft.getMinecraft().mcDataDir,"config/" + getName());
-            configManager.addConfigCategory(new ConfigCategory(
-                    this,
-                    ConfigType.JSON,
-                    "display",
-                    "display",
-                    true) {
-                private List<String> elements = new ArrayList<>();
-
-                @Override
-                protected void clear() {
-                    elements.forEach(it->displayElementRegistry.unregister(it));
-                }
-
-                @Override
-                protected void acceptConfig(@NotNull String id, @NotNull Config config) {
-                    getAtumMod().getLogger().info("Loading display element with id " + id);
-                    if(displayElementRegistry.getElementById(id) != null) {
-                        getAtumMod().getLogger().warn("Display element with id " + id + " already added or is a default element!");
-                        return;
-                    }
-
-                    DisplayElement element = displayElementRegistry.compile(config);
-                    if (element != null) {
-                        displayElementRegistry.register(id, element);
-                        elements.add(id);
-                    }
-                }
-            });
 
             displayActionRegistry = AtumAPI.getInstance().createDisplayActionRegistry(this);
             displayElementRegistry = AtumAPI.getInstance().createDisplayElementRegistry(this);
