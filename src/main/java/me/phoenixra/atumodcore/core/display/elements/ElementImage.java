@@ -61,7 +61,7 @@ public class ElementImage extends BaseElement {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         String image = config.getStringOrNull("settings.image");
         if(image!=null){
-            if(image.equalsIgnoreCase("playerHead")){
+            if(image.equalsIgnoreCase("playerSkin")){
                 this.imageBinder = PlayerUtils::bindPlayerSkinTexture;
             }else {
                 ResourceLocation imageLocation = new ResourceLocation(image);
