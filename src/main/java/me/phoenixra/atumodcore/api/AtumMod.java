@@ -11,7 +11,7 @@ import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.core.AtumAPIImpl;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -44,12 +44,13 @@ public abstract class AtumMod {
         if(AtumAPI.getInstance() == null) {
             AtumAPI.Instance.set(createAPI());
             api = AtumAPI.getInstance();
-            if (FMLClientHandler.instance().getSide() == Side.CLIENT) {
+            if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
                 inputHandler = api.createInputHandler(this);
             }
         }
+        api = AtumAPI.getInstance();
         logger = AtumAPI.getInstance().createLogger(this);
-        if (FMLClientHandler.instance().getSide() == Side.CLIENT) {
+        if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
             inputHandler = AtumAPI.getInstance().getCoreMod().getInputHandler();
             configManager = AtumAPI.getInstance().createConfigManager(this);
             dataFolder =  new File(Minecraft.getMinecraft().mcDataDir,"config/" + getName());
@@ -68,10 +69,12 @@ public abstract class AtumMod {
 
                 @Override
                 protected void acceptConfig(@NotNull String id, @NotNull Config config) {
+                    getAtumMod().getLogger().info("Loading display element with id " + id);
                     if(displayElementRegistry.getElementById(id) != null) {
                         getAtumMod().getLogger().warn("Display element with id " + id + " already added or is a default element!");
                         return;
                     }
+
                     DisplayElement element = displayElementRegistry.compile(config);
                     if (element != null) {
                         displayElementRegistry.register(id, element);

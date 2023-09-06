@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 @Mod(modid = "atumodcore", acceptedMinecraftVersions="[1.12,1.12.2]",name = "AtumModCore", version ="1.0.0")
@@ -86,6 +87,7 @@ public class AtumModCore extends AtumMod {
     }
 
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onPlayerJoin(EntityJoinWorldEvent event){
         PlayerUtils.savePlayerSkin(Minecraft.getMinecraft().player.getLocationSkin());
