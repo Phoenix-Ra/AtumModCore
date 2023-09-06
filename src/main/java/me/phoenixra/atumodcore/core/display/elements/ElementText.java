@@ -44,7 +44,7 @@ public class ElementText extends BaseElement {
         }
         String fontName = config.getStringOrNull("settings.font");
         if(fontName!=null){
-            try(InputStream stream = getClass().getResourceAsStream("/assets/"+getAtumMod().getModID()+"/fonts/"+fontName)) {
+            try(InputStream stream = getAtumMod().getClass().getResourceAsStream("/assets/"+getAtumMod().getModID()+"/fonts/"+fontName)) {
                 font = Fonts.registerFont(fontName,fontSize,stream);
             }catch (Exception e){
                 e.printStackTrace();
