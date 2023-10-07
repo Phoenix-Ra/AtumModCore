@@ -48,6 +48,26 @@ public class StringUtils {
         }
         return out;
     }
+
+    /**
+     * Remove color codes from a string.
+     *
+     * @param input The input string.
+     * @return The string without color codes.
+     */
+    @NotNull
+    public static String removeColorCodes(String input) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            char currentChar = input.charAt(i);
+            if (currentChar == '\u00A7' || currentChar == '&') {
+                i++;
+            } else {
+                result.append(currentChar);
+            }
+        }
+        return result.toString();
+    }
     /**
      * Fast implementation of {@link String#replace(CharSequence, CharSequence)}
      *
