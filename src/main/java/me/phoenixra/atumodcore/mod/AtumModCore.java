@@ -3,18 +3,13 @@ package me.phoenixra.atumodcore.mod;
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.ConfigType;
-import me.phoenixra.atumodcore.api.utils.PlayerUtils;
 import me.phoenixra.atumodcore.mod.sound.SoundHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 @Mod(modid = "atumodcore", acceptedMinecraftVersions="[1.12,1.12.2]",name = "AtumModCore", version ="1.0.0")
@@ -75,22 +70,12 @@ public class AtumModCore extends AtumMod {
     @Mod.EventHandler
     private void onClientSetup(FMLPostInitializationEvent e) {
 
-        if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+        if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {/*
             getConfigManager().reloadAllConfigCategories();
-            getLogger().info("[AtumModCore] Client-side libs ready to use!");
+            getLogger().info("[AtumModCore] Client-side libs ready to use!");*/
             PostLoadingHandler.runPostLoadingEvents();
 
-
-
-
         }
-    }
-
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onPlayerJoin(EntityJoinWorldEvent event){
-        PlayerUtils.savePlayerSkin(Minecraft.getMinecraft().player.getLocationSkin());
     }
 
     /**
@@ -99,4 +84,6 @@ public class AtumModCore extends AtumMod {
     public static void addPostLoadingEvent(String modid, Runnable event) {
         PostLoadingHandler.addEvent(modid, event);
     }
+
+
 }
