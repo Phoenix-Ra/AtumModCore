@@ -1,13 +1,13 @@
 [
   {
-    "modid": "atumodcore",
-    "name": "Atum Mod Core",
+    "modid": "${mod_id}",
+    "name": "${mod_name}",
     "description": "This is the library for mods",
-    "version": "1.0.0",
+    "version": "${mod_version}",
     "mcversion": "1.12",
     "authorList": ["PhoenixRa"],
     "credits": "PhoenixRa",
-    "url": "https://www.youtube.com/@phoenixra1908/videos",
+    "url": "https://github.com/Phoenix-Ra",
     "logoFile": "",
     "screenshots": [],
     "dependencies": []

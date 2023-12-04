@@ -2,6 +2,7 @@ package me.phoenixra.atumodcore.mod;
 
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
+import me.phoenixra.atumodcore.api.AtumModProperties;
 import me.phoenixra.atumodcore.api.config.ConfigType;
 import me.phoenixra.atumodcore.mod.sound.SoundHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -12,7 +13,12 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.jetbrains.annotations.NotNull;
 
-@Mod(modid = "atumodcore", acceptedMinecraftVersions="[1.12,1.12.2]",name = "AtumModCore", version ="1.0.0")
+@Mod(
+        modid = AtumModProperties.MOD_ID,
+        name = AtumModProperties.MOD_NAME,
+        version = AtumModProperties.VERSION,
+        acceptedMinecraftVersions="[1.12,1.12.2]"
+)
 public class AtumModCore extends AtumMod {
 
     @Getter
