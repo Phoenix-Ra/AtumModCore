@@ -12,11 +12,16 @@ buildscript {
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
+plugins{
+    id 'java'
+    id 'java-library'
+    id "com.github.johnrengelman.shadow" version "7.1.0"
+}
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'org.spongepowered.mixin'\
 
 version = mod_version
 group = mod_group
@@ -27,107 +32,101 @@ compileJava {
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 }
 
-minecraft {
-
-    mappings channel: 'snapshot', version: '20171003-1.12'
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-        }
-
-        server {
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-        }
+allprojects {
+    apply plugin: 'net.minecraftforge.gradle'
+    apply plugin: 'eclipse'
+    apply plugin: 'maven-publish'
+    minecraft {
+        mappings channel: 'snapshot', version: '20171003-1.12'
     }
 
+    dependencies {
+        minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2855'
+
+        compileOnly('org.spongepowered:mixin:0.8.4') {
+            exclude module: 'guava'
+            exclude module: 'commons-io'
+            exclude module: 'gson'
+        }
+
+        //annotations
+        compileOnly 'org.projectlombok:lombok:1.18.24'
+        compileOnly 'org.jetbrains:annotations:23.0.0'
+        annotationProcessor 'org.projectlombok:lombok:1.18.24'
+        annotationProcessor 'org.jetbrains:annotations:23.0.0'
+        annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+        testAnnotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+
+        compileOnly fileTree(dir: 'libs', include: ['*.jar'])
+    }
+    //replace placeholders from gradle.properties
+    processResources {
+        filesMatching('**/*.yml') {
+            project.properties.each { propertyKey, propertyValue ->
+                if (propertyValue instanceof String) {
+                    filter {
+                        it.replace("\${${propertyKey}}", propertyValue)
+                    }
+                }
+            }
+        }
+        filesMatching('**/*.json') {
+            project.properties.each { propertyKey, propertyValue ->
+                if (propertyValue instanceof String) {
+                    filter {
+                        it.replace("\${${propertyKey}}", propertyValue)
+                    }
+                }
+            }
+        }
+        filesMatching('**/*.info') {
+            project.properties.each { propertyKey, propertyValue ->
+                if (propertyValue instanceof String) {
+                    filter {
+                        it.replace("\${${propertyKey}}", propertyValue)
+                    }
+                }
+            }
+        }
+    }
 }
 
+
+minecraft {
+    mappings channel: 'snapshot', version: '20171003-1.12'
+}
 dependencies {
+    implementation(project(":api"))
+    implementation(project(":core"))
+    implementation(project(":mod"))
 
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2855'
-
-    compileOnly('org.spongepowered:mixin:0.8.4') {
-        exclude module: 'guava'
-        exclude module: 'commons-io'
-        exclude module: 'gson'
-    }
-
-    //annotations
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    compileOnly 'org.jetbrains:annotations:23.0.0'
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.jetbrains:annotations:23.0.0'
-    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    testAnnotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-
-    compileOnly fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-
-//replace placeholders from gradle.properties
-processResources {
-    filesMatching('**/*.yml') {
-        project.properties.each { propertyKey, propertyValue ->
-            if (propertyValue instanceof String) {
-                filter {
-                    it.replace("\${${propertyKey}}", propertyValue)
-                }
-            }
-        }
-    }
-    filesMatching('**/*.json') {
-        project.properties.each { propertyKey, propertyValue ->
-            if (propertyValue instanceof String) {
-                filter {
-                    it.replace("\${${propertyKey}}", propertyValue)
-                }
-            }
-        }
-    }
-    filesMatching('**/*.info') {
-        project.properties.each { propertyKey, propertyValue ->
-            if (propertyValue instanceof String) {
-                filter {
-                    it.replace("\${${propertyKey}}", propertyValue)
-                }
-            }
-        }
-    }
-}
-
-//properties for classes
-tasks.register('applyPropertiesForClass') {
-    doLast {
-        def versionClassFile = new File("$projectDir/src/main/java/me/phoenixra/atumodcore/api", "AtumModProperties.java")
-        versionClassFile.text = """
-            package me.phoenixra.atumodcore.api;
-
-            public class AtumModProperties {
-                public static final String VERSION = "${mod_version}";
-                public static final String MOD_NAME = "${mod_name}";
-                public static final String MOD_ID = "${mod_id}";
-            }
-            
-        """.trim()
-    }
-}
-compileJava.dependsOn(applyPropertiesForClass)
 
 
 mixin {
     add sourceSets.main, "fancymenu.general.mixin-refmap.json"
+}
+
+
+shadowJar {
+    dependencies {
+        exclude(dependency ->
+                !dependency.moduleGroup.startsWith(mod_group)
+        )
+    }
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE //prevent duplicates
+    archiveBaseName.set(mod_name)
+    classifier "" //prevent creation of unshadowed jar
+
+    //remove unsupported meta-inf staff from newer java versions
+    exclude 'META-INF/versions/**'
+}
+
+reobf {
+    shadowJar {
+    }
 }
 
 jar {

@@ -1,0 +1,12 @@
+plugins {
+    id 'java'
+}
+
+group = mod_group
+version = mod_version
+
+dependencies {
+    compileOnly(project(':api'))
+    compileOnly(project(':core'))
+}
+

@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+}
+
+group = mod_group
+version = mod_version
+
+//properties for classes
+tasks.register('applyPropertiesForClass') {
+    doLast {
+        def versionClassFile = new File("$projectDir/src/main/java/me/phoenixra/atumodcore/api", "AtumModProperties.java")
+        versionClassFile.text = """
+            package me.phoenixra.atumodcore.api;
+
+            public class AtumModProperties {
+                public static final String VERSION = "${mod_version}";
+                public static final String MOD_NAME = "${mod_name}";
+                public static final String MOD_ID = "${mod_id}";
+            }
+            
+        """.trim()
+    }
+}
+compileJava.dependsOn(applyPropertiesForClass)
