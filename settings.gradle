@@ -1,5 +1,5 @@
 rootProject.name = 'AtumModCore'
-include 'api'
-include 'core'
-include 'mod'
+include 'atumod-api'
+include 'atumod-core'
+include 'atumod-mod'
 

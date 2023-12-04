@@ -28,6 +28,7 @@ group = mod_group
 archivesBaseName = mod_name
 
 compileJava {
+
     sourceCompatibility = targetCompatibility = '1.8'
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 }
@@ -89,6 +90,9 @@ allprojects {
             }
         }
     }
+    java{
+        withSourcesJar()
+    }
 }
 
 
@@ -96,9 +100,9 @@ minecraft {
     mappings channel: 'snapshot', version: '20171003-1.12'
 }
 dependencies {
-    implementation(project(":api"))
-    implementation(project(":core"))
-    implementation(project(":mod"))
+    implementation implementation(project(':atumod-api',))
+    implementation implementation(project(':atumod-core',))
+    implementation implementation(project(':atumod-mod',))
 
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2855'
 }
@@ -128,6 +132,7 @@ reobf {
     shadowJar {
     }
 }
+
 
 jar {
     manifest {

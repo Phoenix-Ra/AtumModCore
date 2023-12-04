@@ -198,7 +198,7 @@ public class Objects {
      * Returns {@code true} if the provided reference is {@code null} otherwise
      * returns {@code false}.
      *
-     * @apiNote This method exists to be used as a
+     * This method exists to be used as a
      * {@link java.util.function.Predicate}, {@code filter(Objects::isNull)}
      *
      * @param obj a reference to be checked against {@code null}
@@ -216,7 +216,7 @@ public class Objects {
      * Returns {@code true} if the provided reference is non-{@code null}
      * otherwise returns {@code false}.
      *
-     * @apiNote This method exists to be used as a
+     * This method exists to be used as a
      * {@link java.util.function.Predicate}, {@code filter(Objects::nonNull)}
      *
      * @param obj a reference to be checked against {@code null}

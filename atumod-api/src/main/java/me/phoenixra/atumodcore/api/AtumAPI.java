@@ -69,7 +69,7 @@ public interface AtumAPI {
      * @param name name of a config (without extension)
      * @param directory The directory of a config. Use empty if root directory
      * @param type The type of a config
-     * @param forceLoadResource if true -> throws NullPointerException
+     * @param forceLoadResource if true - throws NullPointerException
      *                       when file not found inside the resources folder,
      *                          otherwise creates an empty file
      * @return loaded config

@@ -1,0 +1,15 @@
+
+plugins {
+    id 'java'
+}
+
+
+dependencies {
+    compileOnly compileOnly(project(':atumod-api'))
+}
+
+
+group = mod_group
+version = mod_version
+
+

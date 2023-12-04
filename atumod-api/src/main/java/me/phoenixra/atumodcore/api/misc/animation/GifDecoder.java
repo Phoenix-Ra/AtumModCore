@@ -38,20 +38,6 @@ import static java.lang.System.arraycopy;
  * Example usage:
  * </p>
  *
- * <p>
- *
- * <pre>
- * final GifImage gifImage = GifDecoder.read(int[] data);
- * final int width = gifImage.getWidth();
- * final int height = gifImage.getHeight();
- * final int frameCount = gifImage.getFrameCount();
- * for (int i = 0; i < frameCount; i++) {
- * 	final BufferedImage image = gifImage.getFrame(i);
- * 	final int delay = gif.getDelay(i);
- * }
- * </pre>
- *
- * </p>
  *
  * @author Dhyan Blum
  * @version 1.09 November 2017

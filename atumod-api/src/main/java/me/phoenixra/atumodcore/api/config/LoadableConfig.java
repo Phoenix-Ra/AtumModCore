@@ -11,7 +11,7 @@ public interface LoadableConfig extends Config {
     /**
      * Create the file.
      *
-     * @param forceResourceLoad if true -> throws NullPointerException
+     * @param forceResourceLoad if true - throws NullPointerException
      *                          when file not found inside the resources folder
      */
     void createFile(boolean forceResourceLoad);
