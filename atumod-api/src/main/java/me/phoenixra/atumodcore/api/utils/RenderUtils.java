@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
@@ -329,8 +330,11 @@ public class RenderUtils {
     }
 
 
+
     public static int[] fixCoordinates(int x, int y, int width, int height, boolean fixRatio) {
-        double scaleX = (scaleFactorCache/windowRatioXCache);
+
+
+        double scaleX = (scaleFactorCache*0.9925/windowRatioXCache);
         double scaleY = (scaleFactorCache/windowRatioYCache);
         if(fixRatio){
             if(scaleX > scaleY){
@@ -354,10 +358,10 @@ public class RenderUtils {
             }
         }
         return new int[]{
-                (int) (x / scaleX),
-                (int) (y / scaleY),
-                (int) (width / scaleX),
-                (int) (height / scaleY)
+                MathHelper.ceil (x / scaleX),
+                MathHelper.ceil  (y / scaleY),
+                MathHelper.ceil  (width / scaleX),
+                MathHelper.ceil (height / scaleY)
         };
     }
     public static int[] fixCoordinates(int x, int y) {
