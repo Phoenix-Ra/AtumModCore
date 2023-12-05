@@ -32,8 +32,11 @@ public class BaseScreen extends GuiMainMenu {
                 });
     }
 
-
-
-
-
+    @Override
+    public void onGuiClosed() {
+        DisplayCanvas canvas1 = canvas;
+        canvas = (DisplayCanvas) canvas.clone();
+        canvas1.onRemove();
+        super.onGuiClosed();
+    }
 }
