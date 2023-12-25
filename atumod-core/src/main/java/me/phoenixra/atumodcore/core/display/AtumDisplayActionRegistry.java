@@ -11,19 +11,23 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AtumDisplayActionRegistry implements DisplayActionRegistry {
 
     @Getter
     private final AtumMod atumMod;
 
-    private HashMap<String, DisplayAction> registry = new HashMap<>();
+    private Map<String, DisplayAction> registry = new ConcurrentHashMap<>();
     public AtumDisplayActionRegistry(AtumMod atumMod) {
         this.atumMod = atumMod;
 
         register("add_element", new ActionAddElement());
         register("remove_element", new ActionRemoveElement());
 
+        register("open_gui", new ActionOpenGui());
+        register("close_gui", new ActionCloseGui());
         register("quit", new ActionQuit());
         register("open_settings", new ActionOpenSettings());
         register("open_singleplayer", new ActionOpenSingleplayer());

@@ -4,11 +4,14 @@ package me.phoenixra.atumodcore.api.display;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
+import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
 import me.phoenixra.atumodcore.api.registry.Registrable;
+import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.input.Mouse;
 
 import java.util.HashMap;
 
@@ -32,6 +35,8 @@ public interface DisplayElement extends Cloneable{
     void setOriginWidth(int width);
     void setOriginHeight(int height);
 
+    int getLastMouseX();
+    int getLastMouseY();
     void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY);
 
     boolean isHovered(int mouseX, int mouseY);
@@ -62,6 +67,35 @@ public interface DisplayElement extends Cloneable{
 
     void setOutline(boolean outline);
 
+
+    void performAction(@NotNull String actionId,
+                       @NotNull ActionData actionData);
+    default void performAction(@NotNull String actionId,
+                          @NotNull String[] args){
+        performAction(actionId,
+                new ActionData(
+                        getAtumMod(),
+                        this,
+                        null,
+                        getLastMouseX(),
+                        getLastMouseY(),
+                        args
+                )
+        );
+    }
+
+
+    DisplayElement cloneWithNewVariables(@NotNull String id,
+                                         @NotNull Config config,
+                                         @Nullable String configKey);
+    /**
+     * Clone the element with a new id
+     * The new id gonna have the following pattern:
+     * "[configName]@[randomUUID]"
+     * So, you can recognize the specific element splitting the id with "@"
+     * @return The cloned element
+     */
+    DisplayElement cloneWithRandomId();
     DisplayElement clone();
 
 

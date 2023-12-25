@@ -5,7 +5,6 @@ import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
 import me.phoenixra.atumodcore.mod.AtumModCore;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.Sys;
 
 public class TestMenu extends BaseScreen {
 
@@ -13,7 +12,7 @@ public class TestMenu extends BaseScreen {
 
     public TestMenu(@NotNull AtumMod atumMod) {
         super(atumMod,
-                (DisplayCanvas)( AtumModCore.getInstance().getDisplayElementRegistry().getCanvasById(
+                (DisplayCanvas)( AtumModCore.getInstance().getDisplayElementRegistry().getCanvasTemplate(
                         AtumModCore.getInstance().getConfigManager().getConfig("test")
                                 .getString("main_menu")
                 ).clone())

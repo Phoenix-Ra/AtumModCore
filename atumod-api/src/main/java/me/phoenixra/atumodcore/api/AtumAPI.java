@@ -4,6 +4,7 @@ import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.ConfigManager;
 import me.phoenixra.atumodcore.api.config.ConfigType;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
+import me.phoenixra.atumodcore.api.display.EnabledCanvasRegistry;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.input.InputHandler;
@@ -100,6 +101,8 @@ public interface AtumAPI {
     DisplayElementRegistry createDisplayElementRegistry(@NotNull AtumMod atumMod);
     @NotNull
     DisplayActionRegistry createDisplayActionRegistry(@NotNull AtumMod atumMod);
+    @NotNull
+    EnabledCanvasRegistry createEnabledCanvasRegistry(@NotNull AtumMod atumMod);
     /**
      * Evaluate an expression.
      *
@@ -113,6 +116,8 @@ public interface AtumAPI {
 
 
     AtumMod getCoreMod();
+    @Nullable AtumMod getLoadedAtumMod(String name);
+    void registerAtumMod(@NotNull AtumMod atumMod);
 
     static AtumAPI getInstance() {
         return Instance.get();

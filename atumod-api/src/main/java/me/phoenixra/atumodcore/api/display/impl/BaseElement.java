@@ -8,6 +8,8 @@ import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
+import me.phoenixra.atumodcore.api.display.actions.ActionData;
+import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
@@ -49,6 +51,11 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     private int height;
 
     @Getter
+    private int lastMouseX;
+    @Getter
+    private int lastMouseY;
+
+    @Getter
     private boolean fixRatio = false;
     @Getter @Setter
     private boolean active = true;
@@ -88,6 +95,8 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
             MinecraftForge.EVENT_BUS.register(this);
             initialized = true;
         }
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
         int[] coords = RenderUtils.fixCoordinates(originX,originY,originWidth,originHeight,fixRatio);
         x = coords[0];
         y = coords[1];
@@ -151,6 +160,15 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         }
 
     }
+
+    @Override
+    public void performAction(@NotNull String actionId, @NotNull ActionData actionData) {
+        DisplayAction action = getAtumMod().getDisplayActionRegistry()
+                .getActionById(actionId);
+        if(action == null) return;
+        action.perform(actionData);
+    }
+
     @Override
     public boolean isHovered(int mouseX, int mouseY) {
         return getElementOwner().getHoveredElement(mouseX, mouseY) == this;
@@ -174,6 +192,23 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Override
     public int hashCode() {
         return getId().hashCode();
+    }
+
+    @Override
+    public DisplayElement cloneWithNewVariables(@NotNull String id,
+                                                @NotNull Config config,
+                                                @Nullable String configKey) {
+        DisplayElement clone = clone();
+        ((BaseElement)clone).id = id;
+        clone.updateVariables(config,configKey);
+        return clone;
+    }
+
+    @Override
+    public DisplayElement cloneWithRandomId() {
+        DisplayElement clone = clone();
+        ((BaseElement)clone).id = id.split("@")[0]+"@"+UUID.randomUUID().toString();
+        return clone;
     }
 
     @Override

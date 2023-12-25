@@ -246,12 +246,10 @@ public class RenderUtils {
 
         int offset = 1;
 
-        int filledWidth = width;
-        filledWidth = width - (offset * 2);
+        int filledWidth = width - (offset * 2);
         if (filledWidth < 0)
             filledWidth = 0;
-        int filledHeight = width;
-        filledHeight = height - (offset * 2);
+        int filledHeight = height - (offset * 2);
         if (filledHeight < 0)
             filledHeight = 0;
 

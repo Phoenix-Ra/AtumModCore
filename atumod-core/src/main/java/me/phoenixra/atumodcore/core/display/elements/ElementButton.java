@@ -188,7 +188,7 @@ public class ElementButton extends BaseElement {
             this.clicked = true;
             if (actionOnPress != null)
                 actionOnPress.perform(
-                        ActionData.builder().attachedElement(this)
+                        ActionData.builder().atumMod(getAtumMod()).attachedElement(this)
                                 .mouseX(event.getParentEvent().getMouseX())
                                 .mouseY(event.getParentEvent().getMouseY())
                                 .args(argsOnPress)
@@ -205,7 +205,7 @@ public class ElementButton extends BaseElement {
             clicked = false;
             if(actionOnRelease!=null){
                 actionOnRelease.perform(
-                        ActionData.builder().attachedElement(this)
+                        ActionData.builder().atumMod(getAtumMod()).attachedElement(this)
                                 .mouseX(event.getParentEvent().getMouseX())
                                 .mouseY(event.getParentEvent().getMouseY())
                                 .args(argsOnRelease)

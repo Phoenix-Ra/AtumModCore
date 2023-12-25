@@ -7,6 +7,7 @@ import me.phoenixra.atumodcore.api.config.ConfigManager;
 import me.phoenixra.atumodcore.api.config.ConfigType;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
+import me.phoenixra.atumodcore.api.display.EnabledCanvasRegistry;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
@@ -15,6 +16,7 @@ import me.phoenixra.atumodcore.core.config.AtumConfigSection;
 import me.phoenixra.atumodcore.core.config.AtumLoadableConfig;
 import me.phoenixra.atumodcore.core.display.AtumDisplayActionRegistry;
 import me.phoenixra.atumodcore.core.display.AtumDisplayElementRegistry;
+import me.phoenixra.atumodcore.core.display.AtumEnabledCanvasRegistry;
 import me.phoenixra.atumodcore.core.input.AtumInputHandler;
 import me.phoenixra.atumodcore.core.misc.ExpressionEvaluator;
 import org.apache.logging.log4j.LogManager;
@@ -23,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 public class AtumAPIImpl implements AtumAPI {
@@ -30,6 +33,7 @@ public class AtumAPIImpl implements AtumAPI {
     private ExpressionEvaluator expressionEvaluator = new ExpressionEvaluator();
 
     private AtumMod atumMod;
+    private HashMap<String,AtumMod> mods = new HashMap<>();
 
     public AtumAPIImpl(@NotNull AtumMod atumMod) {
         this.atumMod = atumMod;
@@ -77,6 +81,10 @@ public class AtumAPIImpl implements AtumAPI {
         return new AtumDisplayActionRegistry(atumMod);
     }
 
+    @Override
+    public @NotNull EnabledCanvasRegistry createEnabledCanvasRegistry(@NotNull AtumMod atumMod) {
+        return new AtumEnabledCanvasRegistry(atumMod);
+    }
 
 
     @Override
@@ -87,5 +95,15 @@ public class AtumAPIImpl implements AtumAPI {
     @Override
     public AtumMod getCoreMod() {
         return atumMod;
+    }
+
+    @Override
+    public AtumMod getLoadedAtumMod(String name) {
+        return mods.get(name);
+    }
+
+    @Override
+    public void registerAtumMod(@NotNull AtumMod atumMod) {
+        mods.put(atumMod.getName(), atumMod);
     }
 }

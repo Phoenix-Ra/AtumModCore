@@ -34,9 +34,12 @@ public class ElementDefaultCanvas extends BaseCanvas{
         try {
             setupCanvas.applyChangesToConfig();
             setupCanvas.getSettingsConfig().save();
-            getAtumMod().getDisplayElementRegistry().register(
+            getAtumMod().getDisplayElementRegistry().registerTemplate(
                     setupCanvas.getSettingsConfig().getName(),
-                    getAtumMod().getDisplayElementRegistry().compile(getSettingsConfig())
+                    getAtumMod().getDisplayElementRegistry().compileCanvasTemplate(
+                            setupCanvas.getSettingsConfig().getName(),
+                            getSettingsConfig()
+                    )
             );
         }catch (Exception e){
             e.printStackTrace();

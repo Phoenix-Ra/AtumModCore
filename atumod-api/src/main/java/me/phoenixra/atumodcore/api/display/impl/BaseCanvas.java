@@ -7,7 +7,6 @@ import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
-import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
@@ -73,6 +72,10 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             );
             AtumAPI.getInstance().getCoreMod().getInputHandler().addListenerOnRelease(getId()+"-release",
                     this::onRelease
+            );
+            getAtumMod().getEnabledCanvasRegistry().registerCanvas(
+                    getConfigKey(),
+                    this
             );
             initialized = true;
         }
@@ -241,6 +244,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         elements.clear();
         displayedElements.clear();
         displayedElementsReversed.clear();
+        getAtumMod().getEnabledCanvasRegistry().unregisterCanvas(getConfigKey());
     }
 
 

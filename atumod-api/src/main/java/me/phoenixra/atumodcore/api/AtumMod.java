@@ -2,6 +2,7 @@ package me.phoenixra.atumodcore.api;
 
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.config.ConfigManager;
+import me.phoenixra.atumodcore.api.display.EnabledCanvasRegistry;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.input.InputHandler;
@@ -29,6 +30,8 @@ public abstract class AtumMod {
     @Getter
     private DisplayActionRegistry displayActionRegistry;
     @Getter
+    private EnabledCanvasRegistry enabledCanvasRegistry;
+    @Getter
     private InputHandler inputHandler;
 
     @Getter
@@ -50,6 +53,8 @@ public abstract class AtumMod {
 
             displayActionRegistry = AtumAPI.getInstance().createDisplayActionRegistry(this);
             displayElementRegistry = AtumAPI.getInstance().createDisplayElementRegistry(this);
+
+            enabledCanvasRegistry = AtumAPI.getInstance().createEnabledCanvasRegistry(this);
         } else {
             dataFolder =  new File("");
         }
