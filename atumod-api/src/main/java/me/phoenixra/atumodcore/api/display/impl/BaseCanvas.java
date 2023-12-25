@@ -74,7 +74,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                     this::onRelease
             );
             getAtumMod().getEnabledCanvasRegistry().registerCanvas(
-                    getConfigKey(),
+                    getId(),
                     this
             );
             initialized = true;
@@ -244,7 +244,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         elements.clear();
         displayedElements.clear();
         displayedElementsReversed.clear();
-        getAtumMod().getEnabledCanvasRegistry().unregisterCanvas(getConfigKey());
+        getAtumMod().getEnabledCanvasRegistry().unregisterCanvas(getId());
     }
 
 
