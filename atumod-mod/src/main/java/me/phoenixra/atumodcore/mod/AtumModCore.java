@@ -29,6 +29,20 @@ public class AtumModCore extends AtumMod {
     public static boolean isOptifineLoaded = false;
 
     public AtumModCore() {
+        getLogger().info("\n" +
+                "     \\\\\\\\////\n" +
+                "    -========-\n" +
+                "   // '''''' \\\\\n" +
+                "  // PHOENIXRA \\\\\n" +
+                " //_____________\\\\\n" +
+                " \\\\             //\n" +
+                "  \\\\ DEVELOPER //\n" +
+                "   \\\\_________//\n" +
+                "    / * * * * \\\n" +
+                "   /   * * *   \\\n" +
+                "  / * * * * * * \\\n" +
+                " (______/ \\______)\n" +
+                "                       --- AtumModCore\n");
         instance = this;
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
             getApi().createLoadableConfig(this,
