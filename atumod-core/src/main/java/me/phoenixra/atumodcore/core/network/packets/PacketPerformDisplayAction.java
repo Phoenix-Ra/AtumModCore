@@ -1,6 +1,7 @@
-package me.phoenixra.atumodcore.api.network.packets;
+package me.phoenixra.atumodcore.core.network.packets;
 
 import io.netty.buffer.ByteBuf;
+import me.phoenixra.atumodcore.api.network.data.DisplayActionData;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 import java.nio.charset.StandardCharsets;
@@ -30,6 +31,17 @@ public class PacketPerformDisplayAction implements IMessage {
         this.actionId = actionId;
         StringBuilder argsBuilder = new StringBuilder();
         for(String arg : args){
+            argsBuilder.append(arg).append(";");
+        }
+        this.args = argsBuilder.toString();
+    }
+    public PacketPerformDisplayAction(DisplayActionData data){
+        this.atumModId = data.getAtumModId();
+        this.canvasId = data.getCanvasId();
+        this.elementId = data.getElementId();
+        this.actionId = data.getActionId();
+        StringBuilder argsBuilder = new StringBuilder();
+        for(String arg : data.getArgs()){
             argsBuilder.append(arg).append(";");
         }
         this.args = argsBuilder.toString();

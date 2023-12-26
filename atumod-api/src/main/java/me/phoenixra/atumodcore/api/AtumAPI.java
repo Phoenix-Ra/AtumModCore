@@ -8,6 +8,7 @@ import me.phoenixra.atumodcore.api.display.EnabledCanvasRegistry;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.input.InputHandler;
+import me.phoenixra.atumodcore.api.network.NetworkManager;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -103,6 +104,9 @@ public interface AtumAPI {
     DisplayActionRegistry createDisplayActionRegistry(@NotNull AtumMod atumMod);
     @NotNull
     EnabledCanvasRegistry createEnabledCanvasRegistry(@NotNull AtumMod atumMod);
+
+    @NotNull
+    NetworkManager createNetworkManager(@NotNull AtumMod atumMod);
     /**
      * Evaluate an expression.
      *

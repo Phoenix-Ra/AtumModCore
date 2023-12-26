@@ -1,4 +1,4 @@
-package me.phoenixra.atumodcore.api.network.packets;
+package me.phoenixra.atumodcore.core.network.packets;
 
 
 import me.phoenixra.atumodcore.api.AtumAPI;

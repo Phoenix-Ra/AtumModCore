@@ -6,6 +6,7 @@ import me.phoenixra.atumodcore.api.display.EnabledCanvasRegistry;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.input.InputHandler;
+import me.phoenixra.atumodcore.api.network.NetworkManager;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -33,6 +34,8 @@ public abstract class AtumMod {
     private EnabledCanvasRegistry enabledCanvasRegistry;
     @Getter
     private InputHandler inputHandler;
+    @Getter
+    private NetworkManager networkManager;
 
     @Getter
     private File dataFolder;
@@ -55,6 +58,8 @@ public abstract class AtumMod {
             displayElementRegistry = AtumAPI.getInstance().createDisplayElementRegistry(this);
 
             enabledCanvasRegistry = AtumAPI.getInstance().createEnabledCanvasRegistry(this);
+
+            networkManager = AtumAPI.getInstance().createNetworkManager(this);
         } else {
             dataFolder =  new File("");
         }

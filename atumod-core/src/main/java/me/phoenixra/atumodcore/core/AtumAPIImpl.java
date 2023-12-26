@@ -10,6 +10,7 @@ import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
 import me.phoenixra.atumodcore.api.display.EnabledCanvasRegistry;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.input.InputHandler;
+import me.phoenixra.atumodcore.api.network.NetworkManager;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.core.config.AtumConfigManager;
 import me.phoenixra.atumodcore.core.config.AtumConfigSection;
@@ -19,6 +20,7 @@ import me.phoenixra.atumodcore.core.display.AtumDisplayElementRegistry;
 import me.phoenixra.atumodcore.core.display.AtumEnabledCanvasRegistry;
 import me.phoenixra.atumodcore.core.input.AtumInputHandler;
 import me.phoenixra.atumodcore.core.misc.ExpressionEvaluator;
+import me.phoenixra.atumodcore.core.network.AtumNetworkManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -84,6 +86,11 @@ public class AtumAPIImpl implements AtumAPI {
     @Override
     public @NotNull EnabledCanvasRegistry createEnabledCanvasRegistry(@NotNull AtumMod atumMod) {
         return new AtumEnabledCanvasRegistry(atumMod);
+    }
+
+    @Override
+    public @NotNull NetworkManager createNetworkManager(@NotNull AtumMod atumMod) {
+        return new AtumNetworkManager(atumMod);
     }
 
 
