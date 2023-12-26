@@ -7,6 +7,7 @@ import me.phoenixra.atumodcore.api.network.data.DisplayEventData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -28,13 +29,16 @@ public abstract class NetworkManager {
 
 
     @SideOnly(Side.SERVER)
-    private final List<Consumer<DisplayEventData>> displayEventConsumers = new java.util.concurrent.CopyOnWriteArrayList<>();
+    private List<Consumer<DisplayEventData>> displayEventConsumers;
 
     public NetworkManager(@NotNull AtumMod atumMod) {
         this.atumMod = atumMod;
         NETWORK_CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(
                 atumMod.getName().toLowerCase() + "@atumodcore"
         );
+        if(FMLCommonHandler.instance().getSide() == Side.SERVER) {
+            displayEventConsumers = new java.util.concurrent.CopyOnWriteArrayList<>();
+        }
 
     }
 
