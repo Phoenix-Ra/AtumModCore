@@ -163,7 +163,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
     @Override
     public void performAction(@NotNull String actionId, @NotNull ActionData actionData) {
-        DisplayAction action = getAtumMod().getDisplayActionRegistry()
+        DisplayAction action = getAtumMod().getDisplayManager().getActionRegistry()
                 .getActionById(actionId);
         if(action == null) return;
         action.perform(actionData);

@@ -11,15 +11,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
-public class ElementDefaultCanvas extends BaseCanvas{
+public class DefaultCanvas extends BaseCanvas{
 
 
 
-    private ElementSetupCanvas setupCanvas;
+    private SetupCanvas setupCanvas;
 
     private boolean pressedShift = false;
 
-    public ElementDefaultCanvas(@NotNull AtumMod atumMod, @Nullable DisplayCanvas elementOwner) {
+    public DefaultCanvas(@NotNull AtumMod atumMod, @Nullable DisplayCanvas elementOwner) {
         super(atumMod,elementOwner);
     }
 
@@ -34,9 +34,9 @@ public class ElementDefaultCanvas extends BaseCanvas{
         try {
             setupCanvas.applyChangesToConfig();
             setupCanvas.getSettingsConfig().save();
-            getAtumMod().getDisplayElementRegistry().registerTemplate(
+            getAtumMod().getDisplayManager().getElementRegistry().registerTemplate(
                     setupCanvas.getSettingsConfig().getName(),
-                    getAtumMod().getDisplayElementRegistry().compileCanvasTemplate(
+                    getAtumMod().getDisplayManager().getElementRegistry().compileCanvasTemplate(
                             setupCanvas.getSettingsConfig().getName(),
                             getSettingsConfig()
                     )
@@ -101,7 +101,7 @@ public class ElementDefaultCanvas extends BaseCanvas{
             if(setupCanvas!=null){
                 setupCanvas.onRemove();
             }
-            setSetupCanvas( new ElementSetupCanvas(getAtumMod(), this) );
+            setSetupCanvas( new SetupCanvas(getAtumMod(), this) );
             setupCanvas.updateVariables(getSettingsConfig(),null);
             setActive(false);
         } else {
@@ -127,12 +127,12 @@ public class ElementDefaultCanvas extends BaseCanvas{
     @Override
     protected BaseCanvas onClone(BaseCanvas clone) {
         System.out.println("REMOVAL CLONE");
-        ( (ElementDefaultCanvas)clone).setupCanvas = null;
+        ( (DefaultCanvas)clone).setupCanvas = null;
         return clone;
     }
 
 
-    public void setSetupCanvas(ElementSetupCanvas setupCanvas) {
+    public void setSetupCanvas(SetupCanvas setupCanvas) {
         this.setupCanvas = setupCanvas;
     }
 }

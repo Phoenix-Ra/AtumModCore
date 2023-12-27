@@ -22,10 +22,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-public class ElementSetupCanvas extends BaseCanvas {
+public class SetupCanvas extends BaseCanvas {
 
     private LoadableConfig canvasConfig;
-    private ElementDefaultCanvas setupOwner;
+    private DefaultCanvas setupOwner;
 
     private DisplayElement selectedElement;
     private PairRecord<Integer, Integer> mousePos = new PairRecord<>(0, 0);
@@ -35,7 +35,7 @@ public class ElementSetupCanvas extends BaseCanvas {
 
     private Set<DisplayElement> modifiedElements = new HashSet<>();
 
-    public ElementSetupCanvas(@NotNull AtumMod atumMod, @NotNull ElementDefaultCanvas setupOwner) {
+    public SetupCanvas(@NotNull AtumMod atumMod, @NotNull DefaultCanvas setupOwner) {
         super(atumMod, DisplayLayer.FOREGROUND, 0, 0, 1920, 1080);
         this.setupOwner = setupOwner;
     }

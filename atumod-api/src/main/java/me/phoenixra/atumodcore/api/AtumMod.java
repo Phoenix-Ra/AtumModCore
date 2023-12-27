@@ -2,9 +2,7 @@ package me.phoenixra.atumodcore.api;
 
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.config.ConfigManager;
-import me.phoenixra.atumodcore.api.display.EnabledCanvasRegistry;
-import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
-import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
+import me.phoenixra.atumodcore.api.display.DisplayManager;
 import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.network.NetworkManager;
 import net.minecraft.client.Minecraft;
@@ -27,11 +25,7 @@ public abstract class AtumMod {
     private ConfigManager configManager;
 
     @Getter
-    private DisplayElementRegistry displayElementRegistry;
-    @Getter
-    private DisplayActionRegistry displayActionRegistry;
-    @Getter
-    private EnabledCanvasRegistry enabledCanvasRegistry;
+    private DisplayManager displayManager;
     @Getter
     private InputHandler inputHandler;
     @Getter
@@ -54,10 +48,7 @@ public abstract class AtumMod {
             configManager = AtumAPI.getInstance().createConfigManager(this);
             dataFolder =  new File(Minecraft.getMinecraft().mcDataDir,"config/" + getName());
 
-            displayActionRegistry = AtumAPI.getInstance().createDisplayActionRegistry(this);
-            displayElementRegistry = AtumAPI.getInstance().createDisplayElementRegistry(this);
-
-            enabledCanvasRegistry = AtumAPI.getInstance().createEnabledCanvasRegistry(this);
+            displayManager = AtumAPI.getInstance().createDisplayManager(this);
 
             networkManager = AtumAPI.getInstance().createNetworkManager(this);
         } else {

@@ -12,7 +12,7 @@ public class TestMenu extends BaseScreen {
 
     public TestMenu(@NotNull AtumMod atumMod) {
         super(atumMod,
-                (DisplayCanvas)( AtumModCore.getInstance().getDisplayElementRegistry().getCanvasTemplate(
+                (DisplayCanvas)( AtumModCore.getInstance().getDisplayManager().getElementRegistry().getCanvasTemplate(
                         AtumModCore.getInstance().getConfigManager().getConfig("test")
                                 .getString("main_menu")
                 ).clone())

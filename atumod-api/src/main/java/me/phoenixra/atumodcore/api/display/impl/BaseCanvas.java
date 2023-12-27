@@ -73,7 +73,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             AtumAPI.getInstance().getCoreMod().getInputHandler().addListenerOnRelease(getId()+"-release",
                     this::onRelease
             );
-            getAtumMod().getEnabledCanvasRegistry().registerCanvas(
+            getAtumMod().getDisplayManager().registerEnabledCanvas(
                     getId(),
                     this
             );
@@ -244,7 +244,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         elements.clear();
         displayedElements.clear();
         displayedElementsReversed.clear();
-        getAtumMod().getEnabledCanvasRegistry().unregisterCanvas(getId());
+        getAtumMod().getDisplayManager().unregisterEnabledCanvas(getId());
     }
 
 

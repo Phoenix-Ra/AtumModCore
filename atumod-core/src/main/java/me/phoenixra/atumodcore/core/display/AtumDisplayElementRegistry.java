@@ -12,11 +12,10 @@ import me.phoenixra.atumodcore.core.display.elements.ElementButton;
 import me.phoenixra.atumodcore.core.display.elements.ElementImage;
 import me.phoenixra.atumodcore.core.display.elements.ElementProgressBar;
 import me.phoenixra.atumodcore.core.display.elements.ElementText;
-import me.phoenixra.atumodcore.core.display.elements.canvas.ElementDefaultCanvas;
+import me.phoenixra.atumodcore.core.display.elements.canvas.DefaultCanvas;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,7 +26,7 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
     private Map<String, DisplayElement> registry = new ConcurrentHashMap<>();
     public AtumDisplayElementRegistry(AtumMod atumMod) {
         this.atumMod = atumMod;
-        registerTemplate("canvas", new ElementDefaultCanvas(atumMod,null));
+        registerTemplate("canvas", new DefaultCanvas(atumMod,null));
         registerTemplate("image", new ElementImage(atumMod,null));
         registerTemplate("text", new ElementText(atumMod,null));
         registerTemplate("button", new ElementButton(atumMod,null));

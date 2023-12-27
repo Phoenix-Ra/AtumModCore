@@ -157,7 +157,7 @@ public class ElementButton extends BaseElement {
         String actionOnPress = config.getStringOrNull("settings.action-onPress");
         if(actionOnPress!=null){
             String[] split = actionOnPress.split("@");
-            this.actionOnPress = config.getAtumMod().getDisplayActionRegistry()
+            this.actionOnPress = config.getAtumMod().getDisplayManager().getActionRegistry()
                     .getActionById(split[0]);
             if(split.length>1){
                 this.argsOnPress = split[1].split(";");
@@ -166,7 +166,7 @@ public class ElementButton extends BaseElement {
         String actionOnRelease = config.getStringOrNull("settings.action-onRelease");
         if(actionOnRelease!=null){
             String[] split = actionOnRelease.split("@");
-            this.actionOnRelease = config.getAtumMod().getDisplayActionRegistry().
+            this.actionOnRelease = config.getAtumMod().getDisplayManager().getActionRegistry().
                     getActionById(split[0]);
             if(split.length>1){
                 this.argsOnRelease = split[1].split(";");

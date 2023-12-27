@@ -7,7 +7,7 @@ import me.phoenixra.atumodcore.api.config.ConfigManager;
 import me.phoenixra.atumodcore.api.config.ConfigType;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
-import me.phoenixra.atumodcore.api.display.EnabledCanvasRegistry;
+import me.phoenixra.atumodcore.api.display.DisplayManager;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.network.NetworkManager;
@@ -17,7 +17,7 @@ import me.phoenixra.atumodcore.core.config.AtumConfigSection;
 import me.phoenixra.atumodcore.core.config.AtumLoadableConfig;
 import me.phoenixra.atumodcore.core.display.AtumDisplayActionRegistry;
 import me.phoenixra.atumodcore.core.display.AtumDisplayElementRegistry;
-import me.phoenixra.atumodcore.core.display.AtumEnabledCanvasRegistry;
+import me.phoenixra.atumodcore.core.display.AtumDisplayManager;
 import me.phoenixra.atumodcore.core.input.AtumInputHandler;
 import me.phoenixra.atumodcore.core.misc.ExpressionEvaluator;
 import me.phoenixra.atumodcore.core.network.AtumNetworkManager;
@@ -74,19 +74,10 @@ public class AtumAPIImpl implements AtumAPI {
     }
 
     @Override
-    public @NotNull DisplayElementRegistry createDisplayElementRegistry(@NotNull AtumMod atumMod) {
-        return new AtumDisplayElementRegistry(atumMod);
+    public @NotNull DisplayManager createDisplayManager(@NotNull AtumMod atumMod) {
+        return new AtumDisplayManager(atumMod);
     }
 
-    @Override
-    public @NotNull DisplayActionRegistry createDisplayActionRegistry(@NotNull AtumMod atumMod) {
-        return new AtumDisplayActionRegistry(atumMod);
-    }
-
-    @Override
-    public @NotNull EnabledCanvasRegistry createEnabledCanvasRegistry(@NotNull AtumMod atumMod) {
-        return new AtumEnabledCanvasRegistry(atumMod);
-    }
 
     @Override
     public @NotNull NetworkManager createNetworkManager(@NotNull AtumMod atumMod) {

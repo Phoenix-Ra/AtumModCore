@@ -18,7 +18,7 @@ public class PacketHandlerPerformDisplayAction implements IMessageHandler<Packet
             return null;
         }
         if(message.canvasId.equals("null")){
-            DisplayAction action = atumMod.getDisplayActionRegistry().getActionById(message.actionId);
+            DisplayAction action = atumMod.getDisplayManager().getActionRegistry().getActionById(message.actionId);
             if(action==null) {
                 return null;
             }
@@ -34,7 +34,7 @@ public class PacketHandlerPerformDisplayAction implements IMessageHandler<Packet
             );
 
         }
-        DisplayCanvas canvas = atumMod.getEnabledCanvasRegistry().getCanvasById(message.canvasId);
+        DisplayCanvas canvas = atumMod.getDisplayManager().getEnabledCanvas(message.canvasId);
         if(canvas==null) {
             return null;
         }

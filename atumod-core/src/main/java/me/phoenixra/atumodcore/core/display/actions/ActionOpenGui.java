@@ -11,7 +11,7 @@ public class ActionOpenGui implements DisplayAction {
     public void perform(ActionData data) {
         String guiId = data.getArgs()[0];
         if(guiId == null) return;
-        DisplayCanvas canvas = data.getAtumMod().getDisplayElementRegistry()
+        DisplayCanvas canvas = data.getAtumMod().getDisplayManager().getElementRegistry()
                 .getDrawableCanvas(guiId);
         if(canvas == null) return;
         Minecraft.getMinecraft().displayGuiScreen(

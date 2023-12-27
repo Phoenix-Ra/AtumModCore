@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
@@ -17,7 +18,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
 
 public class RenderUtils {
     private static double windowRatioXCache = 1.0;
@@ -328,6 +328,26 @@ public class RenderUtils {
     }
 
 
+    /**
+     * Get the mouse X and Y positions.
+     * Attention! This method uses cached scale factor, so, you should use
+     * {@link #getScaleFactor()} before calling this method.
+     * @return
+     */
+    public static int[] getMousePos(){
+        double scaleX = (scaleFactorCache/windowRatioXCache);
+        double scaleY = (scaleFactorCache/windowRatioYCache);
+
+        int width = MathHelper.ceil  (
+                Minecraft.getMinecraft().displayWidth / scaleX
+        );
+        int height = MathHelper.ceil  (
+                Minecraft.getMinecraft().displayHeight / scaleY
+        );
+        int mouseX = Mouse.getX() * width / Minecraft.getMinecraft().displayWidth;
+        int mouseZ = height - Mouse.getY() * height / Minecraft.getMinecraft().displayHeight - 1;
+        return new int[]{mouseX,mouseZ};
+    }
 
     public static int[] fixCoordinates(int x, int y, int width, int height, boolean fixRatio) {
 

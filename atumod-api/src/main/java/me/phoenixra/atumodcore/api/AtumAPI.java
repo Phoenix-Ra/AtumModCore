@@ -4,9 +4,7 @@ import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.ConfigManager;
 import me.phoenixra.atumodcore.api.config.ConfigType;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
-import me.phoenixra.atumodcore.api.display.EnabledCanvasRegistry;
-import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
-import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
+import me.phoenixra.atumodcore.api.display.DisplayManager;
 import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.network.NetworkManager;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
@@ -97,13 +95,8 @@ public interface AtumAPI {
                         @NotNull ConfigType type);
 
 
-
     @NotNull
-    DisplayElementRegistry createDisplayElementRegistry(@NotNull AtumMod atumMod);
-    @NotNull
-    DisplayActionRegistry createDisplayActionRegistry(@NotNull AtumMod atumMod);
-    @NotNull
-    EnabledCanvasRegistry createEnabledCanvasRegistry(@NotNull AtumMod atumMod);
+    DisplayManager createDisplayManager(@NotNull AtumMod atumMod);
 
     @NotNull
     NetworkManager createNetworkManager(@NotNull AtumMod atumMod);
