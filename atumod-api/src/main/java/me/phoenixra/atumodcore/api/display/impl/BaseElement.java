@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
-import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
@@ -17,9 +16,6 @@ import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public abstract class BaseElement implements DisplayElement, Cloneable {
@@ -61,7 +57,11 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     private boolean active = true;
 
     @Setter
-    private boolean outline;
+    private boolean outline_selected;
+
+    private boolean hasOutline = false;
+    private AtumColor outlineColor = AtumColor.WHITE;
+    private int outlineSize = 1;
 
     @Getter @Setter
     private DisplayCanvas elementOwner;
@@ -103,13 +103,22 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         width = coords[2];
         height = coords[3];
         onDraw(scaleFactor,scaleX,scaleY,mouseX,mouseY);
-        if(outline){
+        if(outline_selected){
             RenderUtils.drawDashedOutline(
                     getX(),
                     getY(),
                     getWidth(),
                     getHeight(),
                     AtumColor.LIME
+            );
+        }else if(hasOutline){
+            RenderUtils.drawOutline(
+                    getX(),
+                    getY(),
+                    getWidth(),
+                    getHeight(),
+                    outlineSize,
+                    outlineColor
             );
         }
     }
@@ -157,6 +166,11 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         Boolean fixRatio = config.getBoolOrNull("fixRatio");
         if(fixRatio != null){
             this.fixRatio = fixRatio;
+        }
+        if(config.hasPath("outline.color")){
+            this.outlineColor = AtumColor.fromHex(config.getString("outline.color"));
+            this.outlineSize = config.getIntOrDefault("outline.size",1);
+            this.hasOutline = true;
         }
 
     }

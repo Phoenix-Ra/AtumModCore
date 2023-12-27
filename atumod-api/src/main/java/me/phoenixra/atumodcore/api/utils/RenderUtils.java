@@ -155,11 +155,18 @@ public class RenderUtils {
         GlStateManager.color(1f, 1f, 1f);
     }
 
+    public static void drawOutline(int x, int y, int width, int height, int outlineSize, AtumColor color) {
+        x -= outlineSize;
+        y -= outlineSize;
+        width += outlineSize*2;
+        height += outlineSize*2;
+        drawRect( x, y, width, outlineSize, color);
+        drawRect(x, y+outlineSize, outlineSize, height-(outlineSize*2), color);
+        drawRect(x + width - outlineSize, y+outlineSize, outlineSize, height-(outlineSize*2), color);
+        drawRect( x, y + height - outlineSize, width, outlineSize, color);
+    }
     public static void drawOutline(int x, int y, int width, int height, AtumColor color) {
-        drawRect( x, y, width, 1, color);
-        drawRect(x, y+1, 1, height-2, color);
-        drawRect(x + width - 1, y+1, 1, height-2, color);
-        drawRect( x, y + height - 1, width, 1, color);
+        drawOutline(x, y, width, height, 1, color);
     }
     public static void drawDashedOutline(int x, int y, int width, int height, AtumColor color) {
         GlStateManager.enableBlend();

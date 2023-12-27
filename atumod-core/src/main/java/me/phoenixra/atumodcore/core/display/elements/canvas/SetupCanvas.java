@@ -178,7 +178,7 @@ public class SetupCanvas extends BaseCanvas {
 
     private void clearSelection() {
         if (selectedElement != null) {
-            selectedElement.setOutline(false);
+            selectedElement.setOutline_selected(false);
             selectedElement = null;
             selectionState = ElementSelectionState.NONE;
         }
@@ -200,7 +200,7 @@ public class SetupCanvas extends BaseCanvas {
         if (event.getParentEvent().getType() != InputType.MOUSE_LEFT) return;
         if (selectedElement == null) {
             selectedElement = event.getClickedElement();
-            selectedElement.setOutline(true);
+            selectedElement.setOutline_selected(true);
             mousePos = getAtumMod().getInputHandler().getMouseOriginPosition();
             mousePos.setFirst((int) (mousePos.getFirst() / RenderUtils.getWindowRatioWidth()));
             mousePos.setSecond((int) (mousePos.getSecond() / RenderUtils.getWindowRatioWidth()));

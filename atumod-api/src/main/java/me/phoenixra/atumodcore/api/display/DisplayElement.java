@@ -65,7 +65,7 @@ public interface DisplayElement extends Cloneable{
     boolean isActive();
     void setActive(boolean active);
 
-    void setOutline(boolean outline);
+    void setOutline_selected(boolean outline_selected);
 
 
     void performAction(@NotNull String actionId,
