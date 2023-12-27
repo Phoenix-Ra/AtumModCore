@@ -1,5 +1,6 @@
 package me.phoenixra.atumodcore.api.utils;
 
+import me.phoenixra.atumodcore.api.AtumAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
@@ -19,7 +20,7 @@ public final class PlayerUtils {
      * Binds the player's head skin texture to OpenGL
      */
     public static void bindPlayerSkinTexture(){
-        if(!isLoaded) savePlayerSkin();
+        if(!isLoaded && !savePlayerSkin()) return;
         try {
             BufferedImage skinImage = ImageIO.read(skinFile);
             BufferedImage headImage = new BufferedImage(8, 8, BufferedImage.TYPE_INT_ARGB);
@@ -29,18 +30,9 @@ public final class PlayerUtils {
 
             TextureUtil.uploadTextureImage(new DynamicTexture(headImage).getGlTextureId(), headImage);
         }catch (Exception e){
-            savePlayerSkin();
-            try {
-                BufferedImage skinImage = ImageIO.read(skinFile);
-                BufferedImage headImage = new BufferedImage(8, 8, BufferedImage.TYPE_INT_ARGB);
+            AtumAPI.getInstance().getCoreMod().getLogger()
+                    .error("Failed to bind player skin! "+e.getMessage());
 
-                // Extract the head texture from the skin image
-                headImage.getGraphics().drawImage(skinImage, 0, 0, 8, 8, 8, 8, 16, 16, null);
-
-                TextureUtil.uploadTextureImage(new DynamicTexture(headImage).getGlTextureId(), headImage);
-            }catch (Exception e1){
-                e1.printStackTrace();
-            }
         }
     }
 
@@ -49,7 +41,7 @@ public final class PlayerUtils {
      * You can use that if player's UUID has been changed during the
      * game session or u want to make the first head skin binding faster
      */
-    public static void savePlayerSkin(){
+    public static boolean savePlayerSkin(){
         System.out.println("Saving player skin... "+Minecraft.getMinecraft().getSession().getProfile().getId().toString());
         String uuid = Minecraft.getMinecraft().getSession().getProfile().getId().toString();
         String skinUrl = String.format("https://crafatar.com/skins/%s.png", uuid);
@@ -60,8 +52,26 @@ public final class PlayerUtils {
 
             isLoaded = true;
         }catch (Exception e1){
-            e1.printStackTrace();
+            AtumAPI.getInstance().getCoreMod().getLogger()
+                    .error("Failed to save player skin! "+e1.getMessage());
+            AtumAPI.getInstance().getCoreMod().getLogger()
+                    .info("Saving default head instead...");
+            //copy from resources
+            try(InputStream inputStream = AtumAPI.getInstance().getCoreMod().getClass()
+                    .getResourceAsStream("/assets/atumodcore/textures/default_head.png")) {
+                if(skinFile.exists()) skinFile.delete();
+
+                FileUtils.copyInputStreamToFile(inputStream, skinFile);
+
+                isLoaded = true;
+            }catch (Exception e2){
+                AtumAPI.getInstance().getCoreMod().getLogger()
+                        .error("Failed to save default head! "+e2.getMessage());
+                return false;
+            }
+
         }
+        return true;
     }
 
     public PlayerUtils() {
