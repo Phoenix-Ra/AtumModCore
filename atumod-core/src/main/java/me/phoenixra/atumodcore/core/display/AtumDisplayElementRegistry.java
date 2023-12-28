@@ -8,10 +8,7 @@ import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
-import me.phoenixra.atumodcore.core.display.elements.ElementButton;
-import me.phoenixra.atumodcore.core.display.elements.ElementImage;
-import me.phoenixra.atumodcore.core.display.elements.ElementProgressBar;
-import me.phoenixra.atumodcore.core.display.elements.ElementText;
+import me.phoenixra.atumodcore.core.display.elements.*;
 import me.phoenixra.atumodcore.core.display.elements.canvas.DefaultCanvas;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +41,7 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
 
     @Override
     public @Nullable DisplayElement getElementTemplate(@NotNull String id) {
-        return registry.get(id.toLowerCase());
+        return registry.get(id);
     }
 
     @Override

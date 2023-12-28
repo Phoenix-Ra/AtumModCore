@@ -1,13 +1,16 @@
 package me.phoenixra.atumodcore.api.utils;
 
 import me.phoenixra.atumodcore.api.misc.AtumColor;
-import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Mouse;
@@ -333,7 +336,47 @@ public class RenderUtils {
         GlStateManager.disableBlend();
 
     }
+    public static void renderItemIntoGUI(ItemStack stack, int x, int y, float xScale, float yScale)
+    {
+        renderItemModelIntoGUI(stack, x, y, xScale,yScale, Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(stack, null, null));
+    }
+    protected static void renderItemModelIntoGUI(ItemStack stack, int x, int y, float xScale, float yScale, IBakedModel bakedmodel)
+    {
+        GlStateManager.pushMatrix();
+        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.enableAlpha();
+        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        setupGuiTransform(x, y, xScale, yScale, bakedmodel.isGui3d());
+        bakedmodel = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(bakedmodel, ItemCameraTransforms.TransformType.GUI, false);
+        Minecraft.getMinecraft().getRenderItem().renderItem(stack, bakedmodel);
+        GlStateManager.disableAlpha();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.disableLighting();
+        GlStateManager.popMatrix();
+        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+    }
+    private static void setupGuiTransform(int xPosition, int yPosition, float xScale, float yScale, boolean isGui3d)
+    {
+        GlStateManager.translate((float)xPosition, (float)yPosition, 100.0F + Minecraft.getMinecraft().getRenderItem().zLevel);
+        GlStateManager.translate(8.0F, 8.0F, 0.0F);
+        GlStateManager.scale(1.0F, -1.0F, 1.0F);
+        GlStateManager.scale(xScale, yScale, 16.0F);
 
+        if (isGui3d)
+        {
+            GlStateManager.enableLighting();
+        }
+        else
+        {
+            GlStateManager.disableLighting();
+        }
+    }
 
     /**
      * Get the mouse X and Y positions.

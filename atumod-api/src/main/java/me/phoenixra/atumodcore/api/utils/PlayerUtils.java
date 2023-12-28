@@ -19,8 +19,8 @@ public final class PlayerUtils {
     /**
      * Binds the player's head skin texture to OpenGL
      */
-    public static void bindPlayerSkinTexture(){
-        if(!isLoaded && !savePlayerSkin()) return;
+    public static boolean bindPlayerSkinTexture(){
+        if(!isLoaded && !savePlayerSkin()) return false;
         try {
             BufferedImage skinImage = ImageIO.read(skinFile);
             BufferedImage headImage = new BufferedImage(8, 8, BufferedImage.TYPE_INT_ARGB);
@@ -32,8 +32,10 @@ public final class PlayerUtils {
         }catch (Exception e){
             AtumAPI.getInstance().getCoreMod().getLogger()
                     .error("Failed to bind player skin! "+e.getMessage());
+            return false;
 
         }
+        return true;
     }
 
     /**
