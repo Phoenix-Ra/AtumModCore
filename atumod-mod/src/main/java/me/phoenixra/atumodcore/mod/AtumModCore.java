@@ -77,14 +77,6 @@ public class AtumModCore extends AtumMod {
 
         File configDir = event.getModConfigurationDirectory();
         dataFolder = new File(configDir, getName());
-        getApi().createLoadableConfig(this,
-                "config",
-                "",
-                ConfigType.YAML,
-                false
-        );
-        getConfigManager().getConfig("config").set("test", "test");
-        getConfigManager().saveConfig("config");
 
         for(AtumMod atumMod : getApi().getLoadedAtumMods()){
             atumMod.setDataFolder(this.dataFolder);
