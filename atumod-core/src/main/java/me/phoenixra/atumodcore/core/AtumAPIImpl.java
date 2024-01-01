@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -98,6 +99,11 @@ public class AtumAPIImpl implements AtumAPI {
     @Override
     public AtumMod getLoadedAtumMod(String name) {
         return mods.get(name);
+    }
+
+    @Override
+    public @NotNull Collection<AtumMod> getLoadedAtumMods() {
+        return mods.values();
     }
 
     @Override

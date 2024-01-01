@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Map;
 
 public interface AtumAPI {
@@ -114,6 +115,7 @@ public interface AtumAPI {
 
     AtumMod getCoreMod();
     @Nullable AtumMod getLoadedAtumMod(String name);
+    @NotNull Collection<AtumMod> getLoadedAtumMods();
     void registerAtumMod(@NotNull AtumMod atumMod);
 
     static AtumAPI getInstance() {

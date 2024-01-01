@@ -127,6 +127,9 @@ shadowJar {
 
     //remove unsupported meta-inf staff from newer java versions
     exclude 'META-INF/versions/**'
+    //to not to collide with the same lib on the server from bukkit
+    relocate("org.yaml", "me.phoenixra.atumodcore.libs.org.yaml")
+
 }
 
 reobf {

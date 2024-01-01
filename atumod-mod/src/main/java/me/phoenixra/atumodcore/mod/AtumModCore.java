@@ -15,6 +15,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+
 @Mod(
         modid = AtumModProperties.MOD_ID,
         name = AtumModProperties.MOD_NAME,
@@ -72,8 +74,22 @@ public class AtumModCore extends AtumMod {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
-    }
 
+        File configDir = event.getModConfigurationDirectory();
+        dataFolder = new File(configDir, getName());
+        getApi().createLoadableConfig(this,
+                "config",
+                "",
+                ConfigType.YAML,
+                false
+        );
+        getConfigManager().getConfig("config").set("test", "test");
+        getConfigManager().saveConfig("config");
+
+        for(AtumMod atumMod : getApi().getLoadedAtumMods()){
+            atumMod.setDataFolder(this.dataFolder);
+        }
+    }
     @Override
     public @NotNull String getName() {
         return "AtumModCore";

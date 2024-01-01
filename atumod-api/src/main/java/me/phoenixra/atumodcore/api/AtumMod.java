@@ -1,6 +1,7 @@
 package me.phoenixra.atumodcore.api;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.phoenixra.atumodcore.api.config.ConfigManager;
 import me.phoenixra.atumodcore.api.display.DisplayManager;
 import me.phoenixra.atumodcore.api.input.InputHandler;
@@ -12,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-
 public abstract class AtumMod {
 
     @Getter
@@ -31,8 +31,8 @@ public abstract class AtumMod {
     @Getter
     private NetworkManager networkManager;
 
-    @Getter
-    private File dataFolder;
+    @Getter @Setter
+    protected File dataFolder;
     public AtumMod() {
         if(AtumAPI.getInstance() == null) {
             AtumAPI.Instance.set(createAPI());
@@ -43,18 +43,17 @@ public abstract class AtumMod {
         }
         api = AtumAPI.getInstance();
         logger = AtumAPI.getInstance().createLogger(this);
+        configManager = AtumAPI.getInstance().createConfigManager(this);
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
             inputHandler = AtumAPI.getInstance().getCoreMod().getInputHandler();
-            configManager = AtumAPI.getInstance().createConfigManager(this);
             dataFolder =  new File(Minecraft.getMinecraft().mcDataDir,"config/" + getName());
 
             displayManager = AtumAPI.getInstance().createDisplayManager(this);
 
             networkManager = AtumAPI.getInstance().createNetworkManager(this);
-        } else {
-            dataFolder =  new File("");
         }
     }
+
 
     public abstract @NotNull String getName();
     public abstract @NotNull String getModID();
