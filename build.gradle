@@ -117,7 +117,8 @@ mixin {
 shadowJar {
     dependencies {
         exclude(dependency ->
-                !dependency.moduleGroup.startsWith(mod_group)
+                !dependency.moduleGroup.startsWith(mod_group) &&
+                        !dependency.moduleGroup.startsWith("org.yaml")
         )
     }
     duplicatesStrategy DuplicatesStrategy.EXCLUDE //prevent duplicates

@@ -16,6 +16,7 @@ public abstract class ConfigTypeHandler {
     private static HashMap<ConfigType, ConfigTypeHandler> handlers = new HashMap<>();
     static {
         handlers.put(ConfigType.JSON, new TypeHandlerJson());
+        handlers.put(ConfigType.YAML, new TypeHandlerYaml());
     }
     private ConfigType type;
     public ConfigTypeHandler(ConfigType type) {

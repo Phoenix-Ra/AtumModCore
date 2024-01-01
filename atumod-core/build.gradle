@@ -1,11 +1,15 @@
 
 plugins {
     id 'java'
+    id 'java-library'
 }
 
 
 dependencies {
     compileOnly compileOnly(project(':atumod-api'))
+
+    api 'org.yaml:snakeyaml:2.2'
+
 }
 
 
