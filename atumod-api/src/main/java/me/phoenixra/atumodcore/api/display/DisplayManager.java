@@ -13,8 +13,8 @@ public interface DisplayManager {
 
 
 
-    void addElementForHUD(@NotNull DisplayElement element);
-    void removeElementFromHUD(@NotNull DisplayElement element);
+    void setHUDCanvas(@NotNull DisplayCanvas canvas);
+    DisplayCanvas getHUDCanvas();
 
 
 

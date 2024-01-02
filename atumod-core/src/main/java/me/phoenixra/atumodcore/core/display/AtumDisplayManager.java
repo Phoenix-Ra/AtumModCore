@@ -26,7 +26,7 @@ public class AtumDisplayManager implements DisplayManager {
 
     private final Map<String, DisplayCanvas> enabledCanvases;
 
-    private final DisplayRenderer displayRenderer;
+    private DisplayRenderer displayRenderer;
     public AtumDisplayManager(AtumMod atumMod) {
         this.atumMod = atumMod;
         this.elementRegistry = new AtumDisplayElementRegistry(atumMod);
@@ -72,19 +72,17 @@ public class AtumDisplayManager implements DisplayManager {
         }
     }
 
-
-
     @Override
-    public void addElementForHUD(@NotNull DisplayElement element) {
-        displayRenderer.getBaseCanvas().addElement(element);
-
+    public void setHUDCanvas(@NotNull DisplayCanvas canvas) {
+        displayRenderer = new BaseRenderer(
+                atumMod,
+                canvas
+        );
     }
     @Override
-    public void removeElementFromHUD(@NotNull DisplayElement element) {
-        displayRenderer.getBaseCanvas().removeElement(element);
+    public DisplayCanvas getHUDCanvas() {
+        return displayRenderer.getBaseCanvas();
     }
-
-
 
     @Override
     public DisplayCanvas getEnabledCanvas(@NotNull String id) {

@@ -114,6 +114,10 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             list.add(element);
             elements.put(element.getLayer(), list);
         }
+        element.setElementOwner(this);
+        if(element instanceof DisplayCanvas){
+            ((DisplayCanvas) element).setDisplayRenderer(getDisplayRenderer());
+        }
         updateDisplayedElements();
     }
 
