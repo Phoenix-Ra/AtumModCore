@@ -79,7 +79,7 @@ public class AtumModCore extends AtumMod {
         dataFolder = new File(configDir, getName());
 
         for(AtumMod atumMod : getApi().getLoadedAtumMods()){
-            atumMod.setDataFolder(this.dataFolder);
+            atumMod.setDataFolder(new File(configDir, atumMod.getName()));
         }
     }
     @Override
