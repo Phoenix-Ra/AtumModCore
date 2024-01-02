@@ -24,6 +24,8 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter
     private String configKey = null;
     @Getter
+    private String templateId = null;
+    @Getter
     private final AtumMod atumMod;
     @Getter
     private DisplayLayer layer;
@@ -214,6 +216,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
                                                 @Nullable String configKey) {
         DisplayElement clone = clone();
         ((BaseElement)clone).id = id;
+        ((BaseElement)clone).templateId = id;
         clone.updateVariables(config,configKey);
         return clone;
     }

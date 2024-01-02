@@ -18,6 +18,7 @@ import java.util.HashMap;
 public interface DisplayElement extends Cloneable{
 
     @NotNull String getId();
+    @NotNull String getTemplateId();
     @Nullable String getConfigKey();
 
     int getX();
