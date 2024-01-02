@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -199,82 +200,24 @@ public class RenderUtils {
 
 
 
-    public static void drawCustomBar(int x, int y, int width, int height,
-                                     double value,
-                                     AtumColor colorBarLight,
-                                     AtumColor colorBarDark,
-                                     boolean outlined) {
-        drawCustomBar(x, y, width, height, value, AtumColor.WHITE, AtumColor.WHITE, colorBarLight, colorBarDark, outlined, AtumColor.BLACK);
-    }
-
 
     public static void drawCustomBar(int x, int y, int width, int height,
                                      double value,
-                                     AtumColor colorGroundLight,
-                                     AtumColor colorGroundDark,
-                                     AtumColor colorBarLight,
-                                     AtumColor colorBarDark) {
-        drawCustomBar(x, y, width, height, value, colorGroundLight, colorGroundDark, colorBarLight, colorBarDark, true, AtumColor.BLACK);
-    }
-
-
-    public static void drawCustomBar(int x, int y, int width, int height,
-                                     double value,
-                                     AtumColor colorGroundLight,
-                                     AtumColor colorGroundDark,
-                                     AtumColor colorBarLight,
-                                     AtumColor colorBarDark,
-                                     boolean outlined) {
-        drawCustomBar(x, y, width, height, value, colorGroundLight, colorGroundDark, colorBarLight, colorBarDark, outlined, AtumColor.BLACK);
-    }
-
-
-    public static void drawCustomBar(int x, int y, int width, int height,
-                                     double value,
-                                     AtumColor colorGroundLight,
-                                     AtumColor colorGroundDark,
-                                     AtumColor colorBarLight,
-                                     AtumColor colorBarDark,
-                                     AtumColor colorOutline) {
-        drawCustomBar(x, y, width, height, value, colorGroundLight, colorGroundDark, colorBarLight, colorBarDark, true, colorOutline);
-    }
-
-
-    public static void drawCustomBar(int x, int y, int width, int height,
-                                     double value,
-                                     AtumColor colorGroundLight,
-                                     AtumColor colorGroundDark,
-                                     AtumColor colorBarLight,
-                                     AtumColor colorBarDark,
-                                     boolean outlined,
-                                     AtumColor colorOutline) {
+                                     @NotNull AtumColor colorEmpty,
+                                     @NotNull AtumColor colorFilled) {
         if (value < 0.0D) {
             value = 0.0D;
-        }else if (value > 100D) {
-            value = 100D;
+        }else if (value > 100) {
+            value = 100;
         }
 
-        int offset = 1;
 
-        int filledWidth = width - (offset * 2);
-        if (filledWidth < 0)
-            filledWidth = 0;
-        int filledHeight = height - (offset * 2);
-        if (filledHeight < 0)
-            filledHeight = 0;
+        int percentFilled = (int) Math.round(value / 100.0D * width);
 
-        int percentFilled = (int) Math.round(value / 100.0D * filledWidth);
+        drawRect(x, y, percentFilled, height, colorFilled);
 
-        if (outlined)
-            drawOutline(x, y, width, height, colorOutline);
-        int halfedFilledHeight = filledHeight / 2;
-
-        drawRect(x + offset, y + offset, percentFilled, halfedFilledHeight, colorBarLight);
-        drawRect(x + offset, y + offset + halfedFilledHeight, percentFilled, filledHeight - halfedFilledHeight, colorBarDark);
-
-        if (colorGroundDark != null && colorGroundLight != null && filledWidth - percentFilled > 0) {
-            drawRect(x + offset + percentFilled, y + offset, filledWidth - percentFilled, halfedFilledHeight, colorGroundLight);
-            drawRect(x + offset + percentFilled, y + offset + halfedFilledHeight, filledWidth - percentFilled, filledHeight - halfedFilledHeight, colorGroundDark);
+        if (width - percentFilled > 0) {
+            drawRect(x + percentFilled, y, width - percentFilled, height, colorEmpty);
         }
     }
 
@@ -358,13 +301,10 @@ public class RenderUtils {
         GlStateManager.disableRescaleNormal();
         GlStateManager.disableLighting();
         GlStateManager.popMatrix();
-        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
     }
     private static void setupGuiTransform(int xPosition, int yPosition, float xScale, float yScale, boolean isGui3d)
     {
         GlStateManager.translate((float)xPosition, (float)yPosition, 100.0F + Minecraft.getMinecraft().getRenderItem().zLevel);
-        GlStateManager.translate(8.0F, 8.0F, 0.0F);
         GlStateManager.scale(1.0F, -1.0F, 1.0F);
         GlStateManager.scale(xScale, yScale, 16.0F);
 
