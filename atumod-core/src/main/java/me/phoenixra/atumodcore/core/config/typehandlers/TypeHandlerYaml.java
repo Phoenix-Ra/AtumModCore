@@ -9,6 +9,7 @@ import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.representer.Represent;
 import org.yaml.snakeyaml.representer.Representer;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class TypeHandlerYaml extends ConfigTypeHandler{
@@ -51,7 +52,11 @@ public class TypeHandlerYaml extends ConfigTypeHandler{
     }
     @Override
     protected Map<String, Object> parseToMap(String input) {
-        return newYaml().load(input);
+        Map<String,Object> map = newYaml().load(input);
+        if(map == null){
+            return new HashMap<>();
+        }
+        return map;
     }
 
     @Override
