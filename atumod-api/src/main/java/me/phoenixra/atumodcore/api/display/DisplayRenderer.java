@@ -18,6 +18,8 @@ public interface DisplayRenderer {
     void closeRenderer();
     void onRendererClosed();
 
+    @NotNull
+    DisplayCanvas getBaseCanvas();
     @Nullable
     BaseScreen getAttachedGuiScreen();
     @NotNull
