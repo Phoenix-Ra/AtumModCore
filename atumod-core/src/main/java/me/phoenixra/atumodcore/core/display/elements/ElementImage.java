@@ -203,10 +203,11 @@ public class ElementImage extends BaseElement {
         color.useColor();
         RenderUtils.renderItemIntoGUI(
                 Minecraft.getMinecraft().player.getHeldItemMainhand(),
-                getX()+13,
-                getY()+13,
+                getX()+getWidth()/2,
+                getY()+getHeight()/2,
                 getWidth(),
-                getHeight());
+                getHeight()
+        );
         hasOutline = savedOutlineState;
     }
 
