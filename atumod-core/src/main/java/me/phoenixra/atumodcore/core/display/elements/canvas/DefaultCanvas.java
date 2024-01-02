@@ -46,35 +46,27 @@ public class DefaultCanvas extends BaseCanvas{
             e.printStackTrace();
         }
     }
-    private void reload(){
-        if(!getAtumMod().isDebugEnabled()) return;
-        try {
-
-            setupCanvas.getSettingsConfig().reload();
-            getAtumMod().getDisplayManager().getElementRegistry().registerTemplate(
-                    setupCanvas.getSettingsConfig().getName(),
-                    getAtumMod().getDisplayManager().getElementRegistry().compileCanvasTemplate(
-                            setupCanvas.getSettingsConfig().getName(),
-                            getSettingsConfig()
-                    )
-            );
-            getDisplayRenderer().reloadRenderer();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
     @SubscribeEvent
     public void onPressed(ElementInputPressEvent event){
-        if(event.getParentEvent().getKeyboardCharacter() == 's' && pressedShift) {
-            reload();
-            pressedShift = false;
-            return;
-        } else if (pressedShift) {
-            pressedShift=false;
+        if(!isActive()) return;
+        if(event.getParentEvent().getType() == InputType.KEYBOARD_KEY) {
+            if(!getAtumMod().isDebugEnabled()) return;
+            getAtumMod().getLogger().info("Pressed: " + event.getParentEvent().getKeyboardCharacter());
+            if (event.getParentEvent().getKeyboardCharacter() == 'S' && pressedShift) {
+                getAtumMod().getLogger().info("Reloading");
+                reloadCanvas();
+                pressedShift = false;
+                return;
+            } else if (pressedShift) {
+                pressedShift = false;
+                return;
+            }
+        }else if(event.getParentEvent().getType() == InputType.KEYBOARD_SHIFT && !isSetupState()){
+            pressedShift = true;
             return;
         }
-        if(!isActive() && !isSetupState()) return;
+        if(!isSetupState()) return;
         if(setupCanvas != null){
             setupCanvas.onInputPress(event);
         }
@@ -100,7 +92,12 @@ public class DefaultCanvas extends BaseCanvas{
     }
     @SubscribeEvent
     public void onReleased(ElementInputReleaseEvent event){
-        if(!isActive() && !isSetupState()) return;
+        if(!isActive()) return;
+        if(event.getParentEvent().getType() != InputType.KEYBOARD_SHIFT && !isSetupState()) {
+            pressedShift = false;
+            return;
+        }
+        if(!isSetupState()) return;
         if(setupCanvas != null){
             setupCanvas.onInputRelease(event);
         }
@@ -114,11 +111,6 @@ public class DefaultCanvas extends BaseCanvas{
             updateVariables(getSettingsConfig(),null);
         }
 
-    }
-
-    @Override
-    public @NotNull DisplayRenderer getDisplayRenderer() {
-        return null;
     }
 
     @Override

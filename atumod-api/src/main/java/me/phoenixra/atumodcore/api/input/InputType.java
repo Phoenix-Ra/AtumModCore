@@ -1,7 +1,7 @@
 package me.phoenixra.atumodcore.api.input;
 
 public enum InputType {
-    KEYBOARD,
+    KEYBOARD_KEY,
     KEYBOARD_LEFT_CTRL,
     KEYBOARD_RIGHT_CTRL,
     KEYBOARD_SHIFT,

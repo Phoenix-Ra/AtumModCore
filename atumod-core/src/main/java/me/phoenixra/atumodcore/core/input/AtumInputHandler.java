@@ -106,9 +106,9 @@ public class AtumInputHandler implements InputHandler {
         char typedChar = Keyboard.getEventCharacter();
 
         if(Keyboard.getEventKeyState()){
-            callOnPressListeners(new InputPressEvent(InputType.KEYBOARD, keycode, typedChar));
+            callOnPressListeners(new InputPressEvent(InputType.KEYBOARD_KEY, keycode, typedChar));
         }else{
-            callOnReleaseListeners(new InputReleaseEvent(InputType.KEYBOARD, keycode, typedChar));
+            callOnReleaseListeners(new InputReleaseEvent(InputType.KEYBOARD_KEY, keycode, typedChar));
         }
 
         if (inputBlocked) {

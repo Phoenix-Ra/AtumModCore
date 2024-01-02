@@ -23,7 +23,7 @@ public class InputPressEvent {
     private final char keyboardCharacter;
 
     public InputPressEvent(InputType type, int keyboardKey, char keyboardCharacter,int mouseX, int mouseY, int mouseDeltaX, int mouseDeltaY, int mouseScrollDelta) {
-        if(type == InputType.KEYBOARD){
+        if(type == InputType.KEYBOARD_KEY){
             switch (keyboardKey){
                 case 29:
                     this.type = InputType.KEYBOARD_LEFT_CTRL;
