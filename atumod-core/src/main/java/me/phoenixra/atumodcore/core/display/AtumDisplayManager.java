@@ -4,6 +4,7 @@ import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.*;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
+import me.phoenixra.atumodcore.api.display.impl.BaseRenderer;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import me.phoenixra.atumodcore.core.display.elements.canvas.DefaultCanvas;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -25,14 +26,15 @@ public class AtumDisplayManager implements DisplayManager {
 
     private final Map<String, DisplayCanvas> enabledCanvases;
 
-    private final DisplayCanvas canvasHUD;
+    private final DisplayRenderer displayRenderer;
     public AtumDisplayManager(AtumMod atumMod) {
         this.atumMod = atumMod;
         this.elementRegistry = new AtumDisplayElementRegistry(atumMod);
         this.actionRegistry = new AtumDisplayActionRegistry(atumMod);
 
         enabledCanvases = new ConcurrentHashMap<>();
-        canvasHUD = new DefaultCanvas(
+
+        DisplayCanvas canvasHUD = new DefaultCanvas(
                 atumMod,
                 null
         );
@@ -40,6 +42,11 @@ public class AtumDisplayManager implements DisplayManager {
         canvasHUD.setOriginY(0);
         canvasHUD.setOriginWidth(1920);
         canvasHUD.setOriginHeight(1080);
+        displayRenderer = new BaseRenderer(
+                atumMod,
+                canvasHUD
+        );
+
 
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -59,7 +66,7 @@ public class AtumDisplayManager implements DisplayManager {
 
             int[] mousePos = RenderUtils.getMousePos();
 
-            canvasHUD.draw(scaleFactor, 1, 1,
+            displayRenderer.render(
                     mousePos[0], mousePos[1]
             );
         }
@@ -69,12 +76,12 @@ public class AtumDisplayManager implements DisplayManager {
 
     @Override
     public void addElementForHUD(@NotNull DisplayElement element) {
-        canvasHUD.addElement(element);
+        displayRenderer.getBaseCanvas().addElement(element);
 
     }
     @Override
     public void removeElementFromHUD(@NotNull DisplayElement element) {
-        canvasHUD.removeElement(element);
+        displayRenderer.getBaseCanvas().removeElement(element);
     }
 
 

@@ -1,5 +1,6 @@
 package me.phoenixra.atumodcore.api.display.impl;
 
+import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class BaseRenderer implements DisplayRenderer {
     private final AtumMod atumMod;
+    @Getter
     private DisplayCanvas baseCanvas;
 
     private AtumDebugger renderDebugger;
@@ -40,6 +42,7 @@ public class BaseRenderer implements DisplayRenderer {
 
     @Override
     public void reloadRenderer() {
+        if(baseCanvas.getTemplateId() == null) return;
         atumMod.getLogger().info("Reloading renderer for canvas: "+baseCanvas.getId());
         baseCanvas.onRemove();
         baseCanvas = atumMod.getDisplayManager()
