@@ -9,6 +9,7 @@ import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.StringUtils;
+import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,9 +28,17 @@ public class ElementText extends BaseElement {
 
     @Override
     protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+        String text = StringUtils.formatWithPlaceholders(getAtumMod(),this.text, PlaceholderContext.EMPTY);
+        int textWidth =  Minecraft.getMinecraft().fontRenderer.getStringWidth(
+                StringUtils.removeColorCodes(text)
+        ) - 2;
+        int localX = getX();
+        if(textWidth>getWidth()){
+            localX = getX() - (textWidth - getWidth())/2;
+        }
         font.drawString(
-                StringUtils.formatWithPlaceholders(getAtumMod(),text, PlaceholderContext.EMPTY),
-                getX(),
+                text,
+                localX,
                 getY(),
                 AtumColor.WHITE
         );
