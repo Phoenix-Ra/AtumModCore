@@ -1,10 +1,12 @@
 package me.phoenixra.atumodcore.core.display.elements;
 
+import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
+import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +17,6 @@ public class ElementProgressBar extends BaseElement {
     private AtumColor barColorDark = AtumColor.BLACK;
     private String progressExpression;
 
-    private boolean outlined;
 
     private int timer;
     public ElementProgressBar(@NotNull AtumMod atumMod,
@@ -34,15 +35,14 @@ public class ElementProgressBar extends BaseElement {
                 getY(),
                 getWidth(),
                 getHeight(),
-                timer,
+                AtumAPI.getInstance().evaluate(
+                        getAtumMod(),
+                        progressExpression, PlaceholderContext.EMPTY
+                ),
                 barColorLight,
                 barColorDark,
-                outlined
+                false
         );
-        /*AtumAPI.getInstance().evaluate(
-                        AtumModCore.getInstance(),
-                        progressExpression, PlaceholderContext.EMPTY
-                )*/
     }
 
 
@@ -60,10 +60,6 @@ public class ElementProgressBar extends BaseElement {
         String progressExpression = config.getStringOrNull("settings.progress-expression");
         if(progressExpression!=null){
             this.progressExpression = progressExpression;
-        }
-        Boolean outlined = config.getBoolOrNull("settings.outlined");
-        if(outlined!=null){
-            this.outlined = outlined;
         }
     }
 
