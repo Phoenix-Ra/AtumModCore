@@ -27,6 +27,8 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
     boolean isSetupState();
     void setSetupState(boolean setupState);
 
+    void reloadCanvas();
+
     DisplayElement clone();
 
 }

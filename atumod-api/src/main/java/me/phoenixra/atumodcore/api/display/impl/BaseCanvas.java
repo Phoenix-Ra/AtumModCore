@@ -262,6 +262,24 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     }
 
     @Override
+    public void reloadCanvas() {
+        try {
+
+            getSettingsConfig().reload();
+            getAtumMod().getDisplayManager().getElementRegistry().registerTemplate(
+                    getSettingsConfig().getName(),
+                    getAtumMod().getDisplayManager().getElementRegistry().compileCanvasTemplate(
+                            getSettingsConfig().getName(),
+                            getSettingsConfig()
+                    )
+            );
+            getDisplayRenderer().reloadRenderer();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if(obj instanceof BaseCanvas){
             BaseCanvas canvas = (BaseCanvas) obj;
