@@ -171,8 +171,8 @@ public class ElementImage extends BaseElement {
         color.useColor();
         RenderUtils.renderItemIntoGUI(
                 Minecraft.getMinecraft().player.getHeldItemMainhand(),
-                getX(),
-                getY(),
+                getX()+13,
+                getY()+13,
                 getWidth(),
                 getHeight());
     }
