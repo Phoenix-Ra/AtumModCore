@@ -61,7 +61,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Setter
     private boolean outline_selected;
 
-    private boolean hasOutline = false;
+    protected boolean hasOutline = false;
     private AtumColor outlineColor = AtumColor.WHITE;
     private int outlineSize = 1;
 

@@ -41,9 +41,7 @@ public class BaseRenderer implements DisplayRenderer {
             initRenderer();
             init = true;
         }
-        renderDebugger.start(()->{
-            baseCanvas.draw(RenderUtils.getScaleFactor(), 1, 1,mouseX,mouseY);
-        });
+        baseCanvas.draw(RenderUtils.getScaleFactor(), 1, 1,mouseX,mouseY);
     }
 
     @Override

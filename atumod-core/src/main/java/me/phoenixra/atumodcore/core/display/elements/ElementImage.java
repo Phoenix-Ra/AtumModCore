@@ -33,6 +33,13 @@ public class ElementImage extends BaseElement {
     private int textureWidthDefault;
     private int textureHeightDefault;
 
+    private AtumColor outlineColorDefault = AtumColor.WHITE;
+    private int outlineSizeDefault = 1;
+    private boolean hasOutlineDefault = false;
+
+    private boolean savedOutlineState = false;
+
+
     public ElementImage(@NotNull AtumMod atumMod,@NotNull DisplayCanvas elementOwner) {
         super(atumMod,elementOwner);
 
@@ -89,6 +96,17 @@ public class ElementImage extends BaseElement {
                 this.textureYDefault = config.getIntOrDefault("settings.defaultImage.textureY",0);
                 this.textureWidthDefault = config.getIntOrDefault("settings.defaultImage.textureWidth",0);
                 this.textureHeightDefault = config.getIntOrDefault("settings.defaultImage.textureHeight",0);
+               if(config.hasPath("settings.defaultImage.outline")) {
+                   this.outlineColorDefault = AtumColor.fromHex(
+                           config.getStringOrDefault("settings.defaultImage.outline.color",
+                                   "#FFFFFFFF")
+                   );
+                   this.outlineSizeDefault = config.getIntOrDefault("settings.defaultImage.outline.size", 1);
+                   this.hasOutlineDefault = true;
+               }else{
+                   hasOutlineDefault = false;
+               }
+
             }else {
                 ResourceLocation imageLocation = new ResourceLocation(image);
                 this.imageBinder = () -> textureManager.bindTexture(imageLocation);
@@ -130,6 +148,8 @@ public class ElementImage extends BaseElement {
                     PlaceholderContext.of(config)
             );
         }
+        savedOutlineState = hasOutline;
+
     }
 
 
@@ -141,8 +161,7 @@ public class ElementImage extends BaseElement {
     private void drawHeldItemOrDefault(){
 
         if(Minecraft.getMinecraft().player == null ||
-                Minecraft.getMinecraft().player.getHeldItemMainhand()
-                        == ItemStack.EMPTY) {
+                Minecraft.getMinecraft().player.getHeldItemMainhand().isEmpty()) {
             Minecraft.getMinecraft().getTextureManager().bindTexture(
                     speciaImageDefault
             );
@@ -166,6 +185,19 @@ public class ElementImage extends BaseElement {
                         textureHeightDefault
                 );
             }
+
+            if(hasOutlineDefault){
+                RenderUtils.drawOutline(
+                        getX(),
+                        getY(),
+                        getWidth(),
+                        getHeight(),
+                        outlineSizeDefault,
+                        outlineColorDefault
+                );
+                savedOutlineState = hasOutline;
+            }
+            hasOutline = false;
             return;
         }
         color.useColor();
@@ -175,6 +207,7 @@ public class ElementImage extends BaseElement {
                 getY()+13,
                 getWidth(),
                 getHeight());
+        hasOutline = savedOutlineState;
     }
 
     @Override
