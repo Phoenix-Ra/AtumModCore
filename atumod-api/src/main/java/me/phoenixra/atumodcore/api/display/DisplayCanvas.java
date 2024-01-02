@@ -20,8 +20,8 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
     @Nullable DisplayElement getElementFromCoordinates(int posX, int posY);
 
 
-    BaseScreen getAttachedGuiScreen();
-    void setAttachedGuiScreen(@NotNull BaseScreen attachedGuiScreen);
+    @NotNull DisplayRenderer getDisplayRenderer();
+    void setDisplayRenderer(@NotNull DisplayRenderer displayRenderer);
 
 
     boolean isSetupState();

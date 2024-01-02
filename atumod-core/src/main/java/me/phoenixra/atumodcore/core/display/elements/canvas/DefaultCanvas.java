@@ -2,6 +2,7 @@ package me.phoenixra.atumodcore.core.display.elements.canvas;
 
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
+import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
@@ -45,9 +46,34 @@ public class DefaultCanvas extends BaseCanvas{
             e.printStackTrace();
         }
     }
+    private void reload(){
+        if(!getAtumMod().isDebugEnabled()) return;
+        try {
+
+            setupCanvas.getSettingsConfig().reload();
+            getAtumMod().getDisplayManager().getElementRegistry().registerTemplate(
+                    setupCanvas.getSettingsConfig().getName(),
+                    getAtumMod().getDisplayManager().getElementRegistry().compileCanvasTemplate(
+                            setupCanvas.getSettingsConfig().getName(),
+                            getSettingsConfig()
+                    )
+            );
+            getDisplayRenderer().reloadRenderer();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     @SubscribeEvent
     public void onPressed(ElementInputPressEvent event){
+        if(event.getParentEvent().getKeyboardCharacter() == 's' && pressedShift) {
+            reload();
+            pressedShift = false;
+            return;
+        } else if (pressedShift) {
+            pressedShift=false;
+            return;
+        }
         if(!isActive() && !isSetupState()) return;
         if(setupCanvas != null){
             setupCanvas.onInputPress(event);
@@ -88,6 +114,11 @@ public class DefaultCanvas extends BaseCanvas{
             updateVariables(getSettingsConfig(),null);
         }
 
+    }
+
+    @Override
+    public @NotNull DisplayRenderer getDisplayRenderer() {
+        return null;
     }
 
     @Override

@@ -10,6 +10,7 @@ import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
+import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
@@ -23,8 +24,8 @@ import java.util.*;
 
 public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, Cloneable {
 
-    @Getter @Setter
-    private BaseScreen attachedGuiScreen;
+    @Getter
+    private DisplayRenderer displayRenderer;
 
     private HashMap<DisplayLayer, LinkedHashSet<DisplayElement>> elements = new HashMap<>();
 
@@ -248,6 +249,17 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     }
 
 
+    @Override
+    public void setDisplayRenderer(@NotNull DisplayRenderer displayRenderer) {
+        this.displayRenderer = displayRenderer;
+        for(LinkedHashSet<DisplayElement> list : elements.values()){
+            for(DisplayElement element : list){
+               if(element instanceof DisplayCanvas){
+                   ((DisplayCanvas) element).setDisplayRenderer(displayRenderer);
+               }
+            }
+        }
+    }
 
     @Override
     public boolean equals(Object obj) {
