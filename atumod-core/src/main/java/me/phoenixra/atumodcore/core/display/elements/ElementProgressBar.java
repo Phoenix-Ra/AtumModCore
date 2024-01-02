@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class ElementProgressBar extends BaseElement {
 
-    private AtumColor barColorLight = AtumColor.WHITE;
-    private AtumColor barColorDark = AtumColor.BLACK;
+    private AtumColor barColorFilled = AtumColor.BLACK;
+    private AtumColor barColorEmpty = AtumColor.GREEN;
     private String progressExpression;
 
 
@@ -39,9 +39,8 @@ public class ElementProgressBar extends BaseElement {
                         getAtumMod(),
                         progressExpression, PlaceholderContext.EMPTY
                 ),
-                barColorLight,
-                barColorDark,
-                false
+                barColorEmpty,
+                barColorFilled
         );
     }
 
@@ -49,13 +48,13 @@ public class ElementProgressBar extends BaseElement {
     @Override
     public void updateVariables(@NotNull Config config,@Nullable String configKey) {
         super.updateVariables(config,configKey);
-        String color = config.getStringOrNull("settings.color-light");
+        String color = config.getStringOrNull("settings.color-filled");
         if(color!=null){
-            this.barColorLight = AtumColor.fromHex(color);
+            this.barColorFilled = AtumColor.fromHex(color);
         }
-        color = config.getStringOrNull("settings.color-dark");
+        color = config.getStringOrNull("settings.color-empty");
         if(color!=null){
-            this.barColorDark = AtumColor.fromHex(color);
+            this.barColorEmpty = AtumColor.fromHex(color);
         }
         String progressExpression = config.getStringOrNull("settings.progress-expression");
         if(progressExpression!=null){
@@ -66,11 +65,11 @@ public class ElementProgressBar extends BaseElement {
     @Override
     protected BaseElement onClone(BaseElement clone) {
         ElementProgressBar cloneImage = (ElementProgressBar) clone;
-        if(cloneImage.barColorLight!=null) {
-            cloneImage.barColorLight = new AtumColor(cloneImage.barColorLight.getRed(), cloneImage.barColorLight.getGreen(), cloneImage.barColorLight.getBlue(), cloneImage.barColorLight.getAlpha());
+        if(cloneImage.barColorFilled !=null) {
+            cloneImage.barColorFilled = new AtumColor(cloneImage.barColorFilled.getRed(), cloneImage.barColorFilled.getGreen(), cloneImage.barColorFilled.getBlue(), cloneImage.barColorFilled.getAlpha());
         }
-        if(cloneImage.barColorDark!=null) {
-            cloneImage.barColorDark = new AtumColor(cloneImage.barColorDark.getRed(), cloneImage.barColorDark.getGreen(), cloneImage.barColorDark.getBlue(), cloneImage.barColorDark.getAlpha());
+        if(cloneImage.barColorEmpty !=null) {
+            cloneImage.barColorEmpty = new AtumColor(cloneImage.barColorEmpty.getRed(), cloneImage.barColorEmpty.getGreen(), cloneImage.barColorEmpty.getBlue(), cloneImage.barColorEmpty.getAlpha());
         }
         return cloneImage;
     }
