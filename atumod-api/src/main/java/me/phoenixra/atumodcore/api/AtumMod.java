@@ -42,6 +42,7 @@ public abstract class AtumMod {
             }
         }
         api = AtumAPI.getInstance();
+        api.registerAtumMod(this);
         logger = AtumAPI.getInstance().createLogger(this);
         configManager = AtumAPI.getInstance().createConfigManager(this);
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
