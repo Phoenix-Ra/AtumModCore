@@ -10,17 +10,28 @@ import me.phoenixra.atumodcore.api.utils.PlayerUtils;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ElementImage extends BaseElement {
     private Runnable imageBinder;
+    private ResourceLocation speciaImageDefault;
+
+
     private AtumColor color = AtumColor.WHITE;
     private int textureX;
     private int textureY;
     private int textureWidth;
     private int textureHeight;
+
+
+    private AtumColor colorDefault = AtumColor.WHITE;
+    private int textureXDefault;
+    private int textureYDefault;
+    private int textureWidthDefault;
+    private int textureHeightDefault;
 
     public ElementImage(@NotNull AtumMod atumMod,@NotNull DisplayCanvas elementOwner) {
         super(atumMod,elementOwner);
@@ -29,6 +40,10 @@ public class ElementImage extends BaseElement {
 
     @Override
     protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+        if(speciaImageDefault!=null){
+            drawHeldItemOrDefault();
+            return;
+        }
         imageBinder.run();
         color.useColor();
         if(textureHeight==0||textureWidth==0){
@@ -58,8 +73,22 @@ public class ElementImage extends BaseElement {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         String image = config.getStringOrNull("settings.image");
         if(image!=null){
+            speciaImageDefault = null;
             if(image.equalsIgnoreCase("playerSkin")){
                 this.imageBinder = PlayerUtils::bindPlayerSkinTexture;
+            }else if(image.equalsIgnoreCase("heldItem")){
+               speciaImageDefault = new ResourceLocation(
+                        config.getStringOrDefault("settings.defaultImage.location",
+                                "atumodcore:textures/button.png")
+                );
+               this.colorDefault = AtumColor.fromHex(
+                       config.getStringOrDefault("settings.defaultImage.color",
+                               "#FFFFFFFF")
+               );
+                this.textureXDefault = config.getIntOrDefault("settings.defaultImage.textureX",0);
+                this.textureYDefault = config.getIntOrDefault("settings.defaultImage.textureY",0);
+                this.textureWidthDefault = config.getIntOrDefault("settings.defaultImage.textureWidth",0);
+                this.textureHeightDefault = config.getIntOrDefault("settings.defaultImage.textureHeight",0);
             }else {
                 ResourceLocation imageLocation = new ResourceLocation(image);
                 this.imageBinder = () -> textureManager.bindTexture(imageLocation);
@@ -101,6 +130,51 @@ public class ElementImage extends BaseElement {
                     PlaceholderContext.of(config)
             );
         }
+    }
+
+
+
+
+
+
+
+    private void drawHeldItemOrDefault(){
+
+        if(Minecraft.getMinecraft().player == null ||
+                Minecraft.getMinecraft().player.getHeldItemMainhand()
+                        == ItemStack.EMPTY) {
+            Minecraft.getMinecraft().getTextureManager().bindTexture(
+                    speciaImageDefault
+            );
+            colorDefault.useColor();
+            if(textureHeightDefault==0||textureWidthDefault==0){
+                RenderUtils.drawCompleteImage(
+                        getX(),
+                        getY(),
+                        getWidth(),
+                        getHeight()
+                );
+            }else {
+                RenderUtils.drawPartialImage(
+                        getX(),
+                        getY(),
+                        getWidth(),
+                        getHeight(),
+                        textureXDefault,
+                        textureYDefault,
+                        textureWidthDefault,
+                        textureHeightDefault
+                );
+            }
+            return;
+        }
+        color.useColor();
+        RenderUtils.renderItemIntoGUI(
+                Minecraft.getMinecraft().player.getHeldItemMainhand(),
+                getX(),
+                getY(),
+                getWidth(),
+                getHeight());
     }
 
     @Override
