@@ -40,11 +40,17 @@ public class BaseRenderer implements DisplayRenderer {
 
     @Override
     public void reloadRenderer() {
+        atumMod.getLogger().info("Reloading renderer for canvas: "+baseCanvas.getId());
         baseCanvas.onRemove();
         baseCanvas = atumMod.getDisplayManager()
                 .getElementRegistry().getDrawableCanvas(
-                        baseCanvas.getId()
+                        baseCanvas.getTemplateId()
                 );
+        if(baseCanvas == null){
+            atumMod.getLogger().error("Failed to reload renderer for canvas: "+baseCanvas.getId());
+            return;
+        }
+        baseCanvas.setDisplayRenderer(this);
     }
 
     @Override
