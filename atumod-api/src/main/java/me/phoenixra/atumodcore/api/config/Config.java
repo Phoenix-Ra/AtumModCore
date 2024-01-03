@@ -138,17 +138,12 @@ public interface Config extends InjectablePlaceholderList {
                                             @Nullable PlaceholderContext context){
         String text = getStringOrNull(path);
         if(text == null) return null;
-        if(context == null){
-            return StringUtils.formatWithPlaceholders(
-                    getAtumMod(),
-                    text,
-                    new PlaceholderContext(this)
-            );
-        }
-        context.getInjectableContext().addInjectablePlaceholder(getPlaceholderInjections());
-        String formatted = StringUtils.formatWithPlaceholders(getAtumMod(),text,context);;
-        context.getInjectableContext().removeInjectablePlaceholder(getPlaceholderInjections());
-        return formatted;
+        return StringUtils.formatWithPlaceholders(
+                getAtumMod(),
+                text,
+                context != null ? context.withInjectableContext(this) :
+                        new PlaceholderContext(this)
+        );
     }
 
     @NotNull
