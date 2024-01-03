@@ -4,21 +4,24 @@ import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
-import me.phoenixra.atumodcore.api.misc.AtumDebugger;
-import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.gui.GuiMainMenu;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 public class BaseScreen extends GuiMainMenu {
     @Getter
     private AtumMod atumMod;
     @Getter
-    private BaseRenderer renderer;
+    private DisplayRenderer renderer;
 
-    public BaseScreen(@NotNull AtumMod atumMod, @NotNull DisplayCanvas canvas) {
+    public BaseScreen(@NotNull AtumMod atumMod, @NotNull DisplayCanvas canvas, @Nullable DisplayRenderer renderer){
         this.atumMod = atumMod;
-        this.renderer = new BaseRenderer(atumMod,canvas,this);
+        this.renderer = renderer != null ? renderer :
+                new BaseRenderer(atumMod,canvas,this);
+    }
+    public BaseScreen(@NotNull AtumMod atumMod, @NotNull DisplayCanvas canvas) {
+        this(atumMod,canvas,null);
     }
     @Override
     public void initGui() {
