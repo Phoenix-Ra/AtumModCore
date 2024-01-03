@@ -20,7 +20,7 @@ public class AtumConfig implements Config {
     @Getter
     private AtumMod atumMod;
     private ConfigType configType;
-    private List<InjectablePlaceholder> injections;
+    private List<InjectablePlaceholder> injections = Collections.synchronizedList(new ArrayList<>());
     private ConcurrentHashMap<String, Object> values = new ConcurrentHashMap<>();
 
     public AtumConfig(AtumMod atumMod, ConfigType configType, Map<String, Object> values) {
@@ -210,27 +210,36 @@ public class AtumConfig implements Config {
         }
         return new ArrayList<>();
     }
-    public void addInjectablePlaceholder(List<InjectablePlaceholder> placeholders) {
-        injections.addAll(placeholders);
-    }
-    public void removeInjectablePlaceholder(List<InjectablePlaceholder> placeholders) {
-        injections.removeAll(placeholders);
-    }
 
     @Override
     public void addInjectablePlaceholder(@NotNull Iterable<InjectablePlaceholder> placeholders) {
-
+        for (InjectablePlaceholder placeholder : placeholders) {
+            if (placeholder == null) {
+                continue;
+            }
+            if (injections.contains(placeholder)) {
+                continue;
+            }
+            injections.add(placeholder);
+        }
     }
 
     @Override
     public void removeInjectablePlaceholder(@NotNull Iterable<InjectablePlaceholder> placeholders) {
-
+        for (InjectablePlaceholder placeholder : placeholders) {
+            if (placeholder == null) {
+                continue;
+            }
+            injections.remove(placeholder);
+        }
     }
 
+    @Override
     public void clearInjectedPlaceholders() {
         injections.clear();
     }
-    public List<InjectablePlaceholder> getPlaceholderInjections() {
+    @Override
+    public @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
         return injections;
     }
 
