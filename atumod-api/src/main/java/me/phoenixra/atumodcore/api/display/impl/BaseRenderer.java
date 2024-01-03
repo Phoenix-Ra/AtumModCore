@@ -5,11 +5,17 @@ import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.misc.AtumDebugger;
+import me.phoenixra.atumodcore.api.placeholders.InjectablePlaceholder;
+import me.phoenixra.atumodcore.api.placeholders.InjectablePlaceholderList;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class BaseRenderer implements DisplayRenderer {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class BaseRenderer implements DisplayRenderer, InjectablePlaceholderList {
     private final AtumMod atumMod;
     @Getter
     private DisplayCanvas baseCanvas;
@@ -17,6 +23,8 @@ public class BaseRenderer implements DisplayRenderer {
     private AtumDebugger renderDebugger;
 
     private BaseScreen attachedGuiScreen;
+
+    private List<InjectablePlaceholder> injections = Collections.synchronizedList(new ArrayList<>());
 
     private boolean init = false;
 
@@ -58,6 +66,7 @@ public class BaseRenderer implements DisplayRenderer {
             return;
         }
         baseCanvas.setDisplayRenderer(this);
+        onReload();
     }
 
     @Override
@@ -67,10 +76,13 @@ public class BaseRenderer implements DisplayRenderer {
 
     }
 
-    @Override
     public void onRendererClosed() {
         //override if needed
     }
+    public void onReload(){
+        //override if needed
+    }
+
 
     @Override
     public final @Nullable BaseScreen getAttachedGuiScreen() {
@@ -81,4 +93,37 @@ public class BaseRenderer implements DisplayRenderer {
     public final @NotNull AtumMod getAtumMod() {
         return atumMod;
     }
+
+    @Override
+    public void addInjectablePlaceholder(@NotNull Iterable<InjectablePlaceholder> placeholders) {
+        for (InjectablePlaceholder placeholder : placeholders) {
+            if (placeholder == null) {
+                continue;
+            }
+            if (injections.contains(placeholder)) {
+                continue;
+            }
+            injections.add(placeholder);
+        }
+    }
+
+    @Override
+    public void removeInjectablePlaceholder(@NotNull Iterable<InjectablePlaceholder> placeholders) {
+        for (InjectablePlaceholder placeholder : placeholders) {
+            if (placeholder == null) {
+                continue;
+            }
+            injections.remove(placeholder);
+        }
+    }
+
+    @Override
+    public void clearInjectedPlaceholders() {
+        injections.clear();
+    }
+    @Override
+    public @NotNull List<InjectablePlaceholder> getPlaceholderInjections() {
+        return injections;
+    }
+
 }
