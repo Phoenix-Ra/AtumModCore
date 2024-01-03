@@ -69,6 +69,7 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
         BaseCanvas canvas = (BaseCanvas) (element).cloneWithNewVariables(
                 id,
                 config,
+                null,
                 null
         );
         getAtumMod().getLogger().info("Found canvas: " + canvas);
@@ -88,7 +89,8 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
             BaseElement elementBaseElement = (BaseElement)( elementElement).cloneWithNewVariables(
                     key,
                     elementSection,
-                    key
+                    key,
+                    canvas
             );
             elementBaseElement.setElementOwner(canvas);
             canvas.addElement(elementBaseElement);

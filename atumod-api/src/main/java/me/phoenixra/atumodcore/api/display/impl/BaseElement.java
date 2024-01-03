@@ -213,10 +213,14 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Override
     public DisplayElement cloneWithNewVariables(@NotNull String id,
                                                 @NotNull Config config,
-                                                @Nullable String configKey) {
+                                                @Nullable String configKey,
+                                                @Nullable DisplayCanvas elementOwner) {
         DisplayElement clone = clone();
         ((BaseElement)clone).id = id;
         ((BaseElement)clone).templateId = id;
+        if(elementOwner != null) {
+            clone.setElementOwner(elementOwner);
+        }
         clone.updateVariables(config,configKey);
         return clone;
     }

@@ -88,7 +88,8 @@ public interface DisplayElement extends Cloneable{
 
     DisplayElement cloneWithNewVariables(@NotNull String id,
                                          @NotNull Config config,
-                                         @Nullable String configKey);
+                                         @Nullable String configKey,
+                                         @Nullable DisplayCanvas elementOwner);
     /**
      * Clone the element with a new id
      * The new id gonna have the following pattern:

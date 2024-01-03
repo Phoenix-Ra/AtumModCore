@@ -37,7 +37,10 @@ public class ElementProgressBar extends BaseElement {
                 getHeight(),
                 AtumAPI.getInstance().evaluate(
                         getAtumMod(),
-                        progressExpression, PlaceholderContext.EMPTY
+                        progressExpression,
+                        PlaceholderContext.of(
+                                getElementOwner().getDisplayRenderer()
+                        )
                 ),
                 barColorEmpty,
                 barColorFilled

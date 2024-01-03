@@ -78,6 +78,7 @@ public class ElementImage extends BaseElement {
     public void updateVariables(@NotNull Config config, @Nullable String configKey) {
         super.updateVariables(config,configKey);
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+        PlaceholderContext context = PlaceholderContext.of(getElementOwner().getDisplayRenderer());
         String image = config.getStringOrNull("settings.image");
         if(image!=null){
             speciaImageDefault = null;
@@ -118,34 +119,30 @@ public class ElementImage extends BaseElement {
         }
         String textureX = config.getStringOrNull("settings.textureX");
         if(textureX!=null){
-            this.textureX = (int) config.getAtumMod().getApi().evaluate(
-                    config.getAtumMod(),
-                    textureX,
-                    PlaceholderContext.of(config)
+            this.textureX = (int)  config.getEvaluated(
+                    "settings.textureX",
+                    context
             );
         }
         String textureY = config.getStringOrNull("settings.textureY");
         if(textureY!=null){
-            this.textureY = (int) config.getAtumMod().getApi().evaluate(
-                    config.getAtumMod(),
-                    textureY,
-                    PlaceholderContext.of(config)
+            this.textureY = (int)  config.getEvaluated(
+                    "settings.textureY",
+                    context
             );
         }
         String textureWidth = config.getStringOrNull("settings.textureWidth");
         if(textureWidth!=null){
-            this.textureWidth = (int) config.getAtumMod().getApi().evaluate(
-                    config.getAtumMod(),
-                    textureWidth,
-                    PlaceholderContext.of(config)
+            this.textureWidth = (int)  config.getEvaluated(
+                    "settings.textureWidth",
+                    context
             );
         }
         String textureHeight = config.getStringOrNull("settings.textureHeight");
         if(textureHeight!=null){
-            this.textureHeight = (int) config.getAtumMod().getApi().evaluate(
-                    config.getAtumMod(),
-                    textureHeight,
-                    PlaceholderContext.of(config)
+            this.textureHeight = (int)  config.getEvaluated(
+                    "settings.textureHeight",
+                    context
             );
         }
         savedOutlineState = hasOutline;

@@ -28,7 +28,11 @@ public class ElementText extends BaseElement {
 
     @Override
     protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
-        String text = StringUtils.formatWithPlaceholders(getAtumMod(),this.text, PlaceholderContext.EMPTY);
+        String text = StringUtils.formatWithPlaceholders(
+                getAtumMod(),
+                this.text,
+                PlaceholderContext.of(getElementOwner().getDisplayRenderer())
+        );
         int textWidth =  Minecraft.getMinecraft().fontRenderer.getStringWidth(
                 StringUtils.removeColorCodes(text)
         ) - 2;
