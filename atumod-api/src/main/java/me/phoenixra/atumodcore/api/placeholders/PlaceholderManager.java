@@ -1,13 +1,17 @@
 package me.phoenixra.atumodcore.api.placeholders;
 
 
-import com.google.common.collect.ImmutableSet;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
+import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import me.phoenixra.atumodcore.api.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -84,32 +88,53 @@ public class PlaceholderManager {
     public static String translatePlaceholders(@NotNull AtumMod atumMod,
                                                @NotNull final String text,
                                                @NotNull final PlaceholderContext context) {
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*2);
+        List<Future<PairRecord<String,String>>> futures = new ArrayList<>();
+
+        for (String textToReplace : findPlaceholdersIn(text)) {
+            Future<PairRecord<String,String>> future = executor.submit(() -> {
+                for (InjectablePlaceholder placeholder : context.getInjectableContext().getPlaceholderInjections()) {
+                    if (textToReplace.matches(placeholder.getPattern().pattern())) {
+                        String replacement = placeholder.getValue(textToReplace, context);
+                        if (replacement == null) return new PairRecord<>("","");
+                        return new PairRecord<>(
+                                textToReplace,
+                                replacement
+                        );
+                    }
+                }
+                for (RegistrablePlaceholder placeholder : REGISTERED_PLACEHOLDERS.getOrDefault(atumMod, new HashSet<>())) {
+                    if (textToReplace.matches(placeholder.getPattern().pattern())) {
+                        String replacement = placeholder.getValue(textToReplace, context);
+                        if (replacement == null) return new PairRecord<>("","");
+                        return new PairRecord<>(
+                                textToReplace,
+                                replacement
+                        );
+                    }
+                }
+                return new PairRecord<>("","");
+            });
+            futures.add(future);
+        }
+
         String translated = text;
-        //to not obtain placeholder value when it's not necessary
-        for(String textToReplace : findPlaceholdersIn(text)){
-            boolean f = false;
-            for(InjectablePlaceholder placeholder : context.getInjectableContext().getPlaceholderInjections()){
-                if(textToReplace.matches(placeholder.getPattern().pattern())){
-                    translated = placeholder.tryTranslateQuickly(translated,context);
-                    f = true;
-                    break;
-                }
-            }
-            if(f) continue;
-            for (RegistrablePlaceholder placeholder : REGISTERED_PLACEHOLDERS.getOrDefault(atumMod, new HashSet<>())) {
-                if (textToReplace.matches(placeholder.getPattern().pattern())) {
-                    String replacement = placeholder.getValue(textToReplace, context);
-                    if(replacement == null) break;
-                    translated = StringUtils.replaceFast(
-                            translated,
-                            textToReplace,
-                            replacement
-                    );
-                    break;
-                }
+        for (Future<PairRecord<String,String>> future : futures) {
+            try {
+                PairRecord<String,String> out = future.get();
+                if(out.getFirst().isEmpty()) continue;
+                translated = StringUtils.replaceFast(translated,
+                        out.getFirst(),
+                        out.getSecond()
+                );
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
         }
-        return translated;
+
+        executor.shutdown();
+
+        return translated.toString();
     }
 
     /**
