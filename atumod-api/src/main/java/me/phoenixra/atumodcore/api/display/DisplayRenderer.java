@@ -2,10 +2,11 @@ package me.phoenixra.atumodcore.api.display;
 
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
+import me.phoenixra.atumodcore.api.placeholders.InjectablePlaceholderList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface DisplayRenderer {
+public interface DisplayRenderer extends InjectablePlaceholderList {
 
     void initRenderer();
 

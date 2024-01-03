@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class BaseRenderer implements DisplayRenderer, InjectablePlaceholderList {
+public class BaseRenderer implements DisplayRenderer {
     private final AtumMod atumMod;
     @Getter
     private DisplayCanvas baseCanvas;
