@@ -28,6 +28,16 @@ public interface InjectablePlaceholderList {
     }
 
     /**
+     * Remove arguments.
+     *
+     * @param placeholders The placeholders.
+     */
+    default void removeInjectablePlaceholder(@NotNull InjectablePlaceholder... placeholders) {
+        this.removeInjectablePlaceholder(Arrays.stream(placeholders).collect(Collectors.toSet()));
+    }
+
+
+    /**
      * Inject placeholders.
      * <p>
      * If a placeholder already has the same pattern, it should be replaced.
