@@ -4,6 +4,7 @@ import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.network.data.DisplayActionData;
 import me.phoenixra.atumodcore.api.network.data.DisplayEventData;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
@@ -120,6 +121,9 @@ public abstract class NetworkManager {
     }
     @SideOnly(Side.CLIENT)
     protected final void sendToServer(IMessage message) {
+        if(Minecraft.getMinecraft().playerController == null) {
+            return;
+        }
         NETWORK_CHANNEL.sendToServer(message);
     }
 
