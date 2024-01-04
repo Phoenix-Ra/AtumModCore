@@ -7,10 +7,7 @@ import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.core.display.actions.*;
 import me.phoenixra.atumodcore.core.display.actions.canvas.ActionAddElement;
 import me.phoenixra.atumodcore.core.display.actions.canvas.ActionRemoveElement;
-import me.phoenixra.atumodcore.core.display.actions.renderer.ActionChangeBaseCanvas;
-import me.phoenixra.atumodcore.core.display.actions.renderer.ActionClearData;
-import me.phoenixra.atumodcore.core.display.actions.renderer.ActionRemoveData;
-import me.phoenixra.atumodcore.core.display.actions.renderer.ActionSetData;
+import me.phoenixra.atumodcore.core.display.actions.renderer.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +29,9 @@ public class AtumDisplayActionRegistry implements DisplayActionRegistry {
 
         register("change_base_canvas", new ActionChangeBaseCanvas());
         register("set_data", new ActionSetData());
+        register("set_multiple_data", new ActionSetMultipleData());
         register("remove_data", new ActionRemoveData());
+        register("remove_multiple_data", new ActionRemoveMultipleData());
         register("clear_data", new ActionClearData());
 
         register("open_gui", new ActionOpenGui());
