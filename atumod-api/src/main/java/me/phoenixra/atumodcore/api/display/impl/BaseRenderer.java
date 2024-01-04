@@ -6,6 +6,7 @@ import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.data.DisplayData;
 import me.phoenixra.atumodcore.api.misc.AtumDebugger;
+import me.phoenixra.atumodcore.api.network.data.DisplayEventData;
 import me.phoenixra.atumodcore.api.placeholders.InjectablePlaceholder;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +46,14 @@ public class BaseRenderer implements DisplayRenderer {
     public void initRenderer() {
         renderDebugger =
         new AtumDebugger(atumMod,"testMenu-"+baseCanvas.getId(),"Drawing the menu");
+        getAtumMod().getNetworkManager().sendDisplayEvent(
+                new DisplayEventData(
+                        getAtumMod().getModID(),
+                        baseCanvas.getId(),
+                        baseCanvas.getId(),
+                        DisplayEventData.EVENT_OPENED
+                )
+        );
     }
 
     @Override
@@ -76,6 +85,14 @@ public class BaseRenderer implements DisplayRenderer {
 
     @Override
     public final void closeRenderer() {
+        getAtumMod().getNetworkManager().sendDisplayEvent(
+                new DisplayEventData(
+                        getAtumMod().getModID(),
+                        baseCanvas.getId(),
+                        baseCanvas.getId(),
+                        DisplayEventData.EVENT_CLOSED
+                )
+        );
         baseCanvas.onRemove();
         onRendererClosed();
 

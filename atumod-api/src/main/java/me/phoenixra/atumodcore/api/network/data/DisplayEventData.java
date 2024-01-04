@@ -10,4 +10,10 @@ public class DisplayEventData {
     private String canvasId;
     private String elementId;
     private int eventId;
+
+
+
+    public static final int EVENT_OPENED = 0;
+    public static final int EVENT_CLOSED = 1;
+
 }
