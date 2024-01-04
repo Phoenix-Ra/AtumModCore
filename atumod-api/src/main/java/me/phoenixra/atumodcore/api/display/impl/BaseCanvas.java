@@ -82,7 +82,12 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         }
         super.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
         for(DisplayElement element : displayedElementsReversed){
-            element.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
+            boolean active = getDisplayRenderer().getDisplayData()
+                    .isElementEnabled(element.getConfigKey());
+
+            if(active) {
+                element.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
+            }
         }
     }
 

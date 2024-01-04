@@ -1,6 +1,7 @@
 package me.phoenixra.atumodcore.api.display;
 
 import me.phoenixra.atumodcore.api.AtumMod;
+import me.phoenixra.atumodcore.api.display.data.DisplayData;
 import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
 import me.phoenixra.atumodcore.api.placeholders.InjectablePlaceholderList;
 import org.jetbrains.annotations.NotNull;

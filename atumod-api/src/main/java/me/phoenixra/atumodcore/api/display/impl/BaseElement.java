@@ -55,7 +55,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
     @Getter
     private boolean fixRatio = false;
-    @Getter @Setter
+    @Getter
     private boolean active = true;
 
     @Setter
@@ -197,17 +197,10 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if(obj instanceof BaseElement){
-            BaseElement element = (BaseElement) obj;
-            return element.getId().equals(getId());
-        }
-        return super.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return getId().hashCode();
+    public void setActive(boolean active) {
+        this.active = active;
+        getElementOwner().getDisplayRenderer().getDisplayData()
+                .setElementEnabled(getConfigKey(),active);
     }
 
     @Override
@@ -245,4 +238,19 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         }
     }
     protected abstract BaseElement onClone(BaseElement clone);
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof BaseElement){
+            BaseElement element = (BaseElement) obj;
+            return element.getId().equals(getId());
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 }
