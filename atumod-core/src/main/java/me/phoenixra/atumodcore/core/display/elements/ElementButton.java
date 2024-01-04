@@ -152,22 +152,40 @@ public class ElementButton extends BaseElement {
                     context
             );
         }
-        String actionOnPress = config.getStringOrNull("settings.action-onPress");
-        if(actionOnPress!=null){
-            String[] split = actionOnPress.split("@");
-            this.actionOnPress = config.getAtumMod().getDisplayManager().getActionRegistry()
-                    .getActionById(split[0]);
-            if(split.length>1){
-                this.argsOnPress = split[1].split(";");
+        if (config.hasPath("settings.actions-onPress")) {
+            Config actionsOnPress = config.getSubsection("settings.actions-onPress");
+            for (String key : actionsOnPress.getKeys(false)) {
+                String actionOnPress = actionsOnPress.getStringOrNull(key);
+                String[] split = actionOnPress.split("@");
+                DisplayAction action = getAtumMod().getDisplayManager().getActionRegistry()
+                        .getActionById(split[0]);
+                if(action == null){
+                    getAtumMod().getLogger().error("Could not find action: " + split[0]);
+                    continue;
+                }
+                String[] args = new String[0];
+                if (split.length > 1) {
+                    args = split[1].split(";");
+                }
+                this.actionsOnPress.add(new PairRecord<>(action, args));
             }
         }
-        String actionOnRelease = config.getStringOrNull("settings.action-onRelease");
-        if(actionOnRelease!=null){
-            String[] split = actionOnRelease.split("@");
-            this.actionOnRelease = config.getAtumMod().getDisplayManager().getActionRegistry().
-                    getActionById(split[0]);
-            if(split.length>1){
-                this.argsOnRelease = split[1].split(";");
+        if (config.hasPath("settings.actions-onRelease")) {
+            Config actionsOnRelease = config.getSubsection("settings.actions-onRelease");
+            for (String key : actionsOnRelease.getKeys(false)) {
+                String actionOnRelease = actionsOnRelease.getStringOrNull(key);
+                String[] split = actionOnRelease.split("@");
+                DisplayAction action = getAtumMod().getDisplayManager().getActionRegistry()
+                        .getActionById(split[0]);
+                if(action == null){
+                    getAtumMod().getLogger().error("Could not find action: " + split[0]);
+                    continue;
+                }
+                String[] args = new String[0];
+                if (split.length > 1) {
+                    args = split[1].split(";");
+                }
+                this.actionsOnRelease.add(new PairRecord<>(action, args));
             }
         }
     }
@@ -184,14 +202,14 @@ public class ElementButton extends BaseElement {
         if(event.getParentEvent().getType() != InputType.MOUSE_LEFT) return;
         if(event.getClickedElement().equals(this)) {
             this.clicked = true;
-            if (actionOnPress != null)
-                actionOnPress.perform(
+            if (actionsOnPress != null)
+                actionsOnPress.forEach(it->it.getFirst().perform(
                         ActionData.builder().atumMod(getAtumMod()).attachedElement(this)
                                 .mouseX(event.getParentEvent().getMouseX())
                                 .mouseY(event.getParentEvent().getMouseY())
-                                .args(argsOnPress)
+                                .args(it.getSecond())
                                 .build()
-                );
+                ));
         }
     }
     @SubscribeEvent
@@ -201,14 +219,14 @@ public class ElementButton extends BaseElement {
         if(event.getClickedElement().equals(this)){
             if(!clicked) return;
             clicked = false;
-            if(actionOnRelease!=null){
-                actionOnRelease.perform(
+            if (actionsOnRelease != null) {
+                actionsOnRelease.forEach(it->it.getFirst().perform(
                         ActionData.builder().atumMod(getAtumMod()).attachedElement(this)
                                 .mouseX(event.getParentEvent().getMouseX())
                                 .mouseY(event.getParentEvent().getMouseY())
-                                .args(argsOnRelease)
+                                .args(it.getSecond())
                                 .build()
-                );
+                ));
             }
         }
     }
