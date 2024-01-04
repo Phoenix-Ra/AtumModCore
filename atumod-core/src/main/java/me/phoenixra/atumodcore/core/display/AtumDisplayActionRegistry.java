@@ -8,6 +8,8 @@ import me.phoenixra.atumodcore.core.display.actions.*;
 import me.phoenixra.atumodcore.core.display.actions.canvas.ActionAddElement;
 import me.phoenixra.atumodcore.core.display.actions.canvas.ActionRemoveElement;
 import me.phoenixra.atumodcore.core.display.actions.renderer.*;
+import me.phoenixra.atumodcore.core.display.actions.server.ActionConnectToServer;
+import me.phoenixra.atumodcore.core.display.actions.server.ActionSendDisplayEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,12 +29,16 @@ public class AtumDisplayActionRegistry implements DisplayActionRegistry {
         register("add_element", new ActionAddElement());
         register("remove_element", new ActionRemoveElement());
 
+        register("close_renderer", new ActionCloseRenderer());
         register("change_base_canvas", new ActionChangeBaseCanvas());
         register("set_data", new ActionSetData());
         register("set_multiple_data", new ActionSetMultipleData());
         register("remove_data", new ActionRemoveData());
         register("remove_multiple_data", new ActionRemoveMultipleData());
         register("clear_data", new ActionClearData());
+
+        register("connect_to_server", new ActionConnectToServer());
+        register("send_display_event", new ActionSendDisplayEvent());
 
         register("open_gui", new ActionOpenGui());
         register("close_gui", new ActionCloseGui());
@@ -41,7 +47,6 @@ public class AtumDisplayActionRegistry implements DisplayActionRegistry {
         register("open_singleplayer", new ActionOpenSingleplayer());
         register("open_multiplayer", new ActionOpenMultiplayer());
         register("open_link", new ActionOpenLink());
-        register("connect_to_server", new ActionConnectToServer());
     }
 
     @Override

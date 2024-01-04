@@ -1,4 +1,4 @@
-package me.phoenixra.atumodcore.core.display.actions;
+package me.phoenixra.atumodcore.core.display.actions.server;
 
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
