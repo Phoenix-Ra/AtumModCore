@@ -20,6 +20,11 @@ public interface DisplayRenderer extends InjectablePlaceholderList {
 
     @NotNull
     DisplayCanvas getBaseCanvas();
+    void setBaseCanvas(@NotNull DisplayCanvas baseCanvas);
+
+    @NotNull
+    DisplayData getDisplayData();
+
     @Nullable
     BaseScreen getAttachedGuiScreen();
     @NotNull

@@ -4,9 +4,9 @@ import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
+import me.phoenixra.atumodcore.api.display.data.DisplayData;
 import me.phoenixra.atumodcore.api.misc.AtumDebugger;
 import me.phoenixra.atumodcore.api.placeholders.InjectablePlaceholder;
-import me.phoenixra.atumodcore.api.placeholders.InjectablePlaceholderList;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,6 +24,9 @@ public class BaseRenderer implements DisplayRenderer {
 
     private BaseScreen attachedGuiScreen;
 
+    @Getter
+    private DisplayData displayData;
+
     private List<InjectablePlaceholder> injections = Collections.synchronizedList(new ArrayList<>());
 
     private boolean init = false;
@@ -32,6 +35,7 @@ public class BaseRenderer implements DisplayRenderer {
         this.atumMod = atumMod;
         this.baseCanvas = baseCanvas;
         this.attachedGuiScreen = attachedGuiScreen;
+        displayData = new BaseDisplayData(this);
         baseCanvas.setDisplayRenderer(this);
     }
     public BaseRenderer(AtumMod atumMod, DisplayCanvas baseCanvas) {
@@ -66,6 +70,7 @@ public class BaseRenderer implements DisplayRenderer {
             return;
         }
         baseCanvas.setDisplayRenderer(this);
+        displayData.clearData();
         onReload();
     }
 
@@ -75,6 +80,13 @@ public class BaseRenderer implements DisplayRenderer {
         onRendererClosed();
 
     }
+
+    @Override
+    public void setBaseCanvas(@NotNull DisplayCanvas baseCanvas) {
+        this.baseCanvas = baseCanvas;
+        baseCanvas.setDisplayRenderer(this);
+    }
+
 
     public void onRendererClosed() {
         //override if needed
