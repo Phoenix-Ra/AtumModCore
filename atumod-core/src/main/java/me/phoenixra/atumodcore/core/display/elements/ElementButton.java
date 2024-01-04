@@ -10,6 +10,7 @@ import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
+import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,11 +20,14 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ElementButton extends BaseElement {
 
     private Runnable imageBinder;
 
-    private float[] brightnessDefault = new float[]{1.0f,1.0f,1.0f};
+    private float[] brightnessDefault = new float[]{1.0f, 1.0f, 1.0f};
     private float[] brightnessOnHover = new float[0];
     private float[] brightnessOnClick = new float[0];
     private int textureX;
@@ -31,35 +35,34 @@ public class ElementButton extends BaseElement {
     private int textureWidth;
     private int textureHeight;
 
-    private DisplayAction actionOnPress;
-    private DisplayAction actionOnRelease;
+    private List<PairRecord<DisplayAction,String[]>> actionsOnPress = new ArrayList<>();
+    private List<PairRecord<DisplayAction,String[]>> actionsOnRelease = new ArrayList<>();
 
-    private String[] argsOnPress;
-    private String[] argsOnRelease;
     private boolean clicked;
+
     public ElementButton(@NotNull AtumMod atumMod,
                          @NotNull DisplayCanvas elementOwner) {
-        super(atumMod,elementOwner);
+        super(atumMod, elementOwner);
     }
 
     @Override
     protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
         imageBinder.run();
-        if(clicked && brightnessOnClick.length==3){
+        if (clicked && brightnessOnClick.length == 3) {
             GlStateManager.color(
                     brightnessOnClick[0],
                     brightnessOnClick[1],
                     brightnessOnClick[2],
                     1.0f
             );
-        }else if(isHovered(mouseX,mouseY) && brightnessOnHover.length == 3){
+        } else if (isHovered(mouseX, mouseY) && brightnessOnHover.length == 3) {
             GlStateManager.color(
                     brightnessOnHover[0],
                     brightnessOnHover[1],
                     brightnessOnHover[2],
                     1.0f
             );
-        }else {
+        } else {
             GlStateManager.color(
                     brightnessDefault[0],
                     brightnessDefault[1],
@@ -67,14 +70,14 @@ public class ElementButton extends BaseElement {
                     1.0f
             );
         }
-        if(textureHeight==0||textureWidth==0){
+        if (textureHeight == 0 || textureWidth == 0) {
             RenderUtils.drawCompleteImage(
                     getX(),
                     getY(),
                     getWidth(),
                     getHeight()
             );
-        }else {
+        } else {
             RenderUtils.drawPartialImage(
                     getX(),
                     getY(),
@@ -91,25 +94,25 @@ public class ElementButton extends BaseElement {
 
     @Override
     public void updateVariables(@NotNull Config config, @Nullable String configKey) {
-        super.updateVariables(config,configKey);
+        super.updateVariables(config, configKey);
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         PlaceholderContext context = PlaceholderContext.of(getElementOwner().getDisplayRenderer());
 
         String image = config.getStringOrNull("settings.image");
-        if(image!=null){
+        if (image != null) {
             ResourceLocation imageLocation = new ResourceLocation(image);
-            this.imageBinder = ()-> textureManager.bindTexture(imageLocation);
+            this.imageBinder = () -> textureManager.bindTexture(imageLocation);
         }
         String brightness = config.getStringOrNull("settings.brightness");
-        if(brightness!=null){
+        if (brightness != null) {
             this.brightnessDefault = new float[]{
-                        Float.parseFloat(brightness.split(";")[0]),
-                        Float.parseFloat(brightness.split(";")[1]),
-                        Float.parseFloat(brightness.split(";")[2])
+                    Float.parseFloat(brightness.split(";")[0]),
+                    Float.parseFloat(brightness.split(";")[1]),
+                    Float.parseFloat(brightness.split(";")[2])
             };
         }
         brightness = config.getStringOrNull("settings.brightness-onHover");
-        if(brightness!=null){
+        if (brightness != null) {
             this.brightnessOnHover = new float[]{
                     Float.parseFloat(brightness.split(";")[0]),
                     Float.parseFloat(brightness.split(";")[1]),
@@ -117,7 +120,7 @@ public class ElementButton extends BaseElement {
             };
         }
         brightness = config.getStringOrNull("settings.brightness-onClick");
-        if(brightness!=null){
+        if (brightness != null) {
             this.brightnessOnClick = new float[]{
                     Float.parseFloat(brightness.split(";")[0]),
                     Float.parseFloat(brightness.split(";")[1]),
@@ -125,28 +128,28 @@ public class ElementButton extends BaseElement {
             };
         }
         String textureX = config.getStringOrNull("settings.textureX");
-        if(textureX!=null){
+        if (textureX != null) {
             this.textureX = (int) config.getEvaluated(
                     "settings.textureX",
                     context
             );
         }
         String textureY = config.getStringOrNull("settings.textureY");
-        if(textureY!=null){
+        if (textureY != null) {
             this.textureY = (int) config.getEvaluated(
                     "settings.textureY",
                     context
             );
         }
         String textureWidth = config.getStringOrNull("settings.textureWidth");
-        if(textureWidth!=null){
+        if (textureWidth != null) {
             this.textureWidth = (int) config.getEvaluated(
                     "settings.textureWidth",
                     context
             );
         }
         String textureHeight = config.getStringOrNull("settings.textureHeight");
-        if(textureHeight!=null){
+        if (textureHeight != null) {
             this.textureHeight = (int) config.getEvaluated(
                     "settings.textureHeight",
                     context
@@ -193,14 +196,16 @@ public class ElementButton extends BaseElement {
     @Override
     protected BaseElement onClone(BaseElement clone) {
         ElementButton cloneImage = (ElementButton) clone;
+        cloneImage.actionsOnPress = new ArrayList<>(this.actionsOnPress);
+        cloneImage.actionsOnRelease = new ArrayList<>(this.actionsOnRelease);
         return cloneImage;
     }
 
     @SubscribeEvent
-    public void onPressed(ElementInputPressEvent event){
-        if(!isActive()) return;
-        if(event.getParentEvent().getType() != InputType.MOUSE_LEFT) return;
-        if(event.getClickedElement().equals(this)) {
+    public void onPressed(ElementInputPressEvent event) {
+        if (!isActive()) return;
+        if (event.getParentEvent().getType() != InputType.MOUSE_LEFT) return;
+        if (event.getClickedElement().equals(this)) {
             this.clicked = true;
             if (actionsOnPress != null)
                 actionsOnPress.forEach(it->it.getFirst().perform(
@@ -212,12 +217,13 @@ public class ElementButton extends BaseElement {
                 ));
         }
     }
+
     @SubscribeEvent
-    public void onReleased(ElementInputReleaseEvent event){
-        if(!isActive()) return;
-        if(event.getParentEvent().getType() != InputType.MOUSE_LEFT) return;
-        if(event.getClickedElement().equals(this)){
-            if(!clicked) return;
+    public void onReleased(ElementInputReleaseEvent event) {
+        if (!isActive()) return;
+        if (event.getParentEvent().getType() != InputType.MOUSE_LEFT) return;
+        if (event.getClickedElement().equals(this)) {
+            if (!clicked) return;
             clicked = false;
             if (actionsOnRelease != null) {
                 actionsOnRelease.forEach(it->it.getFirst().perform(
