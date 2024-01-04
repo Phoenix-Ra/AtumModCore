@@ -14,7 +14,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class PacketHandlerPerformDisplayAction implements IMessageHandler<PacketPerformDisplayAction, IMessage> {
     @Override
     public IMessage onMessage(PacketPerformDisplayAction message, MessageContext ctx) {
-        AtumMod atumMod = AtumAPI.getInstance().getLoadedAtumMod(message.atumModId);
+        String atumModName =
+                ctx.getClientHandler().getNetworkManager().channel()
+                        .id().asShortText().split("@")[0];
+        System.out.println("ATUM MOD NAME FROM PACKET: " + atumModName);
+        AtumMod atumMod = AtumAPI.getInstance().getLoadedAtumMod(atumModName);
         if(atumMod==null) {
             return null;
         }

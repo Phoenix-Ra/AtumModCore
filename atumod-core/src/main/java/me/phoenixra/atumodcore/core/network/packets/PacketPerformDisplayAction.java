@@ -3,10 +3,10 @@ package me.phoenixra.atumodcore.core.network.packets;
 import io.netty.buffer.ByteBuf;
 import me.phoenixra.atumodcore.api.network.data.DisplayActionData;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 public class PacketPerformDisplayAction implements IMessage {
-    protected String atumModId;
     protected String canvasId;
     protected String elementId;
     protected String actionId;
@@ -14,20 +14,21 @@ public class PacketPerformDisplayAction implements IMessage {
 
 
     public PacketPerformDisplayAction(){
-        atumModId = "";
         canvasId = "";
         elementId = "";
         actionId = "";
         args = "";
     }
-    public PacketPerformDisplayAction(String atumModId,
-                                      String canvasId,
+    public PacketPerformDisplayAction(String canvasId,
                                       String elementId,
-                                      String actionId,
-                                      String[] args){
-        this.atumModId = atumModId;
+                                      @NotNull String actionId,
+                                      @NotNull String[] args){
         this.canvasId = canvasId;
+        if(this.canvasId==null)
+            this.canvasId = "";
         this.elementId = elementId;
+        if(this.elementId==null)
+            this.elementId = "";
         this.actionId = actionId;
         StringBuilder argsBuilder = new StringBuilder();
         for(String arg : args){
@@ -36,7 +37,6 @@ public class PacketPerformDisplayAction implements IMessage {
         this.args = argsBuilder.toString();
     }
     public PacketPerformDisplayAction(DisplayActionData data){
-        this.atumModId = data.getAtumModId();
         this.canvasId = data.getCanvasId();
         this.elementId = data.getElementId();
         this.actionId = data.getActionId();
@@ -49,9 +49,6 @@ public class PacketPerformDisplayAction implements IMessage {
 
     @Override
     public void toBytes(ByteBuf buf) {
-        byte[] atumModIdBytes = atumModId.getBytes(StandardCharsets.UTF_8);
-        buf.writeInt(atumModIdBytes.length);
-        buf.writeBytes(atumModIdBytes);
 
         byte[] canvasIdBytes = canvasId.getBytes(StandardCharsets.UTF_8);
         buf.writeInt(canvasIdBytes.length);
@@ -72,10 +69,6 @@ public class PacketPerformDisplayAction implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        int atumModIdLength = buf.readInt();
-        byte[] atumModIdBytes = new byte[atumModIdLength];
-        buf.readBytes(atumModIdBytes);
-        atumModId = new String(atumModIdBytes, StandardCharsets.UTF_8);
 
         int canvasIdLength = buf.readInt();
         byte[] canvasIdBytes = new byte[canvasIdLength];

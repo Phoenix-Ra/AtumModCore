@@ -10,9 +10,12 @@ import lombok.Data;
  */
 @Data @AllArgsConstructor
 public class DisplayActionData {
-    private String atumModId;
     private String canvasId;
     private String elementId;
     private String actionId;
     private String[] args;
+
+
+
+    //@TODO: add default actions that will be commonly used
 }

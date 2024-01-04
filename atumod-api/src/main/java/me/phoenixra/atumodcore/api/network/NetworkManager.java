@@ -18,7 +18,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -32,13 +36,17 @@ public abstract class NetworkManager {
     @SideOnly(Side.SERVER)
     private List<Consumer<DisplayEventData>> displayEventConsumers;
 
+    @SideOnly(Side.SERVER)
+    private Map<EntityPlayerMP, List<String>> openedCanvases;
+
     public NetworkManager(@NotNull AtumMod atumMod) {
         this.atumMod = atumMod;
         NETWORK_CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(
-                atumMod.getName().toLowerCase() + "@atumodcore"
+                atumMod.getName() + "@atumodcore"
         );
         if(FMLCommonHandler.instance().getSide() == Side.SERVER) {
-            displayEventConsumers = new java.util.concurrent.CopyOnWriteArrayList<>();
+            displayEventConsumers = Collections.synchronizedList(new ArrayList<>());
+            openedCanvases = new ConcurrentHashMap<>();
         }
 
     }
@@ -50,12 +58,40 @@ public abstract class NetworkManager {
             @NotNull DisplayActionData data
    );
 
+
     @SideOnly(Side.CLIENT)
     public abstract void sendDisplayEvent(
             @NotNull DisplayEventData data
     );
 
-
+    @SideOnly(Side.SERVER)
+    public void handleDisplayEvent(
+            @NotNull EntityPlayerMP player,
+            @NotNull DisplayEventData data
+    ){
+        if(data.getEventId() == DisplayEventData.EVENT_OPENED) {
+            List<String> openedCanvasesForPlayer = openedCanvases.getOrDefault(player, new ArrayList<>());
+            openedCanvasesForPlayer.add(data.getCanvasId());
+            openedCanvases.put(player, openedCanvasesForPlayer);
+        } else if(data.getEventId() == DisplayEventData.EVENT_CLOSED) {
+            List<String> openedCanvasesForPlayer = openedCanvases.get(player);
+            if(openedCanvasesForPlayer == null ||
+                    !openedCanvasesForPlayer.contains(data.getCanvasId())) {
+                //ignore unrecognized canvas events
+                return;
+            }
+            openedCanvasesForPlayer.remove(data.getCanvasId());
+            openedCanvases.put(player, openedCanvasesForPlayer);
+        }else {
+            List<String> openedCanvasesForPlayer = openedCanvases.get(player);
+            if(openedCanvasesForPlayer == null ||
+                    !openedCanvasesForPlayer.contains(data.getCanvasId())) {
+                //ignore unrecognized canvas events
+                return;
+            }
+        }
+        displayEventConsumers.forEach(consumer -> consumer.accept(data));
+    }
 
 
     @SideOnly(Side.SERVER)
@@ -73,6 +109,20 @@ public abstract class NetworkManager {
         displayEventConsumers.clear();
     }
 
+
+
+    @SideOnly(Side.SERVER)
+    public List<String> getOpenedCanvasesForPlayer(
+            @NotNull EntityPlayerMP player
+    ){
+        return openedCanvases.getOrDefault(player, new ArrayList<>());
+    }
+    @SideOnly(Side.SERVER)
+    public void clearOpenedCanvasesForPlayer(
+            @NotNull EntityPlayerMP player
+    ){
+        openedCanvases.remove(player);
+    }
 
 
 

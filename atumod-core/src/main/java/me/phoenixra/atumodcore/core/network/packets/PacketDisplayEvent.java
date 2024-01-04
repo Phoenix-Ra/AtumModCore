@@ -74,4 +74,13 @@ public class PacketDisplayEvent implements IMessage {
         buf.writeInt(eventId);
 
     }
+
+    public DisplayEventData asDisplayEventData(){
+        return new DisplayEventData(
+                atumModId,
+                canvasId,
+                elementId,
+                eventId
+        );
+    }
 }
