@@ -7,8 +7,8 @@ import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 public class ActionChangeBaseCanvas implements DisplayAction {
     @Override
     public void perform(ActionData data) {
-        if(data.getAttachedElement()==null) return;
-        String canvasTemplateId = data.getArgs()[0];
+        if(data.getAttachedElement()==null || data.getActionArgs() == null) return;
+        String canvasTemplateId = data.getActionArgs().getArgs()[0];
         if(canvasTemplateId==null) return;
         DisplayCanvas canvas = data.getAtumMod().getDisplayManager().
                 getElementRegistry().getDrawableCanvas(canvasTemplateId);

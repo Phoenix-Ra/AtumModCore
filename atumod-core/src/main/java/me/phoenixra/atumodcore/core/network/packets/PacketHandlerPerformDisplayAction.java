@@ -4,6 +4,7 @@ package me.phoenixra.atumodcore.core.network.packets;
 import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
+import me.phoenixra.atumodcore.api.display.actions.ActionArgs;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -29,7 +30,7 @@ public class PacketHandlerPerformDisplayAction implements IMessageHandler<Packet
                             .attachedEvent(null)
                             .mouseX(0)
                             .mouseY(0)
-                            .args(message.args.split(";"))
+                            .actionArgs(new ActionArgs(message.args))
                             .build()
             );
 
@@ -43,7 +44,7 @@ public class PacketHandlerPerformDisplayAction implements IMessageHandler<Packet
         ).findFirst().ifPresent(
                 el -> el.performAction(
                         message.actionId,
-                        message.args.split(";")
+                        message.args
                 )
         );
 

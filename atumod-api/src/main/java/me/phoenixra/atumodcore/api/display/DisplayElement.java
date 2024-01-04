@@ -4,6 +4,7 @@ package me.phoenixra.atumodcore.api.display;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
+import me.phoenixra.atumodcore.api.display.actions.ActionArgs;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
@@ -72,7 +73,7 @@ public interface DisplayElement extends Cloneable{
     void performAction(@NotNull String actionId,
                        @NotNull ActionData actionData);
     default void performAction(@NotNull String actionId,
-                          @NotNull String[] args){
+                          @NotNull String args){
         performAction(actionId,
                 new ActionData(
                         getAtumMod(),
@@ -80,7 +81,7 @@ public interface DisplayElement extends Cloneable{
                         null,
                         getLastMouseX(),
                         getLastMouseY(),
-                        args
+                        new ActionArgs(args)
                 )
         );
     }

@@ -3,6 +3,7 @@ package me.phoenixra.atumodcore.core.display.elements;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
+import me.phoenixra.atumodcore.api.display.actions.ActionArgs;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
@@ -35,8 +36,8 @@ public class ElementButton extends BaseElement {
     private int textureWidth;
     private int textureHeight;
 
-    private List<PairRecord<DisplayAction,String[]>> actionsOnPress = new ArrayList<>();
-    private List<PairRecord<DisplayAction,String[]>> actionsOnRelease = new ArrayList<>();
+    private List<PairRecord<DisplayAction, ActionArgs>> actionsOnPress = new ArrayList<>();
+    private List<PairRecord<DisplayAction,ActionArgs>> actionsOnRelease = new ArrayList<>();
 
     private boolean clicked;
 
@@ -166,9 +167,9 @@ public class ElementButton extends BaseElement {
                     getAtumMod().getLogger().error("Could not find action: " + split[0]);
                     continue;
                 }
-                String[] args = new String[0];
+                ActionArgs args = null;
                 if (split.length > 1) {
-                    args = split[1].split(";");
+                    args = new ActionArgs(split[1]);
                 }
                 this.actionsOnPress.add(new PairRecord<>(action, args));
             }
@@ -184,9 +185,9 @@ public class ElementButton extends BaseElement {
                     getAtumMod().getLogger().error("Could not find action: " + split[0]);
                     continue;
                 }
-                String[] args = new String[0];
+                ActionArgs args = null;
                 if (split.length > 1) {
-                    args = split[1].split(";");
+                    args = new ActionArgs(split[1]);
                 }
                 this.actionsOnRelease.add(new PairRecord<>(action, args));
             }
@@ -212,7 +213,7 @@ public class ElementButton extends BaseElement {
                         ActionData.builder().atumMod(getAtumMod()).attachedElement(this)
                                 .mouseX(event.getParentEvent().getMouseX())
                                 .mouseY(event.getParentEvent().getMouseY())
-                                .args(it.getSecond())
+                                .actionArgs(it.getSecond())
                                 .build()
                 ));
         }
@@ -230,7 +231,7 @@ public class ElementButton extends BaseElement {
                         ActionData.builder().atumMod(getAtumMod()).attachedElement(this)
                                 .mouseX(event.getParentEvent().getMouseX())
                                 .mouseY(event.getParentEvent().getMouseY())
-                                .args(it.getSecond())
+                                .actionArgs(it.getSecond())
                                 .build()
                 ));
             }

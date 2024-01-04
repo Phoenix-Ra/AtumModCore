@@ -9,7 +9,9 @@ import net.minecraft.client.Minecraft;
 public class ActionOpenGui implements DisplayAction {
     @Override
     public void perform(ActionData data) {
-        String guiId = data.getArgs()[0];
+        if(data.getActionArgs() == null) return;
+
+        String guiId = data.getActionArgs().getArgs()[0];
         if(guiId == null) return;
         DisplayCanvas canvas = data.getAtumMod().getDisplayManager().getElementRegistry()
                 .getDrawableCanvas(guiId);

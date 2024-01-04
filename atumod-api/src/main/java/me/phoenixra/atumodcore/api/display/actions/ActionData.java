@@ -20,7 +20,7 @@ public class ActionData {
     private int mouseX;
     private int mouseY;
     @Nullable
-    private String[] args;
+    private ActionArgs actionArgs;
 
 
 

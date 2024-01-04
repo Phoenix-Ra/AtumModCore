@@ -7,18 +7,18 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 public class ActionConnectToServer implements DisplayAction {
     @Override
     public void perform(ActionData data) {
-        if(data.getArgs() == null) {
+        if(data.getActionArgs() == null) {
             System.out.println("No args provided for an action connect_to_server");
             return;
         }
-        if(data.getArgs().length == 0) {
+        if(data.getActionArgs().getArgs().length == 0) {
             System.out.println("No args provided for an action connect_to_server");
             return;
         }
-        String[] split = data.getArgs()[0].split(":");
+        String[] split = data.getActionArgs().getArgs()[0].split(":");
         if(split.length == 1){
             FMLClientHandler.instance().connectToServerAtStartup(
-                    data.getArgs()[0].split(":")[0],
+                    data.getActionArgs().getArgs()[0].split(":")[0],
                     25565
             );
         }else {
