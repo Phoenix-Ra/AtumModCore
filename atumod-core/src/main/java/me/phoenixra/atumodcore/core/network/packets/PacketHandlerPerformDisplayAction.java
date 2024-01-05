@@ -22,7 +22,7 @@ public class PacketHandlerPerformDisplayAction implements IMessageHandler<Packet
         if(atumMod==null) {
             return null;
         }
-        if(message.canvasId.equals("null")){
+        if(message.canvasId.equals("null") || message.canvasId.isEmpty()){
             DisplayAction action = atumMod.getDisplayManager().getActionRegistry().getActionById(message.actionId);
             if(action==null) {
                 return null;
