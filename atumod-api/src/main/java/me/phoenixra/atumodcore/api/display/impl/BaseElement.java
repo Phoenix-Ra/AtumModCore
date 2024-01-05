@@ -68,6 +68,9 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter @Setter
     private DisplayCanvas elementOwner;
 
+    @Getter
+    private Config settingsConfig = null;
+
     private boolean initialized;
 
     public BaseElement(@NotNull AtumMod atumMod,
@@ -128,6 +131,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
     @Override
     public void updateVariables(@NotNull Config config, @Nullable String configKey) {
+        settingsConfig = config;
         this.configKey = configKey;
         String layer = config.getStringOrNull("layer");
         if(layer != null){

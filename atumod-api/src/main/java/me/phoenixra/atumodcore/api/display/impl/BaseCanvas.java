@@ -33,10 +33,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     private List<DisplayElement> displayedElementsReversed = new ArrayList<>();
 
 
-    @Getter
-    private LoadableConfig settingsConfig = null;
-
-
     private boolean initialized = false;
     public BaseCanvas(@NotNull AtumMod atumMod,@NotNull DisplayLayer layer,
                       int x,
@@ -93,7 +89,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
     @Override
     public void updateVariables(@NotNull Config config, @Nullable String configKey) {
-        if(config instanceof LoadableConfig) settingsConfig = (LoadableConfig) config;
         config.clearInjectedPlaceholders();
         config.addInjectablePlaceholder(
                 Lists.newArrayList(
@@ -146,12 +141,15 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Override
     public void reloadCanvas() {
         try {
-
-            getSettingsConfig().reload();
+            if(!(getSettingsConfig() instanceof LoadableConfig)){
+                return;
+            }
+            LoadableConfig config = (LoadableConfig) getSettingsConfig();
+            config.reload();
             getAtumMod().getDisplayManager().getElementRegistry().registerTemplate(
-                    getSettingsConfig().getName(),
+                    config.getName(),
                     getAtumMod().getDisplayManager().getElementRegistry().compileCanvasTemplate(
-                            getSettingsConfig().getName(),
+                            config.getName(),
                             getSettingsConfig()
                     )
             );
@@ -249,8 +247,11 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                 }
             }
         }
-        if(settingsConfig.hasPath("default_data")){
-            Config config = settingsConfig.getSubsection("default_data");
+        if(getSettingsConfig() == null){
+            return;
+        }
+        if(getSettingsConfig().hasPath("default_data")){
+            Config config = getSettingsConfig().getSubsection("default_data");
             for(String key : config.getKeys(false)){
                 displayRenderer.getDisplayData().setData(key, config.getString(key));
             }

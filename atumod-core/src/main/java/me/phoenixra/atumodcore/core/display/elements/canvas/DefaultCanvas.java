@@ -1,8 +1,8 @@
 package me.phoenixra.atumodcore.core.display.elements.canvas;
 
 import me.phoenixra.atumodcore.api.AtumMod;
+import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
-import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
@@ -34,12 +34,14 @@ public class DefaultCanvas extends BaseCanvas{
     private void save(){
         if(setupCanvas == null) return;
         try {
+            if(!(setupCanvas.getSettingsConfig() instanceof LoadableConfig)) return;
+            LoadableConfig canvasSettingsConfig = (LoadableConfig) setupCanvas.getSettingsConfig();
             setupCanvas.applyChangesToConfig();
-            setupCanvas.getSettingsConfig().save();
+            canvasSettingsConfig.save();
             getAtumMod().getDisplayManager().getElementRegistry().registerTemplate(
-                    setupCanvas.getSettingsConfig().getName(),
+                    canvasSettingsConfig.getName(),
                     getAtumMod().getDisplayManager().getElementRegistry().compileCanvasTemplate(
-                            setupCanvas.getSettingsConfig().getName(),
+                            canvasSettingsConfig.getName(),
                             getSettingsConfig()
                     )
             );

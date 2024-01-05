@@ -38,7 +38,7 @@ public class BaseRenderer implements DisplayRenderer {
         this.baseCanvas = baseCanvas;
         this.attachedGuiScreen = attachedGuiScreen;
         displayData = new BaseDisplayData(this);
-        baseCanvas.setDisplayRenderer(this);
+
     }
     public BaseRenderer(AtumMod atumMod, DisplayCanvas baseCanvas) {
         this(atumMod,baseCanvas,null);
@@ -47,6 +47,7 @@ public class BaseRenderer implements DisplayRenderer {
     public void initRenderer() {
         renderDebugger =
         new AtumDebugger(atumMod,"testMenu-"+baseCanvas.getId(),"Drawing the menu");
+        baseCanvas.setDisplayRenderer(this);
         getAtumMod().getNetworkManager().sendDisplayEvent(
                 new DisplayEventData(
                         getAtumMod().getModID(),
@@ -79,8 +80,8 @@ public class BaseRenderer implements DisplayRenderer {
             atumMod.getLogger().error("Failed to reload renderer for canvas: "+baseCanvas.getId());
             return;
         }
-        baseCanvas.setDisplayRenderer(this);
         displayData.clearData();
+        baseCanvas.setDisplayRenderer(this);
         onReload();
     }
 
