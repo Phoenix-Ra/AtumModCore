@@ -8,6 +8,8 @@ public interface DisplayData {
 
 
     void setData(String id, String value);
+
+    void setTemporaryData(String id, String value, long lifetime);
     String getData(String id);
     default String getDataOrDefault(String id, String defaultValue){
         String data = getData(id);

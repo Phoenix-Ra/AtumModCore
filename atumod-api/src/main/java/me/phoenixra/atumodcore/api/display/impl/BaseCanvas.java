@@ -11,12 +11,14 @@ import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
+import me.phoenixra.atumodcore.api.events.data.DisplayDataRemovedEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
 import me.phoenixra.atumodcore.api.placeholders.types.injectable.StaticPlaceholder;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -293,6 +295,23 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             }
         }
         return null;
+    }
+
+
+    @SubscribeEvent
+    public void onDataRemoved(DisplayDataRemovedEvent event){
+        if(getSettingsConfig() == null){
+            return;
+        }
+        if(getSettingsConfig().hasPath("default_data")){
+            Config config = getSettingsConfig().getSubsection("default_data");
+            if(config.hasPath(event.getDataId())){
+                getDisplayRenderer().getDisplayData().setData(
+                        event.getDataId(),
+                        config.getString(event.getDataId())
+                );
+            }
+        }
     }
 
 
