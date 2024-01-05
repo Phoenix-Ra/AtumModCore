@@ -11,6 +11,7 @@ import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
+import me.phoenixra.atumodcore.api.tuples.Pair;
 import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
@@ -36,8 +37,8 @@ public class ElementButton extends BaseElement {
     private int textureWidth;
     private int textureHeight;
 
-    private List<PairRecord<DisplayAction, ActionArgs>> actionsOnPress = new ArrayList<>();
-    private List<PairRecord<DisplayAction,ActionArgs>> actionsOnRelease = new ArrayList<>();
+    private List<Pair<DisplayAction, ActionArgs>> actionsOnPress = new ArrayList<>();
+    private List<Pair<DisplayAction,ActionArgs>> actionsOnRelease = new ArrayList<>();
 
     private boolean clicked;
 
@@ -171,7 +172,7 @@ public class ElementButton extends BaseElement {
                 if (split.length > 1) {
                     args = new ActionArgs(split[1]);
                 }
-                this.actionsOnPress.add(new PairRecord<>(action, args));
+                this.actionsOnPress.add(new Pair<>(action, args));
             }
         }
         if (config.hasPath("settings.actions-onRelease")) {
@@ -189,7 +190,7 @@ public class ElementButton extends BaseElement {
                 if (split.length > 1) {
                     args = new ActionArgs(split[1]);
                 }
-                this.actionsOnRelease.add(new PairRecord<>(action, args));
+                this.actionsOnRelease.add(new Pair<>(action, args));
             }
         }
     }
