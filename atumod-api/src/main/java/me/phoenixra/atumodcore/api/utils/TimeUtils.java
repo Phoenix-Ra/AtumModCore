@@ -7,6 +7,15 @@ public class TimeUtils {
     public static String SYMBOL_DAY = "d";
     public static String SYMBOL_MONTH = "M";
     public static String SYMBOL_YEAR = "y";
+
+    /**
+     * Parse time to string
+     * <p>Example: 1h 30m 20s</p>
+     * <p>You can change the symbols used: </p>
+     * <p>{@link #SYMBOL_SECOND} {@link #SYMBOL_MINUTE} {@link #SYMBOL_HOUR}</p>
+     * @param time the time
+     * @return the result
+     */
     public static String parseTimeToString(long time) {
         long z=time/1000L;
         if(z<=0L) {
@@ -17,11 +26,11 @@ public class TimeUtils {
         }
         else if(z<3600) {
             long min=z/60L;
-            long sec=z-(min*60L);
-            if(sec==0) {
+            long seconds=z-(min*60L);
+            if(seconds==0) {
                 return min+SYMBOL_MINUTE;
             }
-            return min+SYMBOL_MINUTE+" "+sec+SYMBOL_SECOND;
+            return min+SYMBOL_MINUTE+" "+seconds+SYMBOL_SECOND;
         }
         else if(z<86400) {
             long hour = z/3600L;
@@ -73,9 +82,24 @@ public class TimeUtils {
             return year+SYMBOL_YEAR+" "+month+SYMBOL_MONTH+" "+day+SYMBOL_DAY;
         }
     }
-    public static String getTimeLeftString(long x, long y) {
-        return parseTimeToString(y-x);
+
+    /**
+     * Get time left parsed to string
+     * <p>see also {@link #parseTimeToString(long)}</p>
+     * @param startTime the start time
+     * @param endTime the end time
+     * @return the result
+     */
+    public static String getTimeLeftString(long startTime, long endTime) {
+        return parseTimeToString(endTime-startTime);
     }
+
+    /**
+     * Parse string time to long
+     * <p>see also {@link #parseTimeToString(long)}</p>
+     * @param text the text to parse
+     * @return time
+     */
     public static long parseStringToTime(String text) {
         String s = text.toLowerCase();
         long time = 0L;
