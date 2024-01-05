@@ -30,6 +30,7 @@ public class BaseRenderer implements DisplayRenderer {
 
     private List<InjectablePlaceholder> injections = Collections.synchronizedList(new ArrayList<>());
 
+    @Getter
     private boolean init = false;
 
     public BaseRenderer(AtumMod atumMod, DisplayCanvas baseCanvas, BaseScreen attachedGuiScreen) {

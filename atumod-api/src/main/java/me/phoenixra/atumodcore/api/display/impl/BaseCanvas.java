@@ -28,10 +28,10 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     private DisplayRenderer displayRenderer;
 
     private HashMap<DisplayLayer, LinkedHashSet<DisplayElement>> elements = new HashMap<>();
-
     @Getter
     private HashSet<DisplayElement> displayedElements = new LinkedHashSet<>();
     private List<DisplayElement> displayedElementsReversed = new ArrayList<>();
+
 
     @Getter
     private LoadableConfig settingsConfig = null;
@@ -94,6 +94,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Override
     public void updateVariables(@NotNull Config config, @Nullable String configKey) {
         if(config instanceof LoadableConfig) settingsConfig = (LoadableConfig) config;
+        config.clearInjectedPlaceholders();
         config.addInjectablePlaceholder(
                 Lists.newArrayList(
                         new StaticPlaceholder("mouse_x", ()-> String.valueOf(
@@ -106,6 +107,75 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         );
         super.updateVariables(config, configKey);
 
+    }
+
+    protected void onPress(InputPressEvent event) {
+        if(!isActive() && !isSetupState()){
+            return;
+        }
+
+        DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
+        if(element != null){
+            if(element instanceof BaseCanvas){
+                ((BaseCanvas) element).onPress(event);
+                return;
+            }
+            MinecraftForge.EVENT_BUS.post(new ElementInputPressEvent(element,event));
+        }else{
+            MinecraftForge.EVENT_BUS.post(new ElementInputPressEvent(this,event));
+        }
+    }
+
+    protected void onRelease(InputReleaseEvent event) {
+        if(!isActive() && !isSetupState()){
+            return;
+        }
+
+        DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
+        if(element != null){
+            if(element instanceof BaseCanvas){
+                ((BaseCanvas) element).onRelease(event);
+                return;
+            }
+            MinecraftForge.EVENT_BUS.post(new ElementInputReleaseEvent(element,event));
+        }else{
+            MinecraftForge.EVENT_BUS.post(new ElementInputReleaseEvent(this,event));
+        }
+    }
+
+    @Override
+    public void reloadCanvas() {
+        try {
+
+            getSettingsConfig().reload();
+            getAtumMod().getDisplayManager().getElementRegistry().registerTemplate(
+                    getSettingsConfig().getName(),
+                    getAtumMod().getDisplayManager().getElementRegistry().compileCanvasTemplate(
+                            getSettingsConfig().getName(),
+                            getSettingsConfig()
+                    )
+            );
+            getDisplayRenderer().reloadRenderer();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRemove() {
+        super.onRemove();
+        for(LinkedHashSet<DisplayElement> list : elements.values()){
+            for(DisplayElement element : list){
+                element.onRemove();
+            }
+        }
+        AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnPress(getId()+"-press");
+        AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnRelease(getId()+"-release");
+        setActive(false);
+        elements.clear();
+        displayedElements.clear();
+        displayedElementsReversed.clear();
+        getAtumMod().getDisplayManager().unregisterEnabledCanvas(getId());
     }
 
     @Override
@@ -125,7 +195,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         }
         updateDisplayedElements();
     }
-
     @Override
     public void removeElement(@NotNull DisplayElement element) {
         Set<DisplayElement> list = elements.get(element.getLayer());
@@ -167,34 +236,26 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         displayedElementsReversed.addAll(displayedElements);
         Collections.reverse(displayedElementsReversed);
     }
-    @Override
-    public DisplayElement getHoveredElement(int mouseX, int mouseY) {
 
-        //it works good because it is in linked set and it is ordered from highest to lowest layer
-        for (DisplayElement element : displayedElements) {
-            if (element.isCoordinateInElement(mouseX, mouseY)) {
-                return element;
+
+
+    @Override
+    public void setDisplayRenderer(@NotNull DisplayRenderer displayRenderer) {
+        this.displayRenderer = displayRenderer;
+        for(LinkedHashSet<DisplayElement> list : elements.values()){
+            for(DisplayElement element : list){
+                if(element instanceof DisplayCanvas){
+                    ((DisplayCanvas) element).setDisplayRenderer(displayRenderer);
+                }
             }
         }
-        return null;
-    }
-
-    @Override
-    public DisplayElement getElementFromCoordinates(int posX, int posY) {
-        for(DisplayElement element : displayedElements){
-            if(element.isCoordinateInElement(posX,posY)){
-                return element;
+        if(settingsConfig.hasPath("default_data")){
+            Config config = settingsConfig.getSubsection("default_data");
+            for(String key : config.getKeys(false)){
+                displayRenderer.getDisplayData().setData(key, config.getString(key));
             }
         }
-        return null;
     }
-
-    @Override
-    public boolean isHovered(int mouseX, int mouseY) {
-        return getElementOwner() == this ? isCoordinateInElement(mouseX, mouseY) :
-                getElementOwner().getHoveredElement(mouseX, mouseY) == this;
-    }
-
     @Override
     public void setActive(boolean active) {
         super.setActive(active);
@@ -206,95 +267,31 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         }
     }
 
-    protected void onPress(InputPressEvent event) {
-        if(!isActive() && !isSetupState()){
-            return;
-        }
-
-        DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
-        if(element != null){
-            if(element instanceof BaseCanvas){
-                ((BaseCanvas) element).onPress(event);
-                return;
-            }
-            MinecraftForge.EVENT_BUS.post(new ElementInputPressEvent(element,event));
-        }else{
-            MinecraftForge.EVENT_BUS.post(new ElementInputPressEvent(this,event));
-        }
-    }
-
-    protected void onRelease(InputReleaseEvent event) {
-        if(!isActive() && !isSetupState()){
-            return;
-        }
-
-        DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
-        if(element != null){
-            if(element instanceof BaseCanvas){
-                ((BaseCanvas) element).onRelease(event);
-                return;
-            }
-            MinecraftForge.EVENT_BUS.post(new ElementInputReleaseEvent(element,event));
-        }else{
-            MinecraftForge.EVENT_BUS.post(new ElementInputReleaseEvent(this,event));
-        }
-    }
 
     @Override
-    public void onRemove() {
-        super.onRemove();
-        for(LinkedHashSet<DisplayElement> list : elements.values()){
-            for(DisplayElement element : list){
-                element.onRemove();
+    public boolean isHovered(int mouseX, int mouseY) {
+        return getElementOwner() == this ? isCoordinateInElement(mouseX, mouseY) :
+                getElementOwner().getHoveredElement(mouseX, mouseY) == this;
+    }
+    @Override
+    public DisplayElement getHoveredElement(int mouseX, int mouseY) {
+
+        //it works good because it is in linked set and it is ordered from highest to lowest layer
+        for (DisplayElement element : displayedElements) {
+            if (element.isCoordinateInElement(mouseX, mouseY)) {
+                return element;
             }
         }
-        AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnPress(getId()+"-press");
-        AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnRelease(getId()+"-release");
-        setActive(false);
-        elements.clear();
-        displayedElements.clear();
-        displayedElementsReversed.clear();
-        getAtumMod().getDisplayManager().unregisterEnabledCanvas(getId());
+        return null;
     }
-
-
     @Override
-    public void setDisplayRenderer(@NotNull DisplayRenderer displayRenderer) {
-        this.displayRenderer = displayRenderer;
-        for(LinkedHashSet<DisplayElement> list : elements.values()){
-            for(DisplayElement element : list){
-               if(element instanceof DisplayCanvas){
-                   ((DisplayCanvas) element).setDisplayRenderer(displayRenderer);
-               }
+    public DisplayElement getElementFromCoordinates(int posX, int posY) {
+        for(DisplayElement element : displayedElements){
+            if(element.isCoordinateInElement(posX,posY)){
+                return element;
             }
         }
-    }
-
-    @Override
-    public void reloadCanvas() {
-        try {
-
-            getSettingsConfig().reload();
-            getAtumMod().getDisplayManager().getElementRegistry().registerTemplate(
-                    getSettingsConfig().getName(),
-                    getAtumMod().getDisplayManager().getElementRegistry().compileCanvasTemplate(
-                            getSettingsConfig().getName(),
-                            getSettingsConfig()
-                    )
-            );
-            getDisplayRenderer().reloadRenderer();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if(obj instanceof BaseCanvas){
-            BaseCanvas canvas = (BaseCanvas) obj;
-            return canvas.getId().equals(getId());
-        }
-        return super.equals(obj);
+        return null;
     }
 
 
@@ -323,4 +320,15 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     }
 
     protected abstract BaseCanvas onClone(BaseCanvas clone);
+
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof BaseCanvas){
+            BaseCanvas canvas = (BaseCanvas) obj;
+            return canvas.getId().equals(getId());
+        }
+        return super.equals(obj);
+    }
 }

@@ -177,6 +177,14 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
     }
 
+
+    @Override
+    public void onRemove() {
+        MinecraftForge.EVENT_BUS.unregister(this);
+        //empty to not implement it everywhere
+    }
+
+
     @Override
     public void performAction(@NotNull String actionId, @NotNull ActionData actionData) {
         DisplayAction action = getAtumMod().getDisplayManager().getActionRegistry()
@@ -191,17 +199,13 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     }
 
     @Override
-    public void onRemove() {
-        MinecraftForge.EVENT_BUS.unregister(this);
-        //empty to not implement it everywhere
-    }
-
-    @Override
     public void setActive(boolean active) {
         this.active = active;
         getElementOwner().getDisplayRenderer().getDisplayData()
                 .setElementEnabled(getConfigKey(),active);
     }
+
+
 
     @Override
     public DisplayElement cloneWithNewVariables(@NotNull String id,

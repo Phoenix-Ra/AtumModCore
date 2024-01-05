@@ -16,6 +16,7 @@ public class DefaultCanvas extends BaseCanvas{
 
 
 
+    //@TODO move both setup and save to base canvas.
     private SetupCanvas setupCanvas;
 
     private boolean pressedShift = false;
