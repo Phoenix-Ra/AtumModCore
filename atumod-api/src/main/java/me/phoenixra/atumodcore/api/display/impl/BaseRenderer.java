@@ -85,7 +85,6 @@ public class BaseRenderer implements DisplayRenderer {
             atumMod.getLogger().error("Failed to reload renderer for canvas: "+baseCanvas.getId());
             return;
         }
-        displayData.clearData();
         setBaseCanvas(baseCanvas);
         onReload();
     }
@@ -111,9 +110,14 @@ public class BaseRenderer implements DisplayRenderer {
             MinecraftForge.EVENT_BUS.unregister(trigger);
         }
         triggers.clear();
+        displayData.clearData();
 
         this.baseCanvas = baseCanvas;
         baseCanvas.setDisplayRenderer(this);
+        if(baseCanvas.getSettingsConfig() == null) {
+            System.out.println("Settings config is null for canvas: " + baseCanvas.getId());
+            return;
+        }
         if(baseCanvas.getSettingsConfig().hasPath("default_data")){
             Config config = baseCanvas.getSettingsConfig().getSubsection("default_data");
             for(String key : config.getKeys(false)){

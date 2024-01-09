@@ -11,10 +11,21 @@ public class DisplayDataChangedEvent extends Event{
     private final String dataId;
     @Getter
     private final String value;
+    @Getter
+    private final ChangeType changeType;
 
-    public DisplayDataChangedEvent(DisplayRenderer displayRenderer, String dataId, String value) {
+    public DisplayDataChangedEvent(DisplayRenderer displayRenderer,
+                                   String dataId, String value,
+                                   ChangeType changeType) {
         this.displayRenderer = displayRenderer;
         this.dataId = dataId;
         this.value = value;
+        this.changeType = changeType;
+    }
+
+    public enum ChangeType {
+        SET,
+        SET_TEMPORARY,
+        SET_DEFAULT_BACK;
     }
 }

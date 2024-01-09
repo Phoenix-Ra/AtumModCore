@@ -58,7 +58,7 @@ public abstract class BaseTrigger implements DisplayTrigger {
 
         for(String key : config.getSubsection("actions").getKeys(false)){
             Pair<DisplayAction, ActionArgs> action = DisplayAction.parseActionFromString(
-                    getOwner().getAtumMod(),
+                    getAtumMod(),
                     config.getString("actions."+key)
             );
             if(action == null){

@@ -33,7 +33,7 @@ public class BaseDisplayData implements DisplayData {
         removeDataCache(id);
 
         data.put(id,value);
-        onDataChanged(id,value);
+        onDataChanged(id,value, DisplayDataChangedEvent.ChangeType.SET);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class BaseDisplayData implements DisplayData {
         removeDataCache(id);
 
         dataTemp.put(id,new PairRecord<>(value, System.currentTimeMillis()+lifetime));
-        onDataChanged(id,value);
+        onDataChanged(id,value, DisplayDataChangedEvent.ChangeType.SET_TEMPORARY);
     }
 
     @Override
@@ -53,14 +53,14 @@ public class BaseDisplayData implements DisplayData {
             defaultData.put(id,value);
     }
 
-    private void onDataChanged(String id, String value){
+    private void onDataChanged(String id, String value, DisplayDataChangedEvent.ChangeType changeType){
         InjectablePlaceholder placeholder = new StaticPlaceholder(
                 "data_"+id,
                 () -> value
         );
         displayRenderer.injectPlaceholders(placeholder);
         placeholders.put(id, placeholder);
-        MinecraftForge.EVENT_BUS.post(new DisplayDataChangedEvent(displayRenderer,id,value));
+        MinecraftForge.EVENT_BUS.post(new DisplayDataChangedEvent(displayRenderer,id,value,changeType));
     }
 
     @Override
@@ -117,11 +117,15 @@ public class BaseDisplayData implements DisplayData {
             long currentTime = System.currentTimeMillis();
             for(Map.Entry<String,PairRecord<String,Long>> entry : dataTemp.entrySet()){
                 if(entry.getValue().getSecond() < currentTime){
-                    if(defaultData.containsKey(entry.getKey()))
-                        setData(entry.getKey(),
-                                defaultData.get(entry.getKey())
-                        );
-                    else
+                    if(defaultData.containsKey(entry.getKey())) {
+
+                        removeDataCache(entry.getKey());
+
+                        data.put(entry.getKey(), defaultData.get(entry.getKey()));
+                        onDataChanged(entry.getKey(), defaultData.get(entry.getKey()),
+                                DisplayDataChangedEvent.ChangeType.SET_DEFAULT_BACK);
+
+                    }else
                         removeData(entry.getKey());
                 }
             }

@@ -16,6 +16,8 @@ public class TriggerDataChanged extends BaseTrigger {
     private String dataId;
     private String value;
 
+    private DisplayDataChangedEvent.ChangeType changeType;
+
     public TriggerDataChanged(AtumMod atumMod) {
         super(atumMod);
     }
@@ -23,13 +25,17 @@ public class TriggerDataChanged extends BaseTrigger {
 
     @Override
     public boolean filter(DisplayTriggerData triggerData) {
-        if(triggerData.getArgs().length != 2){
-            return true;
-        }
-        if(dataId != null && !dataId.equals(triggerData.getArgs()[0])){
+
+        if(triggerData.getArgs().length > 0 &&
+        dataId != null && !dataId.equals(triggerData.getArgs()[0])){
             return false;
         }
-        if(value != null && !value.equals(triggerData.getArgs()[1])){
+        if(triggerData.getArgs().length > 1 &&
+                value != null && !value.equals(triggerData.getArgs()[1])){
+            return false;
+        }
+        if(triggerData.getArgs().length > 2 &&
+                changeType != null && !changeType.name().equalsIgnoreCase(triggerData.getArgs()[2])){
             return false;
         }
         return true;
@@ -37,16 +43,25 @@ public class TriggerDataChanged extends BaseTrigger {
 
     @SubscribeEvent
     public void onDataChanged(DisplayDataChangedEvent event){
-        trigger(new DisplayTriggerData(event.getDataId()+";"+event.getValue()));
+        trigger(new DisplayTriggerData(
+                event.getDataId()+";"+event.getValue()+";"+event.getChangeType().name()
+                )
+        );
     }
 
 
     @Override
     public DisplayTrigger cloneWithNewVariables(@NotNull Config config, @Nullable DisplayRenderer owner) {
         DisplayTrigger trigger = super.cloneWithNewVariables(config, owner);
-        if(config.hasPath("filters")){
+        if(config.hasPath("filters")) {
             dataId = config.getStringOrNull("filters.data_id");
             value = config.getStringOrNull("filters.value");
+            //from string
+            if(config.hasPath("filters.change_type")) {
+                changeType = DisplayDataChangedEvent.ChangeType.valueOf(
+                        config.getString("filters.change_type").toUpperCase()
+                );
+            }
         }
         return trigger;
     }
