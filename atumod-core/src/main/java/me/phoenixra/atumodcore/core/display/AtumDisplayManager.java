@@ -5,6 +5,7 @@ import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.*;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.display.impl.BaseRenderer;
+import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerRegistry;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import me.phoenixra.atumodcore.core.display.elements.canvas.DefaultCanvas;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -23,6 +24,8 @@ public class AtumDisplayManager implements DisplayManager {
     private final DisplayElementRegistry elementRegistry;
     @Getter
     private final DisplayActionRegistry actionRegistry;
+    @Getter
+    private final DisplayTriggerRegistry triggerRegistry;
 
     private final Map<String, DisplayCanvas> enabledCanvases;
 
@@ -31,6 +34,7 @@ public class AtumDisplayManager implements DisplayManager {
         this.atumMod = atumMod;
         this.elementRegistry = new AtumDisplayElementRegistry(atumMod);
         this.actionRegistry = new AtumDisplayActionRegistry(atumMod);
+        this.triggerRegistry = new AtumDisplayTriggerRegistry(atumMod);
 
         enabledCanvases = new ConcurrentHashMap<>();
 

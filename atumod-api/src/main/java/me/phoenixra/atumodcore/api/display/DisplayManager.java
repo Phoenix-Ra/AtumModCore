@@ -2,6 +2,7 @@ package me.phoenixra.atumodcore.api.display;
 
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
+import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public interface DisplayManager {
@@ -9,6 +10,7 @@ public interface DisplayManager {
 
     DisplayElementRegistry getElementRegistry();
     DisplayActionRegistry getActionRegistry();
+    DisplayTriggerRegistry getTriggerRegistry();
 
 
 

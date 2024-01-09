@@ -2,13 +2,16 @@ package me.phoenixra.atumodcore.api.display.impl;
 
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
+import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.data.DisplayData;
+import me.phoenixra.atumodcore.api.display.triggers.DisplayTrigger;
 import me.phoenixra.atumodcore.api.misc.AtumDebugger;
 import me.phoenixra.atumodcore.api.network.data.DisplayEventData;
 import me.phoenixra.atumodcore.api.placeholders.InjectablePlaceholder;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
+import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +33,9 @@ public class BaseRenderer implements DisplayRenderer {
 
     private List<InjectablePlaceholder> injections = Collections.synchronizedList(new ArrayList<>());
 
+
     @Getter
+    private List<DisplayTrigger> triggers = Collections.synchronizedList(new ArrayList<>());
     private boolean init = false;
 
     public BaseRenderer(AtumMod atumMod, DisplayCanvas baseCanvas, BaseScreen attachedGuiScreen) {
@@ -47,7 +52,7 @@ public class BaseRenderer implements DisplayRenderer {
     public void initRenderer() {
         renderDebugger =
         new AtumDebugger(atumMod,"testMenu-"+baseCanvas.getId(),"Drawing the menu");
-        baseCanvas.setDisplayRenderer(this);
+        setBaseCanvas(baseCanvas);
         getAtumMod().getNetworkManager().sendDisplayEvent(
                 new DisplayEventData(
                         getAtumMod().getModID(),
@@ -81,7 +86,7 @@ public class BaseRenderer implements DisplayRenderer {
             return;
         }
         displayData.clearData();
-        baseCanvas.setDisplayRenderer(this);
+        setBaseCanvas(baseCanvas);
         onReload();
     }
 
@@ -102,8 +107,36 @@ public class BaseRenderer implements DisplayRenderer {
 
     @Override
     public void setBaseCanvas(@NotNull DisplayCanvas baseCanvas) {
+        for(DisplayTrigger trigger : triggers){
+            MinecraftForge.EVENT_BUS.unregister(trigger);
+        }
+        triggers.clear();
+
         this.baseCanvas = baseCanvas;
         baseCanvas.setDisplayRenderer(this);
+        if(baseCanvas.getSettingsConfig().hasPath("default_data")){
+            Config config = baseCanvas.getSettingsConfig().getSubsection("default_data");
+            for(String key : config.getKeys(false)){
+                getDisplayData().setData(key, config.getString(key));
+                getDisplayData().setDefaultData(key, config.getString(key));
+            }
+        }
+        if(baseCanvas.getSettingsConfig().hasPath("triggers")){
+            Config config = baseCanvas.getSettingsConfig().getSubsection("triggers");
+            for(String key : config.getKeys(false)){
+                DisplayTrigger trigger = getAtumMod().getDisplayManager()
+                        .getTriggerRegistry().getTemplate(config.getString(key+".type"));
+                if(trigger == null){
+                    continue;
+                }
+                trigger = trigger.cloneWithNewVariables(
+                        config.getSubsection(key),
+                        this
+                );
+                MinecraftForge.EVENT_BUS.register(trigger);
+                triggers.add(trigger);
+            }
+        }
     }
 
 

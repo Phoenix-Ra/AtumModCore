@@ -249,15 +249,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                 }
             }
         }
-        if(getSettingsConfig() == null){
-            return;
-        }
-        if(getSettingsConfig().hasPath("default_data")){
-            Config config = getSettingsConfig().getSubsection("default_data");
-            for(String key : config.getKeys(false)){
-                displayRenderer.getDisplayData().setData(key, config.getString(key));
-            }
-        }
     }
     @Override
     public void setActive(boolean active) {
@@ -295,23 +286,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             }
         }
         return null;
-    }
-
-
-    @SubscribeEvent
-    public void onDataRemoved(DisplayDataRemovedEvent event){
-        if(getSettingsConfig() == null){
-            return;
-        }
-        if(getSettingsConfig().hasPath("default_data")){
-            Config config = getSettingsConfig().getSubsection("default_data");
-            if(config.hasPath(event.getDataId())){
-                getDisplayRenderer().getDisplayData().setData(
-                        event.getDataId(),
-                        config.getString(event.getDataId())
-                );
-            }
-        }
     }
 
 

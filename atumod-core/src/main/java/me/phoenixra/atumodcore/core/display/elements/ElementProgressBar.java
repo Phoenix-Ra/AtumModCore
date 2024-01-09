@@ -15,6 +15,7 @@ public class ElementProgressBar extends BaseElement {
 
     private AtumColor barColorFilled = AtumColor.BLACK;
     private AtumColor barColorEmpty = AtumColor.GREEN;
+
     private String progressExpression;
 
 
@@ -25,7 +26,8 @@ public class ElementProgressBar extends BaseElement {
     }
 
     @Override
-    protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+    protected void onDraw(float scaleFactor, float scaleX, float scaleY,
+                          int mouseX, int mouseY) {
         timer++;
         if(timer>100){
             timer = 0;

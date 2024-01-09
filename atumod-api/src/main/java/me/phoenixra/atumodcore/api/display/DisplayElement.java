@@ -87,6 +87,7 @@ public interface DisplayElement extends Cloneable{
     }
 
 
+    Config getSettingsConfig();
     DisplayElement cloneWithNewVariables(@NotNull String id,
                                          @NotNull Config config,
                                          @Nullable String configKey,
