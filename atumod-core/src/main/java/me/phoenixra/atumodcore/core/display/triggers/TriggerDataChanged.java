@@ -11,6 +11,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+
 public class TriggerDataChanged extends BaseTrigger {
 
     private String dataId;
@@ -54,11 +56,11 @@ public class TriggerDataChanged extends BaseTrigger {
     public DisplayTrigger cloneWithNewVariables(@NotNull Config config, @Nullable DisplayRenderer owner) {
         DisplayTrigger trigger = super.cloneWithNewVariables(config, owner);
         if(config.hasPath("filters")) {
-            dataId = config.getStringOrNull("filters.data_id");
-            value = config.getStringOrNull("filters.value");
+            ((TriggerDataChanged)trigger).dataId = config.getStringOrNull("filters.data_id");
+            ((TriggerDataChanged)trigger).value = config.getStringOrNull("filters.value");
             //from string
             if(config.hasPath("filters.change_type")) {
-                changeType = DisplayDataChangedEvent.ChangeType.valueOf(
+                ((TriggerDataChanged)trigger).changeType = DisplayDataChangedEvent.ChangeType.valueOf(
                         config.getString("filters.change_type").toUpperCase()
                 );
             }

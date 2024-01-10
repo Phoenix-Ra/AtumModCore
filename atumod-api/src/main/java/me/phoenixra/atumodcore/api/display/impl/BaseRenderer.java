@@ -43,6 +43,7 @@ public class BaseRenderer implements DisplayRenderer {
         this.baseCanvas = baseCanvas;
         this.attachedGuiScreen = attachedGuiScreen;
         displayData = new BaseDisplayData(this);
+        baseCanvas.setDisplayRenderer(this);
 
     }
     public BaseRenderer(AtumMod atumMod, DisplayCanvas baseCanvas) {
@@ -61,13 +62,13 @@ public class BaseRenderer implements DisplayRenderer {
                         DisplayEventData.EVENT_OPENED
                 )
         );
+        init = true;
     }
 
     @Override
     public void render(int mouseX, int mouseY) {
         if(!init){
             initRenderer();
-            init = true;
         }
         baseCanvas.draw(RenderUtils.getScaleFactor(), 1, 1,mouseX,mouseY);
     }

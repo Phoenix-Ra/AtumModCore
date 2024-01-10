@@ -78,6 +78,7 @@ public class AtumDisplayManager implements DisplayManager {
 
     @Override
     public void setHUDCanvas(@NotNull DisplayCanvas canvas) {
+        displayRenderer.closeRenderer();
         displayRenderer = new BaseRenderer(
                 atumMod,
                 canvas

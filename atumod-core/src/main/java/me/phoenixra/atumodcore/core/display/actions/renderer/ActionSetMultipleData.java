@@ -24,7 +24,19 @@ public class ActionSetMultipleData implements DisplayAction {
                         .setTemporaryData(
                                 data.getActionArgs().getArgs()[0],
                                 data.getActionArgs().getArgs()[1],
-                                Long.parseLong(data.getActionArgs().getArgs()[3])
+                                Long.parseLong(data.getActionArgs().getArgs()[3]),
+                                false
+                        );
+            }
+            else if(data.getActionArgs().getArgs().length>2
+                    && data.getActionArgs()
+                    .getArgs()[2].equalsIgnoreCase("tempQueued")){
+                data.getAttachedElement().getElementOwner().getDisplayRenderer().getDisplayData()
+                        .setTemporaryData(
+                                data.getActionArgs().getArgs()[0],
+                                data.getActionArgs().getArgs()[1],
+                                Long.parseLong(data.getActionArgs().getArgs()[3]),
+                                true
                         );
             }
         }

@@ -11,14 +11,16 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class BaseDisplayData implements DisplayData {
     private DisplayRenderer displayRenderer;
     private final Map<String, String> data = new ConcurrentHashMap<>();
-    private final Map<String, PairRecord<String,Long>> dataTemp = new ConcurrentHashMap<>();
+    private final Map<String, List<PairRecord<String,Long>>> dataTemp = new ConcurrentHashMap<>();
 
     private final Map<String, String> defaultData = new ConcurrentHashMap<>();
 
@@ -30,19 +32,31 @@ public class BaseDisplayData implements DisplayData {
     @Override
     public void setData(String id, String value) {
         //remove previous if exists to not cause conflicts
-        removeDataCache(id);
+        removeDataCache(id,true);
 
         data.put(id,value);
         onDataChanged(id,value, DisplayDataChangedEvent.ChangeType.SET);
     }
 
     @Override
-    public void setTemporaryData(String id, String value, long lifetime) {
-        //remove previous if exists to not cause conflicts
-        removeDataCache(id);
+    public void setTemporaryData(String id, String value, long lifetime, boolean queued) {
 
-        dataTemp.put(id,new PairRecord<>(value, System.currentTimeMillis()+lifetime));
-        onDataChanged(id,value, DisplayDataChangedEvent.ChangeType.SET_TEMPORARY);
+        List<PairRecord<String,Long>> list = queued ? dataTemp.get(id) : null;
+        if(list==null){
+            list = new ArrayList<>();
+        }
+        boolean newValue = !queued || list.isEmpty();
+        list.add(new PairRecord<>(value,
+
+                newValue ? lifetime+System.currentTimeMillis() : lifetime)
+        );
+
+        if(newValue){
+            //remove previous if exists to not cause conflicts
+            removeDataCache(id, !queued);
+            onDataChanged(id, value, DisplayDataChangedEvent.ChangeType.SET_TEMPORARY);
+        }
+        dataTemp.put(id,list);
     }
 
     @Override
@@ -67,7 +81,7 @@ public class BaseDisplayData implements DisplayData {
     public String getData(String id) {
         String out = data.get(id);
         if(out == null && dataTemp.containsKey(id)) {
-            out = dataTemp.get(id).getFirst();
+            out = dataTemp.get(id).get(0).getFirst();
         }
         return out;
     }
@@ -76,20 +90,36 @@ public class BaseDisplayData implements DisplayData {
     public Map<String, String> getAllData() {
         //merged data and dataTemp
         Map<String, String> mergedData = new HashMap<>(data);
-        for(Map.Entry<String,PairRecord<String,Long>> entry : dataTemp.entrySet()){
-            mergedData.put(entry.getKey(),entry.getValue().getFirst());
+        for(Map.Entry<String,List<PairRecord<String,Long>>> entry
+                : dataTemp.entrySet()){
+
+            mergedData.put(entry.getKey(),entry.getValue().get(0).getFirst());
         }
         return mergedData;
     }
 
     @Override
     public void removeData(String id) {
-        removeDataCache(id);
+        removeDataCache(id,true);
         MinecraftForge.EVENT_BUS.post(new DisplayDataRemovedEvent(displayRenderer,id));
     }
-    private void removeDataCache(String id) {
+    private void removeDataCache(String id, boolean ignoreTempQueue) {
         data.remove(id);
-        dataTemp.remove(id);
+        if(ignoreTempQueue) {
+            dataTemp.remove(id);
+        }else{
+            //queued temp
+            List<PairRecord<String,Long>> list = dataTemp.get(id);
+            if(list!=null && list.size()>1) {
+                List<PairRecord<String,Long>> newList = list.subList(1, list.size());
+                newList.get(0).setSecond(
+                        newList.get(0).getSecond()+System.currentTimeMillis()
+                );
+                dataTemp.put(id, newList);
+            }else{
+                dataTemp.remove(id);
+            }
+        }
         InjectablePlaceholder placeholder = placeholders.get(id);
         if(placeholder == null) return;
         displayRenderer.removeInjectablePlaceholder(
@@ -103,6 +133,7 @@ public class BaseDisplayData implements DisplayData {
     public void clearData() {
         data.clear();
         dataTemp.clear();
+        defaultData.clear();
         for(InjectablePlaceholder placeholder : placeholders.values()){
             displayRenderer.removeInjectablePlaceholder(
                     placeholder
@@ -115,11 +146,20 @@ public class BaseDisplayData implements DisplayData {
     public void onClientTick(TickEvent.ClientTickEvent event){
         if(event.phase == TickEvent.Phase.START){
             long currentTime = System.currentTimeMillis();
-            for(Map.Entry<String,PairRecord<String,Long>> entry : dataTemp.entrySet()){
-                if(entry.getValue().getSecond() < currentTime){
+            for(Map.Entry<String,List<PairRecord<String,Long>>> entry : dataTemp.entrySet()){
+                if(entry.getValue().get(0).getSecond() < currentTime){
+                    //queued temp
+                    if(entry.getValue().size() > 1){
+                        removeDataCache(entry.getKey(),false);
+                        onDataChanged(entry.getKey(),entry.getValue().get(1).getFirst(),
+                                DisplayDataChangedEvent.ChangeType.SET_TEMPORARY);
+                        return;
+                    }
+
+
                     if(defaultData.containsKey(entry.getKey())) {
 
-                        removeDataCache(entry.getKey());
+                        removeDataCache(entry.getKey(),true);
 
                         data.put(entry.getKey(), defaultData.get(entry.getKey()));
                         onDataChanged(entry.getKey(), defaultData.get(entry.getKey()),
