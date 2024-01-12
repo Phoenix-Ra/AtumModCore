@@ -14,6 +14,7 @@ import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.events.data.DisplayDataRemovedEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
+import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
 import me.phoenixra.atumodcore.api.placeholders.types.injectable.StaticPlaceholder;
@@ -33,9 +34,10 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Getter
     private HashSet<DisplayElement> displayedElements = new LinkedHashSet<>();
     private List<DisplayElement> displayedElementsReversed = new ArrayList<>();
-
+    private boolean pressedCtrl;
 
     private boolean initialized = false;
+
     public BaseCanvas(@NotNull AtumMod atumMod,@NotNull DisplayLayer layer,
                       int x,
                       int y,
@@ -288,6 +290,34 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         return null;
     }
 
+    @SubscribeEvent
+    public void onPressed(ElementInputPressEvent event){
+        if(!isActive() || (getDisplayRenderer() == null
+                || getDisplayRenderer().getBaseCanvas() != this)) return;
+
+        if(event.getParentEvent().getType() == InputType.KEYBOARD_KEY) {
+            if(!getAtumMod().isDebugEnabled()) return;
+            getAtumMod().getLogger().info("Pressed: " + event.getParentEvent().getKeyboardCharacter());
+            if (event.getParentEvent().getKeyboardCharacter() == 'S' && pressedCtrl) {
+                getAtumMod().getLogger().info("Reloading");
+                reloadCanvas();
+                pressedCtrl = false;
+            } else if (pressedCtrl) {
+                pressedCtrl = false;
+            }
+        }else if(event.getParentEvent().getType() == InputType.KEYBOARD_LEFT_CTRL
+                && !isSetupState()){
+            pressedCtrl = true;
+        }
+
+    }
+    @SubscribeEvent
+    public void onReleased(ElementInputReleaseEvent event){
+        if(event.getParentEvent().getType() == InputType.KEYBOARD_LEFT_CTRL){
+            pressedCtrl = false;
+        }
+
+    }
 
     @Override
     public final DisplayElement clone() {

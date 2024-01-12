@@ -52,24 +52,7 @@ public class DefaultCanvas extends BaseCanvas{
 
     @SubscribeEvent
     public void onPressed(ElementInputPressEvent event){
-        if(!isActive()) return;
-        if(event.getParentEvent().getType() == InputType.KEYBOARD_KEY) {
-            if(!getAtumMod().isDebugEnabled()) return;
-            getAtumMod().getLogger().info("Pressed: " + event.getParentEvent().getKeyboardCharacter());
-            if (event.getParentEvent().getKeyboardCharacter() == 'S' && pressedShift) {
-                getAtumMod().getLogger().info("Reloading");
-                reloadCanvas();
-                pressedShift = false;
-                return;
-            } else if (pressedShift) {
-                pressedShift = false;
-                return;
-            }
-        }else if(event.getParentEvent().getType() == InputType.KEYBOARD_SHIFT && !isSetupState()){
-            pressedShift = true;
-            return;
-        }
-        if(!isSetupState()) return;
+        if(!isActive() && !isSetupState()) return;
         if(setupCanvas != null){
             setupCanvas.onInputPress(event);
         }
@@ -95,7 +78,7 @@ public class DefaultCanvas extends BaseCanvas{
     }
     @SubscribeEvent
     public void onReleased(ElementInputReleaseEvent event){
-        if(!isActive()) return;
+        if(!isActive() && !isSetupState()) return;
         if(event.getParentEvent().getType() != InputType.KEYBOARD_SHIFT && !isSetupState()) {
             pressedShift = false;
             return;
