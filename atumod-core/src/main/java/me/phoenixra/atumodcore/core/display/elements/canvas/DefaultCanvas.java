@@ -50,7 +50,8 @@ public class DefaultCanvas extends BaseCanvas{
         }
     }
 
-    @SubscribeEvent
+    //@TODO change
+/*    @SubscribeEvent
     public void onPressed(ElementInputPressEvent event){
         if(!isActive() && !isSetupState()) return;
         if(setupCanvas != null){
@@ -97,7 +98,7 @@ public class DefaultCanvas extends BaseCanvas{
             updateVariables(getSettingsConfig(),null);
         }
 
-    }
+    }*/
 
     @Override
     public boolean isSetupState() {

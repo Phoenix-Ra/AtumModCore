@@ -145,7 +145,19 @@ public class AtumInputHandler implements InputHandler {
                                 Mouse.getEventDWheel()
                         )
                 );
+            }else if (i == 2) {
+                callOnPressListeners(
+                        new InputPressEvent(
+                                InputType.MOUSE_MIDDLE,
+                                pos.getFirst(),
+                                pos.getSecond(),
+                                Mouse.getEventDX(),
+                                Mouse.getEventDY(),
+                                Mouse.getEventDWheel()
+                        )
+                );
             }
+
         }else{
             if(i == 0){
                 callOnReleaseListeners(
@@ -162,6 +174,17 @@ public class AtumInputHandler implements InputHandler {
                 callOnReleaseListeners(
                         new InputReleaseEvent(
                                 InputType.MOUSE_RIGHT,
+                                pos.getFirst(),
+                                pos.getSecond(),
+                                Mouse.getEventDX(),
+                                Mouse.getEventDY(),
+                                Mouse.getEventDWheel()
+                        )
+                );
+            }else if (i == 2) {
+                callOnReleaseListeners(
+                        new InputReleaseEvent(
+                                InputType.MOUSE_MIDDLE,
                                 pos.getFirst(),
                                 pos.getSecond(),
                                 Mouse.getEventDX(),

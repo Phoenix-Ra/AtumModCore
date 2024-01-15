@@ -14,7 +14,8 @@ public enum InputType {
     KEYBOARD_ESCAPE,
 
     MOUSE_RIGHT,
-    MOUSE_LEFT;
+    MOUSE_LEFT,
+    MOUSE_MIDDLE;
 
 
 }

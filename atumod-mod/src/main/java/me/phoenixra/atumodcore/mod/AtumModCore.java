@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.opengl.Display;
 
 import java.io.File;
 
@@ -53,6 +54,12 @@ public class AtumModCore extends AtumMod {
                     ConfigType.JSON,
                     false
             );
+            getApi().createLoadableConfig(this,
+                    "settings",
+                    "",
+                    ConfigType.JSON,
+                    false
+            );
 
             SoundHandler.init();
 
@@ -73,6 +80,8 @@ public class AtumModCore extends AtumMod {
     }
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        Display.setResizable(false);
+
         MinecraftForge.EVENT_BUS.register(this);
 
         File configDir = event.getModConfigurationDirectory();

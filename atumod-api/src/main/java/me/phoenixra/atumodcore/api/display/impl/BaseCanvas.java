@@ -291,7 +291,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     }
 
     @SubscribeEvent
-    public void onPressed(ElementInputPressEvent event){
+    public void onPressed1(ElementInputPressEvent event){
         if(!isActive() || (getDisplayRenderer() == null
                 || getDisplayRenderer().getBaseCanvas() != this)) return;
 
@@ -312,7 +312,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
     }
     @SubscribeEvent
-    public void onReleased(ElementInputReleaseEvent event){
+    public void onReleased1(ElementInputReleaseEvent event){
         if(event.getParentEvent().getType() == InputType.KEYBOARD_LEFT_CTRL){
             pressedCtrl = false;
         }

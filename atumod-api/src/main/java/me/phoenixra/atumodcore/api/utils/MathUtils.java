@@ -1,5 +1,7 @@
 package me.phoenixra.atumodcore.api.utils;
 
+import me.phoenixra.atumodcore.api.tuples.PairRecord;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -99,6 +101,33 @@ public class MathUtils {
                                    final double max) {
         return ThreadLocalRandom.current().nextDouble(min, max);
     }
+
+    /**
+     * Calculates an aspect ratio
+     * @param a first
+     * @param b second
+     * @return aspect ratio
+     */
+    public static PairRecord<Integer,Integer> getAspectRatio(int a, int b) {
+        int gcd = getGCD(a, b);
+        int aspectRatioWidth = a / gcd;
+        int aspectRatioHeight = b / gcd;
+        return  new PairRecord<>(
+                aspectRatioWidth,
+                aspectRatioHeight
+        );
+    }
+
+    //greatest common divisor
+    private static int getGCD(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
     private MathUtils() {
         throw new UnsupportedOperationException("This is an utility class and cannot be instantiated");
     }
