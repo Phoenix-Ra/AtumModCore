@@ -6,6 +6,7 @@ import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.data.DisplayData;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTrigger;
 import me.phoenixra.atumodcore.api.misc.AtumDebugger;
 import me.phoenixra.atumodcore.api.network.data.DisplayEventData;
@@ -70,7 +71,7 @@ public class BaseRenderer implements DisplayRenderer {
         if(!init){
             initRenderer();
         }
-        baseCanvas.draw(RenderUtils.getScaleFactor(), 1, 1,mouseX,mouseY);
+        baseCanvas.draw(DisplayResolution.getCurrentResolution(), RenderUtils.getScaleFactor(),mouseX,mouseY);
     }
 
     @Override

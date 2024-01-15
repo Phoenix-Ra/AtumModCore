@@ -9,6 +9,7 @@ import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
@@ -16,6 +17,8 @@ import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public abstract class BaseElement implements DisplayElement, Cloneable {
@@ -48,6 +51,11 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter
     private int height;
 
+    private HashMap<DisplayResolution, Integer> optimizedX = new HashMap<>();
+    private HashMap<DisplayResolution, Integer> optimizedY = new HashMap<>();
+    private HashMap<DisplayResolution, Integer> optimizedWidth = new HashMap<>();
+    private HashMap<DisplayResolution, Integer> optimizedHeight = new HashMap<>();
+
     @Getter
     private int lastMouseX;
     @Getter
@@ -70,7 +78,6 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
     @Getter
     private Config settingsConfig = null;
-
     private boolean initialized;
 
     public BaseElement(@NotNull AtumMod atumMod,
@@ -95,19 +102,30 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
 
     @Override
-    public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+    public void draw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
         if(!initialized){
             MinecraftForge.EVENT_BUS.register(this);
             initialized = true;
         }
         lastMouseX = mouseX;
         lastMouseY = mouseY;
-        int[] coords = RenderUtils.fixCoordinates(originX,originY,originWidth,originHeight,fixRatio);
+        int[] coords;
+        if(resolution== null){
+            coords = RenderUtils.fixCoordinates(originX,originY,originWidth,originHeight,fixRatio);
+        }else{
+            coords = RenderUtils.fixCoordinates(
+                    optimizedX.getOrDefault(resolution,originX),
+                    optimizedY.getOrDefault(resolution,originY),
+                    optimizedWidth.getOrDefault(resolution,originWidth),
+                    optimizedHeight.getOrDefault(resolution,originHeight),
+                    fixRatio
+            );
+        }
         x = coords[0];
         y = coords[1];
         width = coords[2];
         height = coords[3];
-        onDraw(scaleFactor,scaleX,scaleY,mouseX,mouseY);
+        onDraw(resolution, scaleFactor,mouseX,mouseY);
         if(outline_selected){
             RenderUtils.drawDashedOutline(
                     getX(),
@@ -127,7 +145,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
             );
         }
     }
-    protected abstract void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY);
+    protected abstract void onDraw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY);
 
     @Override
     public void updateVariables(@NotNull Config config, @Nullable String configKey) {
@@ -188,6 +206,22 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         //empty to not implement it everywhere
     }
 
+    @Override
+    public void applyResolutionOptimizer(@NotNull DisplayResolution resolution,
+                                         @NotNull Config config) {
+        optimizedX.put(resolution,
+                config.getIntOrDefault("posX",originX)
+        );
+        optimizedY.put(resolution,
+                config.getIntOrDefault("posY",originY)
+        );
+        optimizedWidth.put(resolution,
+                config.getIntOrDefault("width",originWidth)
+        );
+        optimizedHeight.put(resolution,
+                config.getIntOrDefault("height",originHeight)
+        );
+    }
 
     @Override
     public void performAction(@NotNull String actionId, @NotNull ActionData actionData) {
@@ -240,6 +274,10 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
             clone.id = UUID.randomUUID().toString();
             clone.initialized = false;
             clone.active = true;
+            clone.optimizedX = new HashMap<>();
+            clone.optimizedY = new HashMap<>();
+            clone.optimizedWidth = new HashMap<>();
+            clone.optimizedHeight = new HashMap<>();
             return onClone(clone);
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

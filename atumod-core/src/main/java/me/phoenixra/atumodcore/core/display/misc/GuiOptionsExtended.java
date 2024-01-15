@@ -15,8 +15,8 @@ public class GuiOptionsExtended extends GuiOptions {
     private int windowSizeType;
     public GuiOptionsExtended(GuiScreen guiScreen, GameSettings gameSettings) {
         super(guiScreen, gameSettings);
-        windowSizeType = DisplayResolution.getCurrentResolution() == null ?
-      0 : DisplayResolution.getCurrentResolution().getIndex();
+        windowSizeType = DisplayResolution.getCurrentResolution() == DisplayResolution.UNRECOGNIZED ?
+         1 : DisplayResolution.getCurrentResolution().getIndex();
     }
 
     @Override
@@ -27,7 +27,7 @@ public class GuiOptionsExtended extends GuiOptions {
                 2222,
                 this.width / 2 - 155,
                 this.height / 6 + 144 - 6,
-                0,
+                1,
                 DisplayResolution.values().length-1)
         );
     }

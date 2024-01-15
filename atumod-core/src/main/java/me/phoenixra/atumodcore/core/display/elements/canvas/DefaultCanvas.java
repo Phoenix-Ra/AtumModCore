@@ -4,6 +4,7 @@ import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.InputType;
@@ -26,9 +27,9 @@ public class DefaultCanvas extends BaseCanvas{
     }
 
     @Override
-    protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+    protected void onDraw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
         if(setupCanvas != null){
-            setupCanvas.onDraw(scaleFactor,scaleX,scaleY,mouseX,mouseY);
+            setupCanvas.onDraw(resolution,scaleFactor,mouseX,mouseY);
         }
     }
     private void save(){

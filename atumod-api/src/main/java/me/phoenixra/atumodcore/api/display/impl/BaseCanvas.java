@@ -11,6 +11,7 @@ import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.events.data.DisplayDataRemovedEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
@@ -66,7 +67,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
 
     @Override
-    public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+    public void draw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
         if(!initialized && getElementOwner() == this){
             AtumAPI.getInstance().getCoreMod().getInputHandler().addListenerOnPress(getId()+"-press",
                     this::onPress
@@ -80,13 +81,13 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             );
             initialized = true;
         }
-        super.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
+        super.draw(resolution, scaleFactor, mouseX, mouseY);
         for(DisplayElement element : displayedElementsReversed){
             boolean active = getDisplayRenderer().getDisplayData()
                     .isElementEnabled(element.getConfigKey());
 
             if(active) {
-                element.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
+                element.draw(resolution, scaleFactor, mouseX, mouseY);
             }
         }
     }
@@ -105,6 +106,8 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                 )
         );
         super.updateVariables(config, configKey);
+
+        registerResolutionSettings();
 
     }
 
@@ -195,6 +198,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         if(element instanceof DisplayCanvas){
             ((DisplayCanvas) element).setDisplayRenderer(getDisplayRenderer());
         }
+        registerResolutionSettingsFor(element);
         updateDisplayedElements();
     }
     @Override
@@ -288,6 +292,56 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             }
         }
         return null;
+    }
+
+    private void registerResolutionSettings(){
+        //@TODO
+        //only base canvas of renderer can register resolution settings
+        //maybe I should make extra class for the base canvas?
+        if(getSettingsConfig() == null ||
+                getDisplayRenderer().getBaseCanvas() != this){
+            return;
+        }
+        for(String key : getSettingsConfig().getSubsection("resolution_optimization")
+                .getKeys(false)){
+            try {
+                DisplayResolution resolution = DisplayResolution.valueOf(key);
+                applyResolutionOptimizer(
+                                resolution,
+                                getSettingsConfig().getSubsection(
+                                        "resolution_optimization." + key
+                                )
+                        );
+            }catch (IllegalArgumentException e){
+                getAtumMod().getLogger().warn("Could not find resolution: " + key);
+            }
+        }
+    }
+    private void registerResolutionSettingsFor(DisplayElement element){
+        //@TODO
+        //only base canvas of renderer can register resolution settings
+        //maybe I should make extra class for the base canvas?
+        if(getSettingsConfig() == null ||
+                getDisplayRenderer().getBaseCanvas() != this){
+            return;
+        }
+
+        //@TODO add support of canvases
+        for(String key : getSettingsConfig()
+                .getSubsection("resolution_optimization")
+                .getKeys(false)){
+            try {
+                DisplayResolution resolution = DisplayResolution.valueOf(key);
+                element.applyResolutionOptimizer(
+                                resolution,
+                                getSettingsConfig().getSubsection(
+                                        "resolution_optimization." + key+".elements."+element.getId()
+                                )
+                        );
+            }catch (IllegalArgumentException e){
+                getAtumMod().getLogger().warn("Could not find resolution: " + key);
+            }
+        }
     }
 
     @SubscribeEvent

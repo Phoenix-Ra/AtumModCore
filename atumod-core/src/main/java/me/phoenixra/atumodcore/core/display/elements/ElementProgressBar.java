@@ -5,6 +5,7 @@ import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
@@ -26,7 +27,7 @@ public class ElementProgressBar extends BaseElement {
     }
 
     @Override
-    protected void onDraw(float scaleFactor, float scaleX, float scaleY,
+    protected void onDraw(DisplayResolution resolution, float scaleFactor,
                           int mouseX, int mouseY) {
         timer++;
         if(timer>100){

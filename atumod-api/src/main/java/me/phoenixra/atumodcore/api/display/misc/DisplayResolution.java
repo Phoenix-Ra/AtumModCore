@@ -1,11 +1,13 @@
 package me.phoenixra.atumodcore.api.display.misc;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.Display;
 
 public enum DisplayResolution {
 
+    UNRECOGNIZED(-1,0,0),
     RES_1024x728(0,1024, 728),
     RES_1280x720(1,1280, 720),
     RES_1366x768(2,1366, 768),
@@ -25,18 +27,18 @@ public enum DisplayResolution {
         this.height = height;
     }
 
-    @Nullable
+    @NotNull
     public static DisplayResolution from(int width, int height) {
         for (DisplayResolution value : values()) {
             if (value.width == width && value.height == height) {
                 return value;
             }
         }
-        return null;
+        return DisplayResolution.UNRECOGNIZED;
     }
 
 
-    @Nullable
+    @NotNull
     public static DisplayResolution getCurrentResolution() {
         return from(Display.getWidth(), Display.getHeight());
     }

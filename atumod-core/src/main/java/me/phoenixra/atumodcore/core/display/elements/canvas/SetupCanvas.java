@@ -6,6 +6,7 @@ import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.CursorType;
@@ -49,13 +50,13 @@ public class SetupCanvas extends BaseCanvas {
     }
 
     @Override
-    public void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
-        super.draw(scaleFactor, scaleX, scaleY, mouseX, mouseY);
+    public void draw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
+        super.draw(resolution,scaleFactor,mouseX, mouseY);
 
     }
 
     @Override
-    protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+    protected void onDraw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
         if (!isActive()) return;
         if (selectedElement == null) return;
         PairRecord<Integer, Integer> newMousePos = getAtumMod().getInputHandler().getMouseOriginPosition();

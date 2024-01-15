@@ -6,6 +6,7 @@ import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.actions.ActionArgs;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
 import me.phoenixra.atumodcore.api.registry.Registrable;
@@ -39,7 +40,10 @@ public interface DisplayElement extends Cloneable{
 
     int getLastMouseX();
     int getLastMouseY();
-    void draw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY);
+
+    void applyResolutionOptimizer(@NotNull DisplayResolution resolution,
+                                 @NotNull Config config);
+    void draw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY);
 
     boolean isHovered(int mouseX, int mouseY);
     void onRemove();

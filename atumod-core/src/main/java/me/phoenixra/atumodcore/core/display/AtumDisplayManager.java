@@ -90,7 +90,7 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
             );
         }else if(event.getGui() instanceof GuiMainMenu){
             if(initResolution ||
-            DisplayResolution.getCurrentResolution() == null) return;
+            DisplayResolution.getCurrentResolution() == DisplayResolution.UNRECOGNIZED) return;
             //resolution default
             initResolution = true;
 

@@ -6,6 +6,7 @@ import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.font.DisplayFont;
 import me.phoenixra.atumodcore.api.display.font.Fonts;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.StringUtils;
@@ -14,12 +15,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
+import java.util.HashMap;
 
 public class ElementText extends BaseElement {
     private DisplayFont font;
     private String text = "EMPTY TEXT";
 
-    private int fontSize = 20;
+    private HashMap<DisplayResolution, DisplayFont> optimizedFont = new HashMap<>();
 
 
     public ElementText(@NotNull AtumMod atumMod, @NotNull DisplayCanvas elementOwner) {
@@ -27,7 +29,7 @@ public class ElementText extends BaseElement {
     }
 
     @Override
-    protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+    protected void onDraw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
         String text = StringUtils.formatWithPlaceholders(
                 getAtumMod(),
                 this.text,
@@ -40,6 +42,7 @@ public class ElementText extends BaseElement {
         if(textWidth>getWidth()){
             localX = getX() - (textWidth - getWidth())/2;
         }
+        DisplayFont font = optimizedFont.getOrDefault(resolution,this.font);
         font.drawString(
                 text,
                 localX,
@@ -52,9 +55,6 @@ public class ElementText extends BaseElement {
     public void updateVariables(@NotNull Config config, @Nullable String configKey) {
         super.updateVariables(config, configKey);
         Integer fontSize = config.getIntOrNull("settings.fontSize");
-        if(fontSize!=null){
-            this.fontSize = fontSize;
-        }
         String fontName = config.getStringOrNull("settings.font");
         if(fontName!=null){
             try(InputStream stream = getAtumMod().getClass().getResourceAsStream("/assets/"+getAtumMod().getModID()+"/fonts/"+fontName)) {
@@ -73,6 +73,29 @@ public class ElementText extends BaseElement {
         if(getOriginHeight() == 0){
             setOriginHeight(100);
         }
+    }
+
+    @Override
+    public void applyResolutionOptimizer(@NotNull DisplayResolution resolution, @NotNull Config config) {
+        super.applyResolutionOptimizer(resolution, config);
+        String fontName = config.getStringOrNull("settings.font");
+        if(fontName == null) return;
+        config.getIntOrDefault("settings.fontSize",20);
+        DisplayFont font1 = null;
+        try(InputStream stream = getAtumMod().getClass().getResourceAsStream(
+                "/assets/"+getAtumMod().getModID()+"/fonts/"+fontName)) {
+            font1 = Fonts.registerFont(
+                    fontName,
+                    config.getIntOrDefault("settings.fontSize",20),
+                    stream
+            );
+        }catch (Exception e){
+            getAtumMod().getLogger().error("Failed to load font: "+fontName+" for resolution: "+resolution.name());
+        }
+
+        optimizedFont.put(resolution,
+                font1==null? font : font1
+        );
     }
 
     @Override

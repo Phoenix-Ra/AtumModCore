@@ -7,6 +7,7 @@ import me.phoenixra.atumodcore.api.display.actions.ActionArgs;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.InputType;
@@ -48,7 +49,7 @@ public class ElementButton extends BaseElement {
     }
 
     @Override
-    protected void onDraw(float scaleFactor, float scaleX, float scaleY, int mouseX, int mouseY) {
+    protected void onDraw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
         imageBinder.run();
         if (clicked && brightnessOnClick.length == 3) {
             GlStateManager.color(
