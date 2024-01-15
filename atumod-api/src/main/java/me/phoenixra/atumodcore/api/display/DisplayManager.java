@@ -5,6 +5,7 @@ import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerRegistry;
 import me.phoenixra.atumodcore.api.service.AtumModService;
 import me.phoenixra.atumodcore.api.tuples.PairRecord;
@@ -17,35 +18,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public interface DisplayManager{
-    List<PairRecord<Integer, Integer>> SUPPORTED_RESOLUTIONS =
-            Arrays.asList(
-                    new PairRecord<>(1024, 728),
-                    new PairRecord<>(1280, 720),
-                    new PairRecord<>(1366, 768),
-                    new PairRecord<>(1600, 900),
-                    new PairRecord<>(1920, 1080),
-                    new PairRecord<>(2560, 1080)
-            );
-
-    static int getCurrentResolutionIndex() {
-        int width = Display.getWidth();
-        int height = Display.getHeight();
-        int i = 0;
-        for (PairRecord<Integer, Integer> entry : SUPPORTED_RESOLUTIONS) {
-            if (width == entry.getFirst() || height == entry.getSecond()) {
-                return i;
-            }
-            i++;
-        }
-        return -1;
-    }
 
     default void changeResolution(int index) {
         if (Display.isResizable()) {
             Display.setResizable(false);
         }
-        int newWidth = SUPPORTED_RESOLUTIONS.get(index).getFirst();
-        int newHeight = SUPPORTED_RESOLUTIONS.get(index).getSecond();
+        int newWidth = DisplayResolution.values()[index].getWidth();
+        int newHeight = DisplayResolution.values()[index].getHeight();
         if (newWidth == Display.getWidth() && newHeight == Display.getHeight()) {
             return;
         }

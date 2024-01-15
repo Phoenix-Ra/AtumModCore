@@ -6,6 +6,7 @@ import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.*;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.display.impl.BaseRenderer;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerRegistry;
 import me.phoenixra.atumodcore.api.service.AtumModService;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
@@ -89,7 +90,7 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
             );
         }else if(event.getGui() instanceof GuiMainMenu){
             if(initResolution ||
-            DisplayManager.getCurrentResolutionIndex() == -1) return;
+            DisplayResolution.getCurrentResolution() == null) return;
             //resolution default
             initResolution = true;
 

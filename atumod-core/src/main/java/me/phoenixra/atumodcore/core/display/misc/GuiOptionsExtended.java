@@ -1,34 +1,22 @@
 package me.phoenixra.atumodcore.core.display.misc;
 
 import me.phoenixra.atumodcore.api.AtumAPI;
-import me.phoenixra.atumodcore.api.display.DisplayManager;
-import me.phoenixra.atumodcore.api.tuples.PairRecord;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiOptionSlider;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.math.MathHelper;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import scala.actors.threadpool.Arrays;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class GuiOptionsExtended extends GuiOptions {
     private int windowSizeType;
     public GuiOptionsExtended(GuiScreen guiScreen, GameSettings gameSettings) {
         super(guiScreen, gameSettings);
-        /*new PairRecord<>(1024, 728),
-            new PairRecord<>(1280, 720),
-            new PairRecord<>(1366, 768),
-            new PairRecord<>(1600, 900),
-            new PairRecord<>(1920, 1080)*/
-        windowSizeType = DisplayManager.getCurrentResolutionIndex();
-        if(windowSizeType==-1) windowSizeType = 0;
+        windowSizeType = DisplayResolution.getCurrentResolution() == null ?
+      0 : DisplayResolution.getCurrentResolution().getIndex();
     }
 
     @Override
@@ -40,7 +28,7 @@ public class GuiOptionsExtended extends GuiOptions {
                 this.width / 2 - 155,
                 this.height / 6 + 144 - 6,
                 0,
-                DisplayManager.SUPPORTED_RESOLUTIONS.size()-1)
+                DisplayResolution.values().length-1)
         );
     }
 
@@ -63,7 +51,6 @@ public class GuiOptionsExtended extends GuiOptions {
         private final float minValue;
         private final float maxValue;
 
-        private List<PairRecord<Integer,Integer>> windowSizes;
 
         public WindowSizeSlider(int buttonId, int x, int y)
         {
@@ -73,12 +60,12 @@ public class GuiOptionsExtended extends GuiOptions {
         public WindowSizeSlider(int buttonId, int x, int y, float minValueIn, float maxValue)
         {
             super(buttonId, x, y, 150, 20, "");
-            windowSizes = DisplayManager.SUPPORTED_RESOLUTIONS;
+
             this.minValue = minValueIn;
             this.maxValue = maxValue;
             this.sliderValue = normalizeValue(windowSizeType);
-            this.displayString = "Resolution: "+ windowSizes.get(windowSizeType).getFirst()
-                    +"x"+windowSizes.get(windowSizeType).getSecond();
+            this.displayString = "Resolution: "+ DisplayResolution.values()[windowSizeType].getWidth()
+                    +"x"+DisplayResolution.values()[windowSizeType].getHeight();
         }
 
         protected int getHoverState(boolean mouseOver)
@@ -97,8 +84,8 @@ public class GuiOptionsExtended extends GuiOptions {
                     float f = denormalizeValue(this.sliderValue);
                     windowSizeType = (int)f;
                     this.sliderValue = normalizeValue(f);
-                    this.displayString = "Resolution: "+ windowSizes.get(windowSizeType).getFirst()
-                            +"x"+windowSizes.get(windowSizeType).getSecond();
+                    this.displayString = "Resolution: "+ DisplayResolution.values()[windowSizeType].getWidth()
+                            +"x"+DisplayResolution.values()[windowSizeType].getHeight();
                 }
 
                 mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
@@ -116,8 +103,8 @@ public class GuiOptionsExtended extends GuiOptions {
                 this.sliderValue = MathHelper.clamp(this.sliderValue, 0.0F, 1.0F);
                 float f = denormalizeValue(this.sliderValue);
                 windowSizeType = (int)f;
-                this.displayString = "Resolution: "+ windowSizes.get(windowSizeType).getFirst()
-                        +"x"+windowSizes.get(windowSizeType).getSecond();
+                this.displayString = "Resolution: "+ DisplayResolution.values()[windowSizeType].getWidth()
+                        +"x"+DisplayResolution.values()[windowSizeType].getHeight();
                 this.dragging = true;
                 return true;
             }
