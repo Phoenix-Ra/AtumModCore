@@ -1,13 +1,17 @@
 package me.phoenixra.atumodcore.mod.sound;
 
+import me.phoenixra.atumodcore.api.service.AtumModService;
 import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.event.FMLConstructionEvent;
+import net.minecraftforge.fml.common.event.FMLEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -29,7 +33,6 @@ public class SoundHandler {
 
     private static volatile boolean volumeHandling = true;
     private static List<String> unsupportedFormatAudios = new ArrayList<>();
-
     public static void init() {
         if (FMLCommonHandler.instance().getSide() != Side.CLIENT) {
             LOGGER.error("[AtumModCore] Tried to initialize SoundHandler server-side!");

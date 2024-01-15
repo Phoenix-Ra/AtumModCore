@@ -28,6 +28,7 @@ public class GuiOptionsExtended extends GuiOptions {
             new PairRecord<>(1600, 900),
             new PairRecord<>(1920, 1080)*/
         windowSizeType = DisplayManager.getCurrentResolutionIndex();
+        if(windowSizeType==-1) windowSizeType = 0;
     }
 
     @Override

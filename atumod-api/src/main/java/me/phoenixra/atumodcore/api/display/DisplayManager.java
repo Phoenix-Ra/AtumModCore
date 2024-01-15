@@ -6,6 +6,7 @@ import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerRegistry;
+import me.phoenixra.atumodcore.api.service.AtumModService;
 import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.Display;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public interface DisplayManager {
+public interface DisplayManager{
     List<PairRecord<Integer, Integer>> SUPPORTED_RESOLUTIONS =
             Arrays.asList(
                     new PairRecord<>(1024, 728),

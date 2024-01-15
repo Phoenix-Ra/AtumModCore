@@ -5,6 +5,9 @@ import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.ConfigManager;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.config.category.ConfigCategory;
+import me.phoenixra.atumodcore.api.service.AtumModService;
+import net.minecraftforge.fml.common.event.FMLEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,15 +16,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AtumConfigManager implements ConfigManager {
+public class AtumConfigManager implements ConfigManager, AtumModService {
     @Getter
     private AtumMod atumMod;
     private Map<String, LoadableConfig> configs = new ConcurrentHashMap<>();
     private Map<String, ConfigCategory> configCategoryRegistry = new ConcurrentHashMap<>();
     public AtumConfigManager(AtumMod atumMod) {
         this.atumMod = atumMod;
+        atumMod.provideModService(this);
     }
-
+    @Override
+    public void handleFmlEvent(@NotNull FMLEvent event) {
+        if(event instanceof FMLPostInitializationEvent){
+            reloadAllConfigCategories();
+        }
+    }
     @Override
     public void reloadAllConfigs() {
         List<String> removal = new ArrayList<>();
@@ -143,5 +152,16 @@ public class AtumConfigManager implements ConfigManager {
     @Override
     public void addConfigCategory(@NotNull ConfigCategory configCategory) {
         configCategoryRegistry.put(configCategory.getId(), configCategory);
+    }
+
+
+    @Override
+    public void onRemove() {
+
+    }
+
+    @Override
+    public @NotNull String getId() {
+        return "configManager";
     }
 }

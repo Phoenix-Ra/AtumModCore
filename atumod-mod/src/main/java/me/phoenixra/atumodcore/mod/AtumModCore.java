@@ -5,18 +5,19 @@ import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.AtumModProperties;
 import me.phoenixra.atumodcore.api.config.ConfigType;
+import me.phoenixra.atumodcore.api.service.AtumModService;
 import me.phoenixra.atumodcore.core.AtumAPIImpl;
 import me.phoenixra.atumodcore.mod.sound.SoundHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.relauncher.Side;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.Display;
 
 import java.io.File;
+import java.util.List;
 
 @Mod(
         modid = AtumModProperties.MOD_ID,
@@ -30,6 +31,7 @@ public class AtumModCore extends AtumMod {
     private static AtumModCore instance;
 
     public static boolean isOptifineLoaded = false;
+
 
     public AtumModCore() {
         getLogger().info("\n" +
@@ -75,9 +77,15 @@ public class AtumModCore extends AtumMod {
 
 
         getLogger().info("[AtumModCore] Successfully initialized!");
-        getLogger().info("[AtumModCore] Server-side libs ready to use!");
 
     }
+
+
+    @Mod.EventHandler
+    public void construct(FMLConstructionEvent event) {
+        notifyModServices(event);
+    }
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         Display.setResizable(false);
@@ -90,7 +98,40 @@ public class AtumModCore extends AtumMod {
         for(AtumMod atumMod : getApi().getLoadedAtumMods()){
             atumMod.setDataFolder(new File(configDir, atumMod.getName()));
         }
+        notifyModServices(event);
     }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event) {
+        notifyModServices(event);
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        notifyModServices(event);
+    }
+
+    @Mod.EventHandler
+    public void loadComplete(FMLLoadCompleteEvent event) {
+        notifyModServices(event);
+    }
+
+    @Mod.EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        notifyModServices(event);
+    }
+
+    @Mod.EventHandler
+    public void serverStarted(FMLServerStartedEvent event) {
+        notifyModServices(event);
+    }
+
+
+    @Override
+    protected AtumAPI createAPI() {
+        return new AtumAPIImpl(this);
+    }
+
     @Override
     public @NotNull String getName() {
         return "AtumModCore";
@@ -104,29 +145,5 @@ public class AtumModCore extends AtumMod {
     @Override
     public boolean isDebugEnabled() {
         return false;
-    }
-
-    @Mod.EventHandler
-    private void onClientSetup(FMLPostInitializationEvent e) {
-
-        if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {/*
-            getConfigManager().reloadAllConfigCategories();
-            getLogger().info("[AtumModCore] Client-side libs ready to use!");*/
-            PostLoadingHandler.runPostLoadingEvents();
-
-        }
-    }
-
-    /**
-     * ONLY WORKS CLIENT-SIDE! DOES NOTHING ON A SERVER!
-     */
-    public static void addPostLoadingEvent(String modid, Runnable event) {
-        PostLoadingHandler.addEvent(modid, event);
-    }
-
-
-    @Override
-    protected AtumAPI createAPI() {
-        return new AtumAPIImpl(this);
     }
 }

@@ -7,6 +7,7 @@ import me.phoenixra.atumodcore.api.display.*;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.display.impl.BaseRenderer;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerRegistry;
+import me.phoenixra.atumodcore.api.service.AtumModService;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import me.phoenixra.atumodcore.core.display.elements.canvas.DefaultCanvas;
 import me.phoenixra.atumodcore.core.display.misc.GuiOptionsExtended;
@@ -16,23 +17,27 @@ import net.minecraft.client.gui.GuiOptions;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.event.FMLConstructionEvent;
+import net.minecraftforge.fml.common.event.FMLEvent;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AtumDisplayManager implements DisplayManager {
+public class AtumDisplayManager implements DisplayManager, AtumModService {
     @Getter
     private final AtumMod atumMod;
     @Getter
-    private final DisplayElementRegistry elementRegistry;
+    private DisplayElementRegistry elementRegistry;
     @Getter
-    private final DisplayActionRegistry actionRegistry;
+    private DisplayActionRegistry actionRegistry;
     @Getter
-    private final DisplayTriggerRegistry triggerRegistry;
+    private DisplayTriggerRegistry triggerRegistry;
 
-    private final Map<String, DisplayCanvas> enabledCanvases;
+    private Map<String, DisplayCanvas> enabledCanvases;
 
     private DisplayRenderer displayRenderer;
 
@@ -40,28 +45,39 @@ public class AtumDisplayManager implements DisplayManager {
 
     public AtumDisplayManager(AtumMod atumMod) {
         this.atumMod = atumMod;
-        this.elementRegistry = new AtumDisplayElementRegistry(atumMod);
-        this.actionRegistry = new AtumDisplayActionRegistry(atumMod);
-        this.triggerRegistry = new AtumDisplayTriggerRegistry(atumMod);
-
-        enabledCanvases = new ConcurrentHashMap<>();
-
-        DisplayCanvas canvasHUD = new DefaultCanvas(
-                atumMod,
-                null
-        );
-        canvasHUD.setOriginX(0);
-        canvasHUD.setOriginY(0);
-        canvasHUD.setOriginWidth(1920);
-        canvasHUD.setOriginHeight(1080);
-        displayRenderer = new BaseRenderer(
-                atumMod,
-                canvasHUD
-        );
-
-        MinecraftForge.EVENT_BUS.register(this);
+        atumMod.provideModService(this);
     }
 
+    @Override
+    public void handleFmlEvent(@NotNull FMLEvent event) {
+        if(event instanceof FMLPreInitializationEvent){
+            this.elementRegistry = new AtumDisplayElementRegistry(atumMod);
+            this.actionRegistry = new AtumDisplayActionRegistry(atumMod);
+            this.triggerRegistry = new AtumDisplayTriggerRegistry(atumMod);
+
+            enabledCanvases = new ConcurrentHashMap<>();
+
+            DisplayCanvas canvasHUD = new DefaultCanvas(
+                    atumMod,
+                    null
+            );
+            canvasHUD.setOriginX(0);
+            canvasHUD.setOriginY(0);
+            canvasHUD.setOriginWidth(1920);
+            canvasHUD.setOriginHeight(1080);
+            displayRenderer = new BaseRenderer(
+                    atumMod,
+                    canvasHUD
+            );
+
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+    }
+
+    @Override
+    public void onRemove() {
+        //nothing, the mc closed
+    }
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent event){
@@ -72,7 +88,8 @@ public class AtumDisplayManager implements DisplayManager {
                     )
             );
         }else if(event.getGui() instanceof GuiMainMenu){
-            if(initResolution) return;
+            if(initResolution ||
+            DisplayManager.getCurrentResolutionIndex() == -1) return;
             //resolution default
             initResolution = true;
 
@@ -129,6 +146,10 @@ public class AtumDisplayManager implements DisplayManager {
     @Override
     public void unregisterEnabledCanvas(@NotNull String id) {
         enabledCanvases.remove(id);
+    }
+    @Override
+    public @NotNull String getId() {
+        return "display";
     }
 
 }

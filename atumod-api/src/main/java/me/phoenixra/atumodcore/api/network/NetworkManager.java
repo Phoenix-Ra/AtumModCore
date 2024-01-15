@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 public abstract class NetworkManager {
     @Getter
     private final AtumMod atumMod;
-    private final SimpleNetworkWrapper NETWORK_CHANNEL;
+    private SimpleNetworkWrapper NETWORK_CHANNEL;
     private final AtomicInteger discriminator = new AtomicInteger(1);
 
 
@@ -41,6 +41,10 @@ public abstract class NetworkManager {
 
     public NetworkManager(@NotNull AtumMod atumMod) {
         this.atumMod = atumMod;
+
+
+    }
+    protected void initNetwork(){
         NETWORK_CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(
                 atumMod.getName() + "@atumodcore"
         );
@@ -48,7 +52,6 @@ public abstract class NetworkManager {
             displayEventConsumers = Collections.synchronizedList(new ArrayList<>());
             openedCanvases = new ConcurrentHashMap<>();
         }
-
     }
 
 
