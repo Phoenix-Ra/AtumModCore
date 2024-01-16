@@ -19,29 +19,6 @@ import java.util.List;
 
 public interface DisplayManager{
 
-    default void changeResolution(int index) {
-        if (Display.isResizable()) {
-            Display.setResizable(false);
-        }
-        int newWidth = DisplayResolution.values()[index].getWidth();
-        int newHeight = DisplayResolution.values()[index].getHeight();
-        if (newWidth == Display.getWidth() && newHeight == Display.getHeight()) {
-            return;
-        }
-        try {
-            Display.setDisplayMode(new DisplayMode(newWidth, newHeight));
-            Display.setResizable(false);
-
-            //should not be null anyway
-            LoadableConfig settings = AtumAPI.getInstance().getCoreMod().getConfigManager()
-                    .getConfig("settings");
-            settings.set("resolution", index);
-            settings.save();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
     DisplayElementRegistry getElementRegistry();

@@ -95,7 +95,7 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
             initResolution = true;
 
             //config should not be null anyway
-            changeResolution(AtumAPI.getInstance().getCoreMod().getConfigManager()
+            DisplayResolution.changeResolution(AtumAPI.getInstance().getCoreMod().getConfigManager()
                     .getConfig("settings")
                     .getIntOrDefault("resolution",3)
             );

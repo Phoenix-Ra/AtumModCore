@@ -16,7 +16,7 @@ public class GuiOptionsExtended extends GuiOptions {
     public GuiOptionsExtended(GuiScreen guiScreen, GameSettings gameSettings) {
         super(guiScreen, gameSettings);
         windowSizeType = DisplayResolution.getCurrentResolution() == DisplayResolution.UNRECOGNIZED ?
-         1 : DisplayResolution.getCurrentResolution().getIndex();
+         0 : DisplayResolution.getCurrentResolution().getIndex();
     }
 
     @Override
@@ -27,8 +27,8 @@ public class GuiOptionsExtended extends GuiOptions {
                 2222,
                 this.width / 2 - 155,
                 this.height / 6 + 144 - 6,
-                1,
-                DisplayResolution.values().length-1)
+                0,
+                DisplayResolution.values().length-2)
         );
     }
 
@@ -37,8 +37,7 @@ public class GuiOptionsExtended extends GuiOptions {
     public void onGuiClosed() {
         super.onGuiClosed();
         try {
-            AtumAPI.getInstance().getCoreMod()
-                    .getDisplayManager().changeResolution(windowSizeType);
+            DisplayResolution.changeResolution(windowSizeType);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -64,8 +63,9 @@ public class GuiOptionsExtended extends GuiOptions {
             this.minValue = minValueIn;
             this.maxValue = maxValue;
             this.sliderValue = normalizeValue(windowSizeType);
-            this.displayString = "Resolution: "+ DisplayResolution.values()[windowSizeType].getWidth()
-                    +"x"+DisplayResolution.values()[windowSizeType].getHeight();
+            DisplayResolution resolution = DisplayResolution.from(windowSizeType);
+            this.displayString = "Resolution: "+ resolution.getWidth()
+                    +"x"+resolution.getHeight();
         }
 
         protected int getHoverState(boolean mouseOver)
@@ -84,8 +84,9 @@ public class GuiOptionsExtended extends GuiOptions {
                     float f = denormalizeValue(this.sliderValue);
                     windowSizeType = (int)f;
                     this.sliderValue = normalizeValue(f);
-                    this.displayString = "Resolution: "+ DisplayResolution.values()[windowSizeType].getWidth()
-                            +"x"+DisplayResolution.values()[windowSizeType].getHeight();
+                    DisplayResolution resolution = DisplayResolution.from(windowSizeType);
+                    this.displayString = "Resolution: "+ resolution.getWidth()
+                            +"x"+resolution.getHeight();
                 }
 
                 mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
@@ -103,8 +104,9 @@ public class GuiOptionsExtended extends GuiOptions {
                 this.sliderValue = MathHelper.clamp(this.sliderValue, 0.0F, 1.0F);
                 float f = denormalizeValue(this.sliderValue);
                 windowSizeType = (int)f;
-                this.displayString = "Resolution: "+ DisplayResolution.values()[windowSizeType].getWidth()
-                        +"x"+DisplayResolution.values()[windowSizeType].getHeight();
+                DisplayResolution resolution = DisplayResolution.from(windowSizeType);
+                this.displayString = "Resolution: "+ resolution.getWidth()
+                        +"x"+resolution.getHeight();
                 this.dragging = true;
                 return true;
             }
