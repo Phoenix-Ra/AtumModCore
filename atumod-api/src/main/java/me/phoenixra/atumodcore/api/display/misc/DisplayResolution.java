@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+@Getter
 public enum DisplayResolution {
 
     UNRECOGNIZED(-1,0,0),
@@ -20,11 +21,8 @@ public enum DisplayResolution {
 
     private static DisplayResolution CURRENT_RESOLUTION
             = DisplayResolution.UNRECOGNIZED;
-    @Getter
     private final int index;
-    @Getter
     private final int width;
-    @Getter
     private final int height;
 
     DisplayResolution(int index, int width, int height) {
@@ -65,6 +63,7 @@ public enum DisplayResolution {
             AtumAPI.getInstance().getCoreMod().getLogger().warn("Tried to change resolution to Unrecognized!");
             return;
         }
+        CURRENT_RESOLUTION = newResolution;
         int newWidth = newResolution.getWidth();
         int newHeight = newResolution.getHeight();
         if (newWidth == Display.getWidth() && newHeight == Display.getHeight()) {
@@ -83,7 +82,6 @@ public enum DisplayResolution {
         } catch (Exception e) {
             AtumAPI.getInstance().getCoreMod().getLogger().error("Failed to change resolution to " + newWidth + "x" + newHeight, e);
         }
-        CURRENT_RESOLUTION = newResolution;
     }
     public static void changeResolution(int index) {
         changeResolution(from(index));
