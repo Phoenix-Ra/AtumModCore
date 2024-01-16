@@ -1,14 +1,13 @@
 package me.phoenixra.atumodcore.api.display;
 
 import me.phoenixra.atumodcore.api.config.Config;
-import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
-import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 
 public interface DisplayCanvas extends DisplayElement, Cloneable{
+
 
     void addElement(@NotNull DisplayElement element);
     void removeElement(@NotNull DisplayElement element);
@@ -23,6 +22,8 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
     @NotNull DisplayRenderer getDisplayRenderer();
     void setDisplayRenderer(@NotNull DisplayRenderer displayRenderer);
 
+
+    void applyResolutionOptimizerGlobally(@NotNull Config config);
 
     boolean isSetupState();
     void setSetupState(boolean setupState);

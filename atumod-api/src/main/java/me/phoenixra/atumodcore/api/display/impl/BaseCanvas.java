@@ -2,7 +2,6 @@ package me.phoenixra.atumodcore.api.display.impl;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
-import lombok.Setter;
 import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
@@ -12,7 +11,6 @@ import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
-import me.phoenixra.atumodcore.api.events.data.DisplayDataRemovedEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.InputType;
@@ -35,7 +33,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Getter
     private HashSet<DisplayElement> displayedElements = new LinkedHashSet<>();
     private List<DisplayElement> displayedElementsReversed = new ArrayList<>();
-    private boolean pressedCtrl;
+    private boolean pressedShift;
 
     private boolean initialized = false;
 
@@ -107,7 +105,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         );
         super.updateVariables(config, configKey);
 
-        registerResolutionSettings();
 
     }
 
@@ -198,7 +195,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         if(element instanceof DisplayCanvas){
             ((DisplayCanvas) element).setDisplayRenderer(getDisplayRenderer());
         }
-        registerResolutionSettingsFor(element);
         updateDisplayedElements();
     }
     @Override
@@ -294,53 +290,29 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         return null;
     }
 
-    private void registerResolutionSettings(){
-        //@TODO
-        //only base canvas of renderer can register resolution settings
-        //maybe I should make extra class for the base canvas?
-        if(getSettingsConfig() == null ||
-                getDisplayRenderer().getBaseCanvas() != this){
-            return;
-        }
-        for(String key : getSettingsConfig().getSubsection("resolution_optimization")
-                .getKeys(false)){
+    @Override
+    public void applyResolutionOptimizerGlobally(@NotNull Config config) {
+        for(String key : config.getSubsection("resolution_optimization").getKeys(false)){
             try {
                 DisplayResolution resolution = DisplayResolution.valueOf(key);
                 applyResolutionOptimizer(
-                                resolution,
-                                getSettingsConfig().getSubsection(
-                                        "resolution_optimization." + key
-                                )
-                        );
+                        resolution,
+                        config.getSubsection("resolution_optimization."+key)
+                );
             }catch (IllegalArgumentException e){
                 getAtumMod().getLogger().warn("Could not find resolution: " + key);
             }
         }
     }
-    private void registerResolutionSettingsFor(DisplayElement element){
-        //@TODO
-        //only base canvas of renderer can register resolution settings
-        //maybe I should make extra class for the base canvas?
-        if(getSettingsConfig() == null ||
-                getDisplayRenderer().getBaseCanvas() != this){
-            return;
-        }
 
-        //@TODO add support of canvases
-        for(String key : getSettingsConfig()
-                .getSubsection("resolution_optimization")
-                .getKeys(false)){
-            try {
-                DisplayResolution resolution = DisplayResolution.valueOf(key);
-                element.applyResolutionOptimizer(
-                                resolution,
-                                getSettingsConfig().getSubsection(
-                                        "resolution_optimization." + key+".elements."+element.getId()
-                                )
-                        );
-            }catch (IllegalArgumentException e){
-                getAtumMod().getLogger().warn("Could not find resolution: " + key);
-            }
+    @Override
+    public void applyResolutionOptimizer(@NotNull DisplayResolution resolution, @NotNull Config config) {
+        super.applyResolutionOptimizer(resolution, config);
+        for(DisplayElement element : displayedElements){
+            element.applyResolutionOptimizer(
+                    resolution,
+                    config.getSubsection("elements."+element.getId())
+            );
         }
     }
 
@@ -351,24 +323,23 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
         if(event.getParentEvent().getType() == InputType.KEYBOARD_KEY) {
             if(!getAtumMod().isDebugEnabled()) return;
-            getAtumMod().getLogger().info("Pressed: " + event.getParentEvent().getKeyboardCharacter());
-            if (event.getParentEvent().getKeyboardCharacter() == 'S' && pressedCtrl) {
+            if (event.getParentEvent().getKeyboardCharacter() == 'S' && pressedShift) {
                 getAtumMod().getLogger().info("Reloading");
                 reloadCanvas();
-                pressedCtrl = false;
-            } else if (pressedCtrl) {
-                pressedCtrl = false;
+                pressedShift = false;
+            } else if (pressedShift) {
+                pressedShift = false;
             }
-        }else if(event.getParentEvent().getType() == InputType.KEYBOARD_LEFT_CTRL
+        }else if(event.getParentEvent().getType() == InputType.KEYBOARD_SHIFT
                 && !isSetupState()){
-            pressedCtrl = true;
+            pressedShift = true;
         }
 
     }
     @SubscribeEvent
     public void onReleased1(ElementInputReleaseEvent event){
-        if(event.getParentEvent().getType() == InputType.KEYBOARD_LEFT_CTRL){
-            pressedCtrl = false;
+        if(event.getParentEvent().getType() == InputType.KEYBOARD_SHIFT){
+            pressedShift = false;
         }
 
     }

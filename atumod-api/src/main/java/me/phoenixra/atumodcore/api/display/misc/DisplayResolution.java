@@ -4,7 +4,6 @@ import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 

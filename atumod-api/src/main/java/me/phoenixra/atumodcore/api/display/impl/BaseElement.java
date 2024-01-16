@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public abstract class BaseElement implements DisplayElement, Cloneable {
@@ -209,6 +208,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Override
     public void applyResolutionOptimizer(@NotNull DisplayResolution resolution,
                                          @NotNull Config config) {
+        getAtumMod().getLogger().info("Applying resolution optimizer for element: "+getId());
         optimizedX.put(resolution,
                 config.getIntOrDefault("posX",originX)
         );
@@ -221,6 +221,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         optimizedHeight.put(resolution,
                 config.getIntOrDefault("height",originHeight)
         );
+        getAtumMod().getLogger().info("height: "+optimizedHeight.get(resolution));
     }
 
     @Override
@@ -274,10 +275,10 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
             clone.id = UUID.randomUUID().toString();
             clone.initialized = false;
             clone.active = true;
-            clone.optimizedX = new HashMap<>();
-            clone.optimizedY = new HashMap<>();
-            clone.optimizedWidth = new HashMap<>();
-            clone.optimizedHeight = new HashMap<>();
+            clone.optimizedX = new HashMap<>(optimizedX);
+            clone.optimizedY = new HashMap<>(optimizedY);
+            clone.optimizedWidth = new HashMap<>(optimizedWidth);
+            clone.optimizedHeight = new HashMap<>(optimizedHeight);
             return onClone(clone);
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

@@ -95,6 +95,7 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
             elementBaseElement.setElementOwner(canvas);
             canvas.addElement(elementBaseElement);
         }
+        canvas.applyResolutionOptimizerGlobally(config);
         return canvas;
     }
 

@@ -80,7 +80,6 @@ public class ElementText extends BaseElement {
         super.applyResolutionOptimizer(resolution, config);
         String fontName = config.getStringOrNull("settings.font");
         if(fontName == null) return;
-        config.getIntOrDefault("settings.fontSize",20);
         DisplayFont font1 = null;
         try(InputStream stream = getAtumMod().getClass().getResourceAsStream(
                 "/assets/"+getAtumMod().getModID()+"/fonts/"+fontName)) {
@@ -96,11 +95,13 @@ public class ElementText extends BaseElement {
         optimizedFont.put(resolution,
                 font1==null? font : font1
         );
+        getAtumMod().getLogger().info("Applied resolution optimizer for font: "+fontName+" for resolution: "+resolution.name());
     }
 
     @Override
     protected BaseElement onClone(BaseElement clone) {
         ElementText cloneText = (ElementText) clone;
+        cloneText.optimizedFont = new HashMap<>(optimizedFont);
         return cloneText;
     }
 
