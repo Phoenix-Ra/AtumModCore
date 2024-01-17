@@ -54,6 +54,12 @@ public class BaseRenderer implements DisplayRenderer {
     public void initRenderer() {
         renderDebugger =
         new AtumDebugger(atumMod,"testMenu-"+baseCanvas.getId(),"Drawing the menu");
+        if(!baseCanvas.isActive()) {
+            baseCanvas = atumMod.getDisplayManager()
+                    .getElementRegistry().getDrawableCanvas(
+                            baseCanvas.getTemplateId()
+                    );
+        }
         setBaseCanvas(baseCanvas);
         getAtumMod().getNetworkManager().sendDisplayEvent(
                 new DisplayEventData(
