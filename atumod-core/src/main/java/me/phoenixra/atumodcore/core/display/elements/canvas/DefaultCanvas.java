@@ -4,11 +4,8 @@ import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;
+import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
-import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
-import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
-import me.phoenixra.atumodcore.api.input.InputType;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -136,7 +133,7 @@ public class DefaultCanvas extends BaseCanvas{
     }
 
     @Override
-    protected BaseCanvas onClone(BaseCanvas clone) {
+    protected BaseElement onClone(BaseElement clone) {
         System.out.println("REMOVAL CLONE");
         ( (DefaultCanvas)clone).setupCanvas = null;
         return clone;

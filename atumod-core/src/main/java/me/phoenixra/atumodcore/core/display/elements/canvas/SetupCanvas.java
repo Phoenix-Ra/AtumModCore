@@ -6,6 +6,7 @@ import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;
+import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
@@ -119,42 +120,42 @@ public class SetupCanvas extends BaseCanvas {
                 //if(selectedElement.getOriginX() - newMousePos.getFirst())
                 break;
             case MOVING:
-                selectedElement.setOriginX(selectedElement.getOriginX() + x);
-                selectedElement.setOriginY(selectedElement.getOriginY() + y);
+                selectedElement.getOriginX().setDefaultValue(selectedElement.getOriginX().getDefaultValue() + x);
+                selectedElement.getOriginY().setDefaultValue(selectedElement.getOriginY().getDefaultValue() + y);
                 break;
             case RESIZING_TOP:
-                selectedElement.setOriginY(selectedElement.getOriginY() + y);
-                selectedElement.setOriginHeight(selectedElement.getOriginHeight() - y);
+                selectedElement.getOriginY().setDefaultValue(selectedElement.getOriginY().getDefaultValue() + y);
+                selectedElement.getOriginHeight().setDefaultValue(selectedElement.getOriginHeight().getDefaultValue() - y);
                 break;
             case RESIZING_BOTTOM:
-                selectedElement.setOriginHeight(selectedElement.getOriginHeight() + y);
+                selectedElement.getOriginHeight().setDefaultValue(selectedElement.getOriginHeight().getDefaultValue() + y);
                 break;
             case RESIZING_LEFT:
-                selectedElement.setOriginX(selectedElement.getOriginX() + x);
-                selectedElement.setOriginWidth(selectedElement.getOriginWidth() - x);
+                selectedElement.getOriginX().setDefaultValue(selectedElement.getOriginX().getDefaultValue() + x);
+                selectedElement.getOriginWidth().setDefaultValue(selectedElement.getOriginWidth().getDefaultValue() - x);
                 break;
             case RESIZING_RIGHT:
-                selectedElement.setOriginWidth(selectedElement.getOriginWidth() + x);
+                selectedElement.getOriginWidth().setDefaultValue(selectedElement.getOriginWidth().getDefaultValue() + x);
                 break;
             case RESIZING_TOP_LEFT:
-                selectedElement.setOriginX(selectedElement.getOriginX() + x);
-                selectedElement.setOriginY(selectedElement.getOriginY() + y);
-                selectedElement.setOriginWidth(selectedElement.getOriginWidth() - x);
-                selectedElement.setOriginHeight(selectedElement.getOriginHeight() - y);
+                selectedElement.getOriginX().setDefaultValue(selectedElement.getOriginX().getDefaultValue() + x);
+                selectedElement.getOriginY().setDefaultValue(selectedElement.getOriginY().getDefaultValue() + y);
+                selectedElement.getOriginWidth().setDefaultValue(selectedElement.getOriginWidth().getDefaultValue() - x);
+                selectedElement.getOriginHeight().setDefaultValue(selectedElement.getOriginHeight().getDefaultValue() - y);
                 break;
             case RESIZING_TOP_RIGHT:
-                selectedElement.setOriginY(selectedElement.getOriginY() + y);
-                selectedElement.setOriginWidth(selectedElement.getOriginWidth() + x);
-                selectedElement.setOriginHeight(selectedElement.getOriginHeight() - y);
+                selectedElement.getOriginY().setDefaultValue(selectedElement.getOriginY().getDefaultValue() + y);
+                selectedElement.getOriginWidth().setDefaultValue(selectedElement.getOriginWidth().getDefaultValue() + x);
+                selectedElement.getOriginHeight().setDefaultValue(selectedElement.getOriginHeight().getDefaultValue() - y);
                 break;
             case RESIZING_BOTTOM_LEFT:
-                selectedElement.setOriginX(selectedElement.getOriginX() + x);
-                selectedElement.setOriginWidth(selectedElement.getOriginWidth() - x);
-                selectedElement.setOriginHeight(selectedElement.getOriginHeight() + y);
+                selectedElement.getOriginX().setDefaultValue(selectedElement.getOriginX().getDefaultValue() + x);
+                selectedElement.getOriginWidth().setDefaultValue(selectedElement.getOriginWidth().getDefaultValue() - x);
+                selectedElement.getOriginHeight().setDefaultValue(selectedElement.getOriginHeight().getDefaultValue() + y);
                 break;
             case RESIZING_BOTTOM_RIGHT:
-                selectedElement.setOriginWidth(selectedElement.getOriginWidth() + x);
-                selectedElement.setOriginHeight(selectedElement.getOriginHeight() + y);
+                selectedElement.getOriginWidth().setDefaultValue(selectedElement.getOriginWidth().getDefaultValue() + x);
+                selectedElement.getOriginHeight().setDefaultValue(selectedElement.getOriginHeight().getDefaultValue() + y);
                 break;
         }
         mousePos = newMousePos;
@@ -224,7 +225,7 @@ public class SetupCanvas extends BaseCanvas {
     }
 
     @Override
-    protected BaseCanvas onClone(BaseCanvas clone) {
+    protected BaseElement onClone(BaseElement clone) {
         return clone;
     }
 

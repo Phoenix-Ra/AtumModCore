@@ -6,6 +6,7 @@ import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.*;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
 import me.phoenixra.atumodcore.api.display.impl.BaseRenderer;
+import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerRegistry;
 import me.phoenixra.atumodcore.api.service.AtumModService;
@@ -13,14 +14,11 @@ import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import me.phoenixra.atumodcore.core.display.elements.canvas.DefaultCanvas;
 import me.phoenixra.atumodcore.core.display.misc.GuiOptionsExtended;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiOptions;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
@@ -62,10 +60,10 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
                     atumMod,
                     null
             );
-            canvasHUD.setOriginX(0);
-            canvasHUD.setOriginY(0);
-            canvasHUD.setOriginWidth(1920);
-            canvasHUD.setOriginHeight(1080);
+            canvasHUD.getOriginX().setDefaultValue(0);
+            canvasHUD.getOriginY().setDefaultValue(0);
+            canvasHUD.getOriginWidth().setDefaultValue(1920);
+            canvasHUD.getOriginHeight().setDefaultValue(1080);
             displayRenderer = new BaseRenderer(
                     atumMod,
                     canvasHUD
@@ -84,20 +82,19 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
     public void onGuiOpen(GuiOpenEvent event){
         if(event.getGui() instanceof GuiOptions){
             event.setGui(new GuiOptionsExtended(
-                    Minecraft.getMinecraft().currentScreen,
+                    null,
                     Minecraft.getMinecraft().gameSettings
                     )
             );
-        }else if(event.getGui() instanceof GuiMainMenu){
-            if(initResolution ||
-            DisplayResolution.getCurrentResolution() == DisplayResolution.UNRECOGNIZED) return;
+        }else if(event.getGui() instanceof BaseScreen){
+            if(initResolution) return;
             //resolution default
             initResolution = true;
 
             //config should not be null anyway
             DisplayResolution.changeResolution(AtumAPI.getInstance().getCoreMod().getConfigManager()
                     .getConfig("settings")
-                    .getIntOrDefault("resolution",3)
+                    .getIntOrDefault("resolution",0)
             );
         }
     }

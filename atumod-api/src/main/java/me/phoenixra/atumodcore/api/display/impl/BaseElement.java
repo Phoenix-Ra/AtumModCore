@@ -10,14 +10,20 @@ import me.phoenixra.atumodcore.api.display.DisplayLayer;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
+import me.phoenixra.atumodcore.api.display.misc.OptimizedVariable;
+import me.phoenixra.atumodcore.api.display.misc.variables.OptimizedVariableInt;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
+import me.phoenixra.atumodcore.api.utils.ClassUtils;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public abstract class BaseElement implements DisplayElement, Cloneable {
@@ -33,13 +39,22 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     private DisplayLayer layer;
 
     @Getter @Setter
-    private int originX;
+    private OptimizedVariableInt originX;
     @Getter @Setter
-    private int originY;
+    private OptimizedVariableInt originY;
     @Getter @Setter
-    private int originWidth;
+    private OptimizedVariableInt originWidth;
     @Getter @Setter
-    private int originHeight;
+    private OptimizedVariableInt originHeight;
+
+    @Getter @Setter
+    private int additionX;
+    @Getter @Setter
+    private int additionY;
+    @Getter @Setter
+    private int additionWidth;
+    @Getter @Setter
+    private int additionHeight;
 
     @Getter
     private int x;
@@ -50,10 +65,6 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter
     private int height;
 
-    private HashMap<DisplayResolution, Integer> optimizedX = new HashMap<>();
-    private HashMap<DisplayResolution, Integer> optimizedY = new HashMap<>();
-    private HashMap<DisplayResolution, Integer> optimizedWidth = new HashMap<>();
-    private HashMap<DisplayResolution, Integer> optimizedHeight = new HashMap<>();
 
     @Getter
     private int lastMouseX;
@@ -77,6 +88,9 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
     @Getter
     private Config settingsConfig = null;
+
+    private List<OptimizedVariable<?>> optimizedVariables;
+    private List<Field> optimizedVariableFields = new ArrayList<>();
     private boolean initialized;
 
     public BaseElement(@NotNull AtumMod atumMod,
@@ -88,10 +102,14 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
                        @Nullable DisplayCanvas elementOwner){
         this.atumMod = atumMod;
         this.layer = layer;
-        this.x = this.originX = x;
-        this.y = this.originY = y;
-        this.width = this.originWidth = width;
-        this.height = this.originHeight = height;
+        this.originX = new OptimizedVariableInt("posX",x);
+        this.originY = new OptimizedVariableInt("posY",y);
+        this.originWidth = new OptimizedVariableInt("width",width);
+        this.originHeight = new OptimizedVariableInt("height",height);
+        this.x =  x;
+        this.y =  y;
+        this.width = width;
+        this.height =  height;
 
         this.elementOwner = elementOwner;
     }
@@ -109,17 +127,13 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         lastMouseX = mouseX;
         lastMouseY = mouseY;
         int[] coords;
-        if(resolution== null){
-            coords = RenderUtils.fixCoordinates(originX,originY,originWidth,originHeight,fixRatio);
-        }else{
-            coords = RenderUtils.fixCoordinates(
-                    optimizedX.getOrDefault(resolution,originX),
-                    optimizedY.getOrDefault(resolution,originY),
-                    optimizedWidth.getOrDefault(resolution,originWidth),
-                    optimizedHeight.getOrDefault(resolution,originHeight),
-                    fixRatio
-            );
-        }
+        coords = RenderUtils.fixCoordinates(
+                originX.getValue(resolution)+additionX,
+                originY.getValue(resolution)+additionY,
+                originWidth.getValue(resolution)+additionWidth,
+                originHeight.getValue(resolution)+additionHeight,
+                fixRatio
+        );
         x = coords[0];
         y = coords[1];
         width = coords[2];
@@ -156,35 +170,39 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         }
         String x = config.getStringOrNull("posX");
         if(x != null){
-            this.x = this.originX = (int) config.getAtumMod().getApi().evaluate(
+            this.x = (int) config.getAtumMod().getApi().evaluate(
                     config.getAtumMod(),
                     x,
                     PlaceholderContext.of(config)
             );
+            this.originX.setDefaultValue(this.x);
         }
         String y = config.getStringOrNull("posY");
         if(y != null){
-            this.y = this.originY = (int) config.getAtumMod().getApi().evaluate(
+            this.y = (int) config.getAtumMod().getApi().evaluate(
                     config.getAtumMod(),
                     y,
                     PlaceholderContext.of(config)
             );
+            this.originY.setDefaultValue(this.y);
         }
         String width = config.getStringOrNull("width");
         if(width != null){
-            this.width = this.originWidth = (int) config.getAtumMod().getApi().evaluate(
+            this.width = (int) config.getAtumMod().getApi().evaluate(
                     config.getAtumMod(),
                     width,
                     PlaceholderContext.of(config)
             );
+            this.originWidth.setDefaultValue(this.width);
         }
         String height = config.getStringOrNull("height");
         if(height != null){
-            this.height = this.originHeight = (int) config.getAtumMod().getApi().evaluate(
+            this.height = (int) config.getAtumMod().getApi().evaluate(
                     config.getAtumMod(),
                     height,
                     PlaceholderContext.of(config)
             );
+            this.originHeight.setDefaultValue(this.height);
         }
         Boolean fixRatio = config.getBoolOrNull("fixRatio");
         if(fixRatio != null){
@@ -209,19 +227,17 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     public void applyResolutionOptimizer(@NotNull DisplayResolution resolution,
                                          @NotNull Config config) {
         getAtumMod().getLogger().info("Applying resolution optimizer for element: "+getId());
-        optimizedX.put(resolution,
-                config.getIntOrDefault("posX",originX)
-        );
-        optimizedY.put(resolution,
-                config.getIntOrDefault("posY",originY)
-        );
-        optimizedWidth.put(resolution,
-                config.getIntOrDefault("width",originWidth)
-        );
-        optimizedHeight.put(resolution,
-                config.getIntOrDefault("height",originHeight)
-        );
-        getAtumMod().getLogger().info("height: "+optimizedHeight.get(resolution));
+        loadOptimizedVariables();
+        try {
+            for (OptimizedVariable<?> variable : optimizedVariables) {
+                variable.addOptimizedValue(
+                        resolution,
+                        config.getStringOrNull(variable.getConfigKey())
+                );
+            }
+        }catch (Throwable throwable){
+            getAtumMod().getLogger().error("Failed to apply resolution optimizer for element: "+getId(),throwable);
+        }
     }
 
     @Override
@@ -244,6 +260,22 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
                 .setElementEnabled(getConfigKey(),active);
     }
 
+    private void loadOptimizedVariables(){
+        //get all variables using reflection
+        if(optimizedVariables == null){
+            optimizedVariables = new ArrayList<>();
+            for(Field field : ClassUtils.getAllFields(getClass(), OptimizedVariable.class)){
+                field.setAccessible(true);
+                try {
+                    optimizedVariables.add((OptimizedVariable<?>) field.get(this));
+                    optimizedVariableFields.add(field);
+                } catch (IllegalAccessException e) {
+                    getAtumMod().getLogger().error("Failed to load optimized variable: "+field.getName()+" The template: "+ getTemplateId());
+                }
+            }
+        }
+
+    }
 
 
     @Override
@@ -275,10 +307,19 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
             clone.id = UUID.randomUUID().toString();
             clone.initialized = false;
             clone.active = true;
-            clone.optimizedX = new HashMap<>(optimizedX);
-            clone.optimizedY = new HashMap<>(optimizedY);
-            clone.optimizedWidth = new HashMap<>(optimizedWidth);
-            clone.optimizedHeight = new HashMap<>(optimizedHeight);
+            try {
+                loadOptimizedVariables();
+                clone.optimizedVariables = new ArrayList<>();
+                for (Field field : optimizedVariableFields) {
+                    field.setAccessible(true);
+                    OptimizedVariable<?> variable = (OptimizedVariable<?>) ((OptimizedVariable<?>) field.get(this)).clone();
+                    field.set(clone, variable);
+                    clone.optimizedVariables.add(variable);
+                }
+            }catch (Exception e){
+                getAtumMod().getLogger().error("Failed to clone optimized variables for element: "+getTemplateId());
+            }
+
             return onClone(clone);
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

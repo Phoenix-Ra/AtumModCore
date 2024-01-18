@@ -7,6 +7,7 @@ import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.actions.ActionArgs;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
+import me.phoenixra.atumodcore.api.display.misc.variables.OptimizedVariableInt;
 import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
 import me.phoenixra.atumodcore.api.registry.Registrable;
@@ -28,15 +29,26 @@ public interface DisplayElement extends Cloneable{
     int getWidth();
     int getHeight();
 
-    int getOriginX();
-    int getOriginY();
-    int getOriginWidth();
-    int getOriginHeight();
+    OptimizedVariableInt getOriginX();
+    OptimizedVariableInt getOriginY();
+    OptimizedVariableInt getOriginWidth();
+    OptimizedVariableInt getOriginHeight();
 
-    void setOriginX(int x);
-    void setOriginY(int y);
-    void setOriginWidth(int width);
-    void setOriginHeight(int height);
+    int getAdditionX();
+    int getAdditionY();
+    int getAdditionWidth();
+    int getAdditionHeight();
+
+    void setOriginX(OptimizedVariableInt variable);
+    void setOriginY(OptimizedVariableInt variable);
+    void setOriginWidth(OptimizedVariableInt variable);
+    void setOriginHeight(OptimizedVariableInt variable);
+
+    void setAdditionX(int x);
+    void setAdditionY(int y);
+    void setAdditionWidth(int width);
+    void setAdditionHeight(int height);
+
 
     int getLastMouseX();
     int getLastMouseY();
