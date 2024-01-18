@@ -363,13 +363,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         return clone;
     }
 
-    @Override
-    protected final BaseElement onClone(BaseElement clone) {
-        return clone;
-    }
-
-    protected abstract BaseCanvas onClone(BaseCanvas clone);
-
 
 
     @Override
