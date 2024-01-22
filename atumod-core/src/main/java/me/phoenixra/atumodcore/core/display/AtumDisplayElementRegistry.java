@@ -7,9 +7,9 @@ import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;
-import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.core.display.elements.*;
 import me.phoenixra.atumodcore.core.display.elements.canvas.DefaultCanvas;
+import me.phoenixra.atumodcore.core.display.elements.choose.ElementChooseBool;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +28,10 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
         registerTemplate("text", new ElementText(atumMod,null));
         registerTemplate("button", new ElementButton(atumMod,null));
         registerTemplate("progress_bar", new ElementProgressBar(atumMod,null));
+
+
+        registerTemplate("choose_bool", new ElementChooseBool(atumMod,null));
+
     }
 
     @Override
@@ -72,29 +76,7 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
                 null,
                 null
         );
-        getAtumMod().getLogger().info("Found canvas: " + canvas);
-        for(String key : config.getSubsection("elements").getKeys(false)){
-            Config elementSection = config.getSubsection("elements." + key);
-            String elementType = elementSection.getStringOrDefault("type", "image");
-            getAtumMod().getLogger().info("Found element: " + elementType);
-            DisplayElement elementElement = this.getElementTemplate(elementType);
-            if(elementElement == null){
-                this.atumMod.getLogger().error("Could not find element type: " + elementType);
-                continue;
-            }
-            if(!(elementElement instanceof BaseElement)){
-                this.atumMod.getLogger().error("Element type: " + elementType + " is not an element!");
-                continue;
-            }
-            BaseElement elementBaseElement = (BaseElement)( elementElement).cloneWithNewVariables(
-                    key,
-                    elementSection,
-                    key,
-                    canvas
-            );
-            elementBaseElement.setElementOwner(canvas);
-            canvas.addElement(elementBaseElement);
-        }
+        getAtumMod().getLogger().info("Found canvas: " + canvas.getTemplateId());
         canvas.applyResolutionOptimizerGlobally(config);
         return canvas;
     }

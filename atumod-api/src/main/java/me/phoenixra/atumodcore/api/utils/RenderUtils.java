@@ -26,6 +26,7 @@ import java.awt.image.BufferedImage;
 
 import static org.lwjgl.opengl.GL11.*;
 
+//@TODO check all methods, update to newer openGL version and optimize
 public class RenderUtils {
     private static double windowRatioXCache = 1.0;
     private static double windowRatioYCache = 1.0;
@@ -67,6 +68,31 @@ public class RenderUtils {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
 
+    }
+    public static void drawCircle(float centerX, float centerY, float radius,
+                                  int polygons, AtumColor color){
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        color.useColor();
+        buffer.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION);
+
+        // Center vertex of the circle
+        buffer.pos(centerX, centerY, 0.0D).endVertex();
+
+        // Define the circle vertices
+        for (int i = 0; i <= polygons; ++i) {
+            double angle = Math.PI * 2 * i / polygons;
+            double x = centerX + Math.sin(angle) * radius;
+            double y = centerY + Math.cos(angle) * radius;
+
+            buffer.pos(x, y, 0.0D).endVertex();
+        }
+
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
     }
     public static void setZLevelPre(int zLevel) {
         GlStateManager.disableRescaleNormal();
