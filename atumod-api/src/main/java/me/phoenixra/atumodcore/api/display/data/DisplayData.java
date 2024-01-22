@@ -12,6 +12,7 @@ public interface DisplayData {
     void setTemporaryData(String id, String value, long lifetime, boolean queued);
     void setDefaultData(String id, String value);
     String getData(String id);
+    boolean hasData(String id);
     default String getDataOrDefault(String id, String defaultValue){
         String data = getData(id);
         if(data==null) return defaultValue;

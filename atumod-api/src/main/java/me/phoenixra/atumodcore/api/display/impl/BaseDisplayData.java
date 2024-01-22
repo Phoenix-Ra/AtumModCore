@@ -87,6 +87,15 @@ public class BaseDisplayData implements DisplayData {
     }
 
     @Override
+    public boolean hasData(String id) {
+        String out = data.get(id);
+        if(out == null && dataTemp.containsKey(id)) {
+            out = dataTemp.get(id).get(0).getFirst();
+        }
+        return out != null;
+    }
+
+    @Override
     public Map<String, String> getAllData() {
         //merged data and dataTemp
         Map<String, String> mergedData = new HashMap<>(data);
