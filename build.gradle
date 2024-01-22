@@ -50,6 +50,9 @@ allprojects {
             exclude module: 'gson'
         }
 
+        implementation 'io.github.classgraph:classgraph:4.8.104'
+
+
         //annotations
         compileOnly 'org.projectlombok:lombok:1.18.24'
         compileOnly 'org.jetbrains:annotations:23.0.0'
@@ -119,6 +122,8 @@ shadowJar {
         exclude(dependency ->
                 !dependency.moduleGroup.startsWith(mod_group) &&
                         !dependency.moduleGroup.startsWith("org.yaml")
+                        &&
+                        !dependency.moduleGroup.startsWith("io.github.classgraph")
         )
     }
     duplicatesStrategy DuplicatesStrategy.EXCLUDE //prevent duplicates

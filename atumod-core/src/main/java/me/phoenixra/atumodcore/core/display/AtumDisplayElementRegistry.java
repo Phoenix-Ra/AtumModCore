@@ -1,15 +1,18 @@
 package me.phoenixra.atumodcore.core.display;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ClassInfoList;
+import io.github.classgraph.ScanResult;
 import lombok.Getter;
+import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayElementRegistry;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayElement;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;
-import me.phoenixra.atumodcore.core.display.elements.*;
-import me.phoenixra.atumodcore.core.display.elements.canvas.DefaultCanvas;
-import me.phoenixra.atumodcore.core.display.elements.choose.ElementChooseBool;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,15 +26,9 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
     private Map<String, DisplayElement> registry = new ConcurrentHashMap<>();
     public AtumDisplayElementRegistry(AtumMod atumMod) {
         this.atumMod = atumMod;
-        registerTemplate("canvas", new DefaultCanvas(atumMod,null));
-        registerTemplate("image", new ElementImage(atumMod,null));
-        registerTemplate("text", new ElementText(atumMod,null));
-        registerTemplate("button", new ElementButton(atumMod,null));
-        registerTemplate("progress_bar", new ElementProgressBar(atumMod,null));
-
-
-        registerTemplate("choose_bool", new ElementChooseBool(atumMod,null));
-
+        getAtumMod().getLogger().info("Registering display elements");
+        registerElements(AtumAPI.getInstance().getCoreMod().getPackagePath());
+        registerElements(atumMod.getPackagePath());
     }
 
     @Override
@@ -91,4 +88,39 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
         registry.remove(id);
     }
 
+
+
+
+    private void registerElements(String packagePath){
+        // EXAMPLE OF A CHANGE
+        try (ScanResult scanResult = new ClassGraph()
+                .enableAllInfo()
+                .acceptPackages(
+                        packagePath +
+                                "..*"
+                ).scan()) {// Begin the scan
+            ClassInfoList classInfos = scanResult.getClassesWithAnnotation(RegisterDisplayElement.class.getName());
+            //log
+            getAtumMod().getLogger().info("Found " + classInfos.size() + " display elements to register");
+            for (ClassInfo classInfo : classInfos) {
+                Class<?> clazz = classInfo.loadClass();
+                RegisterDisplayElement annotation = clazz.getAnnotation(RegisterDisplayElement.class);
+                if (DisplayElement.class.isAssignableFrom(clazz)) {
+                    try {
+                        getAtumMod()
+                                .getLogger().info("Loading "+clazz.getName()+" element template...");
+                        registerTemplate(
+                                annotation.templateId(),
+                                (DisplayElement) clazz.getConstructor(AtumMod.class, DisplayCanvas.class)
+                                        .newInstance(getAtumMod(),null)
+                        );
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }

@@ -4,6 +4,7 @@ import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayElement;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
@@ -11,7 +12,7 @@ import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
+@RegisterDisplayElement(templateId = "progress_bar")
 public class ElementProgressBar extends BaseElement {
 
     private AtumColor barColorFilled = AtumColor.BLACK;

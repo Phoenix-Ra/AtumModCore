@@ -143,6 +143,11 @@ public class AtumModCore extends AtumMod {
     }
 
     @Override
+    public @NotNull String getPackagePath() {
+        return "me.phoenixra.atumodcore";
+    }
+
+    @Override
     public boolean isDebugEnabled() {
         return false;
     }

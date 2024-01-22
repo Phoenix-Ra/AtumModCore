@@ -3,9 +3,11 @@ package me.phoenixra.atumodcore.core.display.actions;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
 import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
 import net.minecraft.client.Minecraft;
 
+@RegisterDisplayAction(templateId = "open_gui")
 public class ActionOpenGui implements DisplayAction {
     @Override
     public void perform(ActionData data) {

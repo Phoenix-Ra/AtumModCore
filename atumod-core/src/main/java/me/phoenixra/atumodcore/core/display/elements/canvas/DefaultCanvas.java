@@ -3,13 +3,14 @@ package me.phoenixra.atumodcore.core.display.elements.canvas;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayElement;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-
+@RegisterDisplayElement(templateId = "canvas")
 public class DefaultCanvas extends BaseCanvas{
 
 

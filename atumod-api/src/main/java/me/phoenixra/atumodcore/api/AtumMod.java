@@ -67,6 +67,7 @@ public abstract class AtumMod {
 
     public abstract @NotNull String getName();
     public abstract @NotNull String getModID();
+    public abstract @NotNull String getPackagePath();
 
     public abstract boolean isDebugEnabled();
     protected AtumAPI createAPI() {

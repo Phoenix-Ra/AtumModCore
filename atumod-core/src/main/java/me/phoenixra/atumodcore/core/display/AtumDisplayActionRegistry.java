@@ -1,9 +1,18 @@
 package me.phoenixra.atumodcore.core.display;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ClassInfoList;
+import io.github.classgraph.ScanResult;
 import lombok.Getter;
+import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
+import me.phoenixra.atumodcore.api.display.DisplayCanvas;
+import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayElement;
 import me.phoenixra.atumodcore.core.display.actions.*;
 import me.phoenixra.atumodcore.core.display.actions.canvas.ActionAddElement;
 import me.phoenixra.atumodcore.core.display.actions.canvas.ActionRemoveElement;
@@ -25,28 +34,9 @@ public class AtumDisplayActionRegistry implements DisplayActionRegistry {
     private Map<String, DisplayAction> registry = new ConcurrentHashMap<>();
     public AtumDisplayActionRegistry(AtumMod atumMod) {
         this.atumMod = atumMod;
-
-        register("add_element", new ActionAddElement());
-        register("remove_element", new ActionRemoveElement());
-
-        register("close_renderer", new ActionCloseRenderer());
-        register("change_base_canvas", new ActionChangeBaseCanvas());
-        register("set_data", new ActionSetData());
-        register("set_multiple_data", new ActionSetMultipleData());
-        register("remove_data", new ActionRemoveData());
-        register("remove_multiple_data", new ActionRemoveMultipleData());
-        register("clear_data", new ActionClearData());
-
-        register("connect_to_server", new ActionConnectToServer());
-        register("send_display_event", new ActionSendDisplayEvent());
-
-        register("open_gui", new ActionOpenGui());
-        register("close_gui", new ActionCloseGui());
-        register("quit", new ActionQuit());
-        register("open_settings", new ActionOpenSettings());
-        register("open_singleplayer", new ActionOpenSingleplayer());
-        register("open_multiplayer", new ActionOpenMultiplayer());
-        register("open_link", new ActionOpenLink());
+        getAtumMod().getLogger().info("Registering display actions");
+        registerActions(AtumAPI.getInstance().getCoreMod().getPackagePath());
+        registerActions(atumMod.getPackagePath());
     }
 
     @Override
@@ -63,4 +53,36 @@ public class AtumDisplayActionRegistry implements DisplayActionRegistry {
         registry.remove(id.toLowerCase());
     }
 
+
+    private void registerActions(String packagePath){
+        // EXAMPLE OF A CHANGE
+        try (ScanResult scanResult = new ClassGraph()
+                .enableAllInfo()
+                .acceptPackages(
+                        packagePath +
+                                "..*"
+                ).scan()) {// Begin the scan
+            ClassInfoList classInfos = scanResult.getClassesWithAnnotation(RegisterDisplayAction.class.getName());
+            //log
+            getAtumMod().getLogger().info("Found " + classInfos.size() + " display actions to register");
+            for (ClassInfo classInfo : classInfos) {
+                Class<?> clazz = classInfo.loadClass();
+                RegisterDisplayAction annotation = clazz.getAnnotation(RegisterDisplayAction.class);
+                if (DisplayAction.class.isAssignableFrom(clazz)) {
+                    try {
+                        getAtumMod()
+                                .getLogger().info("Loading "+clazz.getName()+" element action...");
+                        register(
+                                annotation.templateId(),
+                                (DisplayAction) clazz.newInstance()
+                        );
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }

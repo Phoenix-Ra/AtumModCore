@@ -6,6 +6,7 @@ import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.actions.ActionArgs;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayElement;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@RegisterDisplayElement(templateId = "button")
 public class ElementButton extends BaseElement {
 
     private Runnable imageBinder;
@@ -47,7 +48,6 @@ public class ElementButton extends BaseElement {
                          @NotNull DisplayCanvas elementOwner) {
         super(atumMod, elementOwner);
     }
-
     @Override
     protected void onDraw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
         imageBinder.run();

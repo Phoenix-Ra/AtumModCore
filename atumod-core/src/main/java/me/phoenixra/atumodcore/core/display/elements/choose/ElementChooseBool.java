@@ -3,6 +3,7 @@ package me.phoenixra.atumodcore.core.display.elements.choose;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayElement;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
@@ -13,7 +14,7 @@ import me.phoenixra.atumodcore.core.display.elements.ElementImage;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
+@RegisterDisplayElement(templateId = "choose_bool")
 public class ElementChooseBool extends BaseElement {
     private Type displayType = Type.PHONE_LIKE;
     private State state = State.FALSE;
@@ -44,6 +45,9 @@ public class ElementChooseBool extends BaseElement {
     public ElementChooseBool(@NotNull AtumMod atumMod,
                              @NotNull DisplayCanvas elementOwner) {
         super(atumMod, elementOwner);
+    }
+    public ElementChooseBool(@NotNull AtumMod atumMod) {
+        super(atumMod, null);
     }
 
     @Override
@@ -185,7 +189,6 @@ public class ElementChooseBool extends BaseElement {
 
         switch (displayType){
             case IMAGE:
-                System.out.println("IMAGE");
                 imageTrue = new ElementImage(getAtumMod(),getElementOwner());
                 imageTrue.updateBaseVariables(
                         config,
@@ -208,7 +211,6 @@ public class ElementChooseBool extends BaseElement {
 
                 break;
             case PHONE_LIKE:
-                System.out.println("PHONE_LIKE");
                 circleColor = AtumColor.fromHex(
                         config.getStringOrDefault(
                                 "circleColor",

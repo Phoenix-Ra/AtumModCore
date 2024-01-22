@@ -2,7 +2,9 @@ package me.phoenixra.atumodcore.core.display.actions.renderer;
 
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
 
+@RegisterDisplayAction(templateId = "close_renderer")
 public class ActionCloseRenderer implements DisplayAction {
     @Override
     public void perform(ActionData data) {

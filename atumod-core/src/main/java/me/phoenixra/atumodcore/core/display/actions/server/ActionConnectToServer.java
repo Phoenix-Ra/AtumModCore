@@ -2,8 +2,10 @@ package me.phoenixra.atumodcore.core.display.actions.server;
 
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
+@RegisterDisplayAction(templateId = "connect_to_server")
 public class ActionConnectToServer implements DisplayAction {
     @Override
     public void perform(ActionData data) {

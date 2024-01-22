@@ -3,6 +3,7 @@ package me.phoenixra.atumodcore.core.display.triggers;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayTrigger;
 import me.phoenixra.atumodcore.api.display.impl.BaseTrigger;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTrigger;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerData;
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-
+@RegisterDisplayTrigger(templateId = "data_changed")
 public class TriggerDataChanged extends BaseTrigger {
 
     private String dataId;

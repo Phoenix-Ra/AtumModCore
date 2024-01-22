@@ -2,10 +2,12 @@ package me.phoenixra.atumodcore.core.display.actions;
 
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
 
 import java.awt.*;
 import java.net.URI;
 
+@RegisterDisplayAction(templateId = "open_link")
 public class ActionOpenLink implements DisplayAction {
     @Override
     public void perform(ActionData data) {

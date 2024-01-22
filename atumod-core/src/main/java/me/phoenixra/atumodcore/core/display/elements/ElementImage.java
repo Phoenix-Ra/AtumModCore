@@ -3,6 +3,7 @@ package me.phoenixra.atumodcore.core.display.elements;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayElement;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
@@ -15,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
+@RegisterDisplayElement(templateId = "image")
 public class ElementImage extends BaseElement {
     private Runnable imageBinder;
     private ResourceLocation speciaImageDefault;
@@ -41,7 +42,8 @@ public class ElementImage extends BaseElement {
     private boolean savedOutlineState = false;
 
 
-    public ElementImage(@NotNull AtumMod atumMod,@NotNull DisplayCanvas elementOwner) {
+    public ElementImage(@NotNull AtumMod atumMod,
+                        @NotNull DisplayCanvas elementOwner) {
         super(atumMod,elementOwner);
 
     }
