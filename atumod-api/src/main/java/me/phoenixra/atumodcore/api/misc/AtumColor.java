@@ -44,6 +44,12 @@ public class AtumColor {
     public int toInt() {
         return ((int) (red * 255) << 16) | ((int) (green * 255) << 8) | (int) (blue * 255) | ((int) (alpha * 255) << 24);
     }
+    public String toHex(boolean withAlpha){
+        if(withAlpha){
+            return String.format("#%02x%02x%02x%02x", (int) (red * 255), (int) (green * 255), (int) (blue * 255), (int) (alpha * 255));
+        }
+        return String.format("#%02x%02x%02x", (int) (red * 255), (int) (green * 255), (int) (blue * 255));
+    }
     public void useColor(){
         GlStateManager.color(red, green, blue, alpha);
     }
