@@ -6,10 +6,7 @@ import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
-import me.phoenixra.atumodcore.api.display.DisplayCanvas;
-import me.phoenixra.atumodcore.api.display.DisplayElement;
-import me.phoenixra.atumodcore.api.display.DisplayLayer;
-import me.phoenixra.atumodcore.api.display.DisplayRenderer;
+import me.phoenixra.atumodcore.api.display.*;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
@@ -91,7 +88,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     }
 
     @Override
-    public void updateVariables(@NotNull Config config, @Nullable String configKey) {
+    public void updateBaseVariables(@NotNull Config config, @Nullable String configKey) {
         config.clearInjectedPlaceholders();
         config.addInjectablePlaceholder(
                 Lists.newArrayList(
@@ -103,9 +100,39 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                         ))
                 )
         );
-        super.updateVariables(config, configKey);
+        super.updateBaseVariables(config, configKey);
 
 
+        DisplayElementRegistry registry = getAtumMod().getDisplayManager().getElementRegistry();
+        for(String key : config.getSubsection("elements").getKeys(false)){
+            Config elementSection = config.getSubsection("elements." + key);
+            String elementType = elementSection.getStringOrDefault("type", "image");
+            getAtumMod().getLogger().info("Found element: " + elementType);
+            DisplayElement elementElement = registry.getElementTemplate(elementType);
+            if(elementElement == null){
+                getAtumMod().getLogger().error("Could not find element type: " + elementType);
+                continue;
+            }
+            if(!(elementElement instanceof BaseElement)){
+                getAtumMod().getLogger().error("Element type: " + elementType + " is not an element!");
+                continue;
+            }
+            BaseElement elementBaseElement = (BaseElement)( elementElement).cloneWithNewVariables(
+                    key,
+                    elementSection,
+                    key,
+                    this
+            );
+            elementBaseElement.setElementOwner(this);
+            this.addElement(elementBaseElement);
+        }
+
+
+    }
+
+    @Override
+    public void updateElementVariables(@NotNull Config config, @Nullable String configKey) {
+        //do nothing
     }
 
     protected void onPress(InputPressEvent event) {

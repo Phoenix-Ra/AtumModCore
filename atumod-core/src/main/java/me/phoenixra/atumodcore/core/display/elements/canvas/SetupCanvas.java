@@ -172,8 +172,8 @@ public class SetupCanvas extends BaseCanvas {
     }
 
     @Override
-    public void updateVariables(@NotNull Config config, @Nullable String configKey) {
-        super.updateVariables(config, configKey);
+    public void updateBaseVariables(@NotNull Config config, @Nullable String configKey) {
+        super.updateBaseVariables(config, configKey);
         if (!(config instanceof LoadableConfig)) return;
         canvasConfig = (LoadableConfig) config;
     }

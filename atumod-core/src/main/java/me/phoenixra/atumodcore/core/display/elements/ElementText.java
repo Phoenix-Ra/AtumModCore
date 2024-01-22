@@ -52,10 +52,10 @@ public class ElementText extends BaseElement {
     }
 
     @Override
-    public void updateVariables(@NotNull Config config, @Nullable String configKey) {
-        super.updateVariables(config, configKey);
-        Integer fontSize = config.getIntOrNull("settings.fontSize");
-        String fontName = config.getStringOrNull("settings.font");
+    public void updateElementVariables(@NotNull Config config,
+                                       @Nullable String configKey) {
+        Integer fontSize = config.getIntOrNull("fontSize");
+        String fontName = config.getStringOrNull("font");
         if(fontName!=null){
             try(InputStream stream = getAtumMod().getClass().getResourceAsStream("/assets/"+getAtumMod().getModID()+"/fonts/"+fontName)) {
                 font = Fonts.registerFont(fontName,fontSize,stream);
@@ -63,7 +63,7 @@ public class ElementText extends BaseElement {
                 e.printStackTrace();
             }
         }
-        String text = config.getStringOrNull("settings.text");
+        String text = config.getStringOrNull("text");
         if(text!=null){
             this.text = text;
         }
@@ -95,7 +95,6 @@ public class ElementText extends BaseElement {
         optimizedFont.put(resolution,
                 font1==null? font : font1
         );
-        getAtumMod().getLogger().info("Applied resolution optimizer for font: "+fontName+" for resolution: "+resolution.name());
     }
 
     @Override

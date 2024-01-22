@@ -52,17 +52,17 @@ public class ElementProgressBar extends BaseElement {
 
 
     @Override
-    public void updateVariables(@NotNull Config config,@Nullable String configKey) {
-        super.updateVariables(config,configKey);
-        String color = config.getStringOrNull("settings.color-filled");
+    public void updateElementVariables(@NotNull Config config,
+                                       @Nullable String configKey) {
+        String color = config.getStringOrNull("color-filled");
         if(color!=null){
             this.barColorFilled = AtumColor.fromHex(color);
         }
-        color = config.getStringOrNull("settings.color-empty");
+        color = config.getStringOrNull("color-empty");
         if(color!=null){
             this.barColorEmpty = AtumColor.fromHex(color);
         }
-        String progressExpression = config.getStringOrNull("settings.progress-expression");
+        String progressExpression = config.getStringOrNull("progress-expression");
         if(progressExpression!=null){
             this.progressExpression = progressExpression;
         }

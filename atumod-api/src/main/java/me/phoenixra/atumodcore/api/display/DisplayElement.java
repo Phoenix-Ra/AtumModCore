@@ -67,6 +67,9 @@ public interface DisplayElement extends Cloneable{
 
     void updateVariables(@NotNull Config config, @Nullable String configKey);
 
+    void updateBaseVariables(@NotNull Config config, @Nullable String configKey);
+    void updateElementVariables(@NotNull Config config, @Nullable String configKey);
+
     default boolean isCoordinateInElement(int mouseX, int mouseY){
         return mouseX >= getX() &&
                 mouseX <= getX() + getWidth()

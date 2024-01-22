@@ -76,34 +76,34 @@ public class ElementImage extends BaseElement {
     }
 
     @Override
-    public void updateVariables(@NotNull Config config, @Nullable String configKey) {
-        super.updateVariables(config,configKey);
+    public void updateElementVariables(@NotNull Config config,
+                                       @Nullable String configKey) {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         PlaceholderContext context = PlaceholderContext.of(getElementOwner().getDisplayRenderer());
-        String image = config.getStringOrNull("settings.image");
+        String image = config.getStringOrNull("image");
         if(image!=null){
             speciaImageDefault = null;
             if(image.equalsIgnoreCase("playerSkin")){
                 this.imageBinder = PlayerUtils::bindPlayerSkinTexture;
             }else if(image.equalsIgnoreCase("heldItem")){
                speciaImageDefault = new ResourceLocation(
-                        config.getStringOrDefault("settings.defaultImage.location",
+                        config.getStringOrDefault("defaultImage.location",
                                 "atumodcore:textures/button.png")
                 );
                this.colorDefault = AtumColor.fromHex(
-                       config.getStringOrDefault("settings.defaultImage.color",
+                       config.getStringOrDefault("defaultImage.color",
                                "#FFFFFFFF")
                );
-                this.textureXDefault = config.getIntOrDefault("settings.defaultImage.textureX",0);
-                this.textureYDefault = config.getIntOrDefault("settings.defaultImage.textureY",0);
-                this.textureWidthDefault = config.getIntOrDefault("settings.defaultImage.textureWidth",0);
-                this.textureHeightDefault = config.getIntOrDefault("settings.defaultImage.textureHeight",0);
-               if(config.hasPath("settings.defaultImage.outline")) {
+                this.textureXDefault = config.getIntOrDefault("defaultImage.textureX",0);
+                this.textureYDefault = config.getIntOrDefault("defaultImage.textureY",0);
+                this.textureWidthDefault = config.getIntOrDefault("defaultImage.textureWidth",0);
+                this.textureHeightDefault = config.getIntOrDefault("defaultImage.textureHeight",0);
+               if(config.hasPath("defaultImage.outline")) {
                    this.outlineColorDefault = AtumColor.fromHex(
-                           config.getStringOrDefault("settings.defaultImage.outline.color",
+                           config.getStringOrDefault("defaultImage.outline.color",
                                    "#FFFFFFFF")
                    );
-                   this.outlineSizeDefault = config.getIntOrDefault("settings.defaultImage.outline.size", 1);
+                   this.outlineSizeDefault = config.getIntOrDefault("defaultImage.outline.size", 1);
                    this.hasOutlineDefault = true;
                }else{
                    hasOutlineDefault = false;
@@ -114,35 +114,35 @@ public class ElementImage extends BaseElement {
                 this.imageBinder = () -> textureManager.bindTexture(imageLocation);
             }
         }
-        String color = config.getStringOrNull("settings.color");
+        String color = config.getStringOrNull("color");
         if(color!=null){
             this.color = AtumColor.fromHex(color);
         }
-        String textureX = config.getStringOrNull("settings.textureX");
+        String textureX = config.getStringOrNull("textureX");
         if(textureX!=null){
             this.textureX = (int)  config.getEvaluated(
-                    "settings.textureX",
+                    "textureX",
                     context
             );
         }
-        String textureY = config.getStringOrNull("settings.textureY");
+        String textureY = config.getStringOrNull("textureY");
         if(textureY!=null){
             this.textureY = (int)  config.getEvaluated(
-                    "settings.textureY",
+                    "textureY",
                     context
             );
         }
-        String textureWidth = config.getStringOrNull("settings.textureWidth");
+        String textureWidth = config.getStringOrNull("textureWidth");
         if(textureWidth!=null){
             this.textureWidth = (int)  config.getEvaluated(
-                    "settings.textureWidth",
+                    "textureWidth",
                     context
             );
         }
-        String textureHeight = config.getStringOrNull("settings.textureHeight");
+        String textureHeight = config.getStringOrNull("textureHeight");
         if(textureHeight!=null){
             this.textureHeight = (int)  config.getEvaluated(
-                    "settings.textureHeight",
+                    "textureHeight",
                     context
             );
         }

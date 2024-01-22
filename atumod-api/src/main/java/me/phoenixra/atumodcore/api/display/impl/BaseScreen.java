@@ -38,4 +38,13 @@ public class BaseScreen extends GuiScreen {
     public void onGuiClosed() {
         renderer.closeRenderer();
     }
+
+    /**
+     * Override this method to change the default behavior of GuiScreen
+     * @return true if the screen should be closed
+     */
+    @Override
+    public boolean doesGuiPauseGame() {
+        return super.doesGuiPauseGame();
+    }
 }

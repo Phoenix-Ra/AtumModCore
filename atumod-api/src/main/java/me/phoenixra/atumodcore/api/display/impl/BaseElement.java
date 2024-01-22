@@ -161,7 +161,14 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     protected abstract void onDraw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY);
 
     @Override
-    public void updateVariables(@NotNull Config config, @Nullable String configKey) {
+    public final void updateVariables(@NotNull Config config,
+                                      @Nullable String configKey) {
+        updateBaseVariables(config, configKey);
+        updateElementVariables(config.getSubsection("settings"), configKey);
+    }
+
+    @Override
+    public void updateBaseVariables(@NotNull Config config, @Nullable String configKey) {
         settingsConfig = config;
         this.configKey = configKey;
         String layer = config.getStringOrNull("layer");
@@ -226,7 +233,6 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Override
     public void applyResolutionOptimizer(@NotNull DisplayResolution resolution,
                                          @NotNull Config config) {
-        getAtumMod().getLogger().info("Applying resolution optimizer for element: "+getId());
         loadOptimizedVariables();
         try {
             for (OptimizedVariable<?> variable : optimizedVariables) {

@@ -96,17 +96,17 @@ public class ElementButton extends BaseElement {
 
 
     @Override
-    public void updateVariables(@NotNull Config config, @Nullable String configKey) {
-        super.updateVariables(config, configKey);
+    public void updateElementVariables(@NotNull Config config,
+                                       @Nullable String configKey) {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         PlaceholderContext context = PlaceholderContext.of(getElementOwner().getDisplayRenderer());
 
-        String image = config.getStringOrNull("settings.image");
+        String image = config.getStringOrNull("image");
         if (image != null) {
             ResourceLocation imageLocation = new ResourceLocation(image);
             this.imageBinder = () -> textureManager.bindTexture(imageLocation);
         }
-        String brightness = config.getStringOrNull("settings.brightness");
+        String brightness = config.getStringOrNull("brightness");
         if (brightness != null) {
             this.brightnessDefault = new float[]{
                     Float.parseFloat(brightness.split(";")[0]),
@@ -114,7 +114,7 @@ public class ElementButton extends BaseElement {
                     Float.parseFloat(brightness.split(";")[2])
             };
         }
-        brightness = config.getStringOrNull("settings.brightness-onHover");
+        brightness = config.getStringOrNull("brightness-onHover");
         if (brightness != null) {
             this.brightnessOnHover = new float[]{
                     Float.parseFloat(brightness.split(";")[0]),
@@ -122,7 +122,7 @@ public class ElementButton extends BaseElement {
                     Float.parseFloat(brightness.split(";")[2])
             };
         }
-        brightness = config.getStringOrNull("settings.brightness-onClick");
+        brightness = config.getStringOrNull("brightness-onClick");
         if (brightness != null) {
             this.brightnessOnClick = new float[]{
                     Float.parseFloat(brightness.split(";")[0]),
@@ -130,36 +130,36 @@ public class ElementButton extends BaseElement {
                     Float.parseFloat(brightness.split(";")[2])
             };
         }
-        String textureX = config.getStringOrNull("settings.textureX");
+        String textureX = config.getStringOrNull("textureX");
         if (textureX != null) {
             this.textureX = (int) config.getEvaluated(
-                    "settings.textureX",
+                    "textureX",
                     context
             );
         }
-        String textureY = config.getStringOrNull("settings.textureY");
+        String textureY = config.getStringOrNull("textureY");
         if (textureY != null) {
             this.textureY = (int) config.getEvaluated(
-                    "settings.textureY",
+                    "textureY",
                     context
             );
         }
-        String textureWidth = config.getStringOrNull("settings.textureWidth");
+        String textureWidth = config.getStringOrNull("textureWidth");
         if (textureWidth != null) {
             this.textureWidth = (int) config.getEvaluated(
-                    "settings.textureWidth",
+                    "textureWidth",
                     context
             );
         }
-        String textureHeight = config.getStringOrNull("settings.textureHeight");
+        String textureHeight = config.getStringOrNull("textureHeight");
         if (textureHeight != null) {
             this.textureHeight = (int) config.getEvaluated(
-                    "settings.textureHeight",
+                    "textureHeight",
                     context
             );
         }
-        if (config.hasPath("settings.actions-onPress")) {
-            Config actionsOnPress = config.getSubsection("settings.actions-onPress");
+        if (config.hasPath("actions-onPress")) {
+            Config actionsOnPress = config.getSubsection("actions-onPress");
             for (String key : actionsOnPress.getKeys(false)) {
                 String actionOnPress = actionsOnPress.getStringOrNull(key);
                 String[] split = actionOnPress.split("@");
@@ -176,8 +176,8 @@ public class ElementButton extends BaseElement {
                 this.actionsOnPress.add(new Pair<>(action, args));
             }
         }
-        if (config.hasPath("settings.actions-onRelease")) {
-            Config actionsOnRelease = config.getSubsection("settings.actions-onRelease");
+        if (config.hasPath("actions-onRelease")) {
+            Config actionsOnRelease = config.getSubsection("actions-onRelease");
             for (String key : actionsOnRelease.getKeys(false)) {
                 String actionOnRelease = actionsOnRelease.getStringOrNull(key);
                 String[] split = actionOnRelease.split("@");
