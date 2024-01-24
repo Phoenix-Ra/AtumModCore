@@ -42,7 +42,9 @@ public class OptimizedVariableDouble implements OptimizedVariable<Double> {
     }
 
     @Override
-    public void addOptimizedValue(@NotNull DisplayResolution resolution, @NotNull Double value) {
+    public void addOptimizedValue(@NotNull DisplayResolution resolution,
+                                  @Nullable Double value) {
+        if(value == null) return;
         values.put(resolution, value);
     }
 

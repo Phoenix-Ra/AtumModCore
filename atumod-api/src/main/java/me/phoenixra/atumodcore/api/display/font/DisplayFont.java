@@ -1,5 +1,6 @@
 package me.phoenixra.atumodcore.api.display.font;
 
+import lombok.Getter;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,7 +15,6 @@ import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -30,31 +30,16 @@ public class DisplayFont {
     /**
      * The font to be drawn.
      */
+    @Getter
     private Font font;
+    private int characterCount;
 
     /**
      * If fractional metrics should be used in the font renderer.
      */
     private boolean fractionalMetrics = false;
 
-    /**
-     * All the character data information (regular).
-     */
-    private Map<Character,CharacterData> regularData;
-
-    /**
-     * All the character data information (bold).
-     */
-    private Map<Character,CharacterData> boldData;
-
-    /**
-     * All the character data information (italics).
-     */
-    private Map<Character,CharacterData> italicsData;
-
-    private AtomicBoolean regularDataState = new AtomicBoolean(false);
-    private AtomicBoolean boldDataState = new AtomicBoolean(false);
-    private AtomicBoolean italicDataState = new AtomicBoolean(false);
+    private Map<Integer,FontData> fontData;
 
     /**
      * All the color codes used in minecraft.
@@ -93,28 +78,54 @@ public class DisplayFont {
     public DisplayFont(Font font, int characterCount, boolean fractionalMetrics) {
         this.font = font;
         this.fractionalMetrics = fractionalMetrics;
-
+        this.characterCount = characterCount;
+        fontData = new HashMap<>();
         // Generates all the character textures.
-        this.regularData = Collections.synchronizedMap(new HashMap<>());
-        this.boldData = Collections.synchronizedMap(new HashMap<>());
-        this.italicsData = Collections.synchronizedMap(new HashMap<>());
-        setup(regularData,characterCount, Font.PLAIN);
-        setup(boldData,characterCount, Font.BOLD);
-        setup(italicsData,characterCount, Font.ITALIC);
+        setup(font.getSize(),characterCount, Font.PLAIN);
+        setup(font.getSize(),characterCount, Font.BOLD);
+        setup(font.getSize(),characterCount, Font.ITALIC);
     }
 
+    public void loadFontSize(int fontSize){
+        if(fontData.get(fontSize) != null) return;
+        setup(fontSize,characterCount, Font.PLAIN);
+        setup(fontSize,characterCount, Font.BOLD);
+        setup(fontSize,characterCount, Font.ITALIC);
+    }
+    public boolean isLoadingSize(int fontSize){
+        FontData fontData = this.fontData.get(fontSize);
+        if(fontData == null) return false;
+        return !fontData.regularDataState.get()
+                || !fontData.boldDataState.get()
+                || !fontData.italicDataState.get();
+    }
     /**
      * Sets up the character data and textures.
      *
-     * @param characterData The array of character data that should be filled.
-     * @param type          The font type. (Regular, Bold, and Italics)
+     * @param fontSize       The size of the font.
+     * @param characterCount The array of character data that should be filled.
+     * @param type           The font type. (Regular, Bold, and Italics)
      */
-    private void setup(Map<Character,CharacterData> characterData, int size, int type) {
+    private void setup(int fontSize, int characterCount, int type) {
+        if(this.fontData.get(fontSize) == null){
+            this.fontData.put(fontSize, new FontData());
+        }
+        FontData fontData = this.fontData.get(fontSize);
+        Map<Character, DisplayFont.CharacterData> characterData;
+        if(type == Font.PLAIN){
+            characterData = fontData.regularData;
+        }else if(type == Font.BOLD){
+            characterData = fontData.boldData;
+        }else if(type == Font.ITALIC){
+            characterData = fontData.italicsData;
+        }else{
+            throw new IllegalArgumentException("Invalid font type: " + type);
+        }
         // Quickly generates the colors.
         generateColors();
 
         // Changes the type of the font to the given type.
-        Font font = this.font.deriveFont(type);
+        Font font = this.font.deriveFont(type,fontSize);
 
         // An image just to get font data.
         BufferedImage utilityImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
@@ -130,7 +141,7 @@ public class DisplayFont {
 
         // Iterates through all the characters in the character set of the font renderer.
         AtomicInteger added = new AtomicInteger();
-        for (int index = 0; index < size; index++) {
+        for (int index = 0; index < characterCount; index++) {
             int finalIndex = index;
             new Thread(()-> {
                 // The character at the current index.
@@ -203,15 +214,15 @@ public class DisplayFont {
                     // Allocates the texture in opengl.
                     createTexture(textureId, characterImage, buffer);
                     characterData.put((char)finalIndex,new CharacterData(character, characterImage.getWidth(), characterImage.getHeight(), textureId));
-                    if (added.incrementAndGet() >= size - 1){
+                    if (added.incrementAndGet() >= characterCount - 1){
                         if(type == Font.PLAIN){
-                            regularDataState.set(true);
+                            fontData.regularDataState.set(true);
                         }else if(type == Font.BOLD){
-                            boldDataState.set(true);
-                        }else if(type == Font.ITALIC){
-                            italicDataState.set(true);
+                            fontData.boldDataState.set(true);
+                        }else {
+                            fontData.italicDataState.set(true);
                         }
-                        if(regularDataState.get() && boldDataState.get() && italicDataState.get()){
+                        if(fontData.regularDataState.get() && fontData.boldDataState.get() && fontData.italicDataState.get()){
                             synchronized(afterLoad) {
                                 if (!afterLoad.isEmpty()) {
                                     afterLoad.forEach(Runnable::run);
@@ -257,9 +268,11 @@ public class DisplayFont {
      * @param y     The y position of the text.
      * @param color The color of the text.
      */
-    public void drawString(String text, float x, float y, AtumColor color) {
-        if(!isLoaded()) return;
-        renderString(text, x, y, color, false);
+    public void drawString(String text, float x, float y,
+                           AtumColor color,
+                           int fontSize) {
+        if(!isLoadedSize(fontSize)) return;
+        renderString(text, x, y, color, false, fontSize);
     }
 
     /**
@@ -270,12 +283,15 @@ public class DisplayFont {
      * @param y     The y position of the text.
      * @param color The color of the text.
      */
-    public void drawStringWithShadow(String text, float x, float y, AtumColor color) {
-        if(!isLoaded()) return;
+    public void drawStringWithShadow(String text,
+                                     float x, float y,
+                                     AtumColor color,
+                                     int fontSize) {
+        if(!isLoadedSize(fontSize)) return;
         GL11.glTranslated(0.5, 0.5, 0);
-        renderString(text, x, y, color, true);
+        renderString(text, x, y, color, true, fontSize);
         GL11.glTranslated(-0.5, -0.5, 0);
-        renderString(text, x, y, color, false);
+        renderString(text, x, y, color, false, fontSize);
     }
 
     /**
@@ -288,7 +304,8 @@ public class DisplayFont {
      * @param color  The color of the text.
      */
     private void renderString(String text, float x, float y,
-                              AtumColor color, boolean shadow) {
+                              AtumColor color, boolean shadow,
+                              int fontSize) {
         // Returns if the text is empty.
         if (text.length() == 0) return;
 
@@ -311,7 +328,7 @@ public class DisplayFont {
         y *= 2;
 
         // The character texture set to be used. (Regular by default)
-        Map<Character,CharacterData> characterData = regularData;
+        Map<Character,CharacterData> characterData = fontData.get(fontSize).regularData;
 
         // Booleans to handle the style.
         boolean underlined = false;
@@ -356,7 +373,7 @@ public class DisplayFont {
                     underlined = false;
 
                     // Sets the character data to the regular type.
-                    characterData = regularData;
+                    characterData = fontData.get(fontSize).regularData;
 
                     // Clamps the index just to be safe in case an odd character somehow gets in here.
                     if (index < 0) index = 15;
@@ -373,14 +390,14 @@ public class DisplayFont {
                     obfuscated = true;
                 else if (index == 17)
                     // Sets the character data to the bold type.
-                    characterData = boldData;
+                    characterData = fontData.get(fontSize).boldData;
                 else if (index == 18)
                     strikethrough = true;
                 else if (index == 19)
                     underlined = true;
                 else if (index == 20)
                     // Sets the character data to the italics type.
-                    characterData = italicsData;
+                    characterData = fontData.get(fontSize).italicsData;
                 else if (index == 21) {
                     // Resets the style.
                     obfuscated = false;
@@ -388,7 +405,7 @@ public class DisplayFont {
                     underlined = false;
 
                     // Sets the character data to the regular type.
-                    characterData = regularData;
+                    characterData = fontData.get(fontSize).regularData;
 
                     // Sets the color to white
                     GL11.glColor4d(1 * (shadow ? 0.25 : 1), 1 * (shadow ? 0.25 : 1), 1 * (shadow ? 0.25 : 1), a);
@@ -435,13 +452,13 @@ public class DisplayFont {
      * @param text The text to get the width of.
      * @return The width of the given text.
      */
-    public float getWidth(String text) {
-        if(!isLoaded()) return 0;
+    public int getWidth(String text, int fontSize) {
+        if(!isLoadedSize(fontSize)) return -1;
         // The width of the string.
         float width = 0;
 
         // The character texture set to be used. (Regular by default)
-        Map<Character,CharacterData> characterData = regularData;
+        Map<Character,CharacterData> characterData = fontData.get(fontSize).regularData;;
 
         // The length of the text.
         int length = text.length();
@@ -463,15 +480,17 @@ public class DisplayFont {
                 // The color index of the character after the current character.
                 int index = "0123456789abcdefklmnor".indexOf(text.toLowerCase(Locale.ENGLISH).charAt(i + 1));
 
-                if (index == 17)
+                if (index == 17) {
                     // Sets the character data to the bold type.
-                    characterData = boldData;
-                else if (index == 20)
+                    characterData = fontData.get(fontSize).boldData;
+                    ;
+                }else if (index == 20) {
                     // Sets the character data to the italics type.
-                    characterData = italicsData;
-                else if (index == 21)
+                    characterData = fontData.get(fontSize).italicsData;
+                    ;
+                }else if (index == 21)
                     // Sets the character data to the regular type.
-                    characterData = regularData;
+                    characterData = fontData.get(fontSize).regularData;;
             } else {
                 // Continues to not crash!
                 if (character > 255) continue;
@@ -485,7 +504,7 @@ public class DisplayFont {
         }
 
         // Returns the width.
-        return width + MARGIN / 2.0f;
+        return (int)(width + MARGIN / 2.0f);
     }
 
     /**
@@ -494,13 +513,13 @@ public class DisplayFont {
      * @param text The text to get the height of.
      * @return The height of the given text.
      */
-    public float getHeight(String text) {
-        if(!isLoaded()) return 0;
+    public int getHeight(String text, int fontSize) {
+        if(!isLoadedSize(fontSize)) return -1;
         // The height of the string.
         float height = 0;
 
         // The character texture set to be used. (Regular by default)
-        Map<Character,CharacterData> characterData = regularData;
+        Map<Character,CharacterData> characterData = fontData.get(fontSize).regularData;;
 
         // The length of the text.
         int length = text.length();
@@ -522,15 +541,17 @@ public class DisplayFont {
                 // The color index of the character after the current character.
                 int index = "0123456789abcdefklmnor".indexOf(text.toLowerCase(Locale.ENGLISH).charAt(i + 1));
 
-                if (index == 17)
+                if (index == 17) {
                     // Sets the character data to the bold type.
-                    characterData = boldData;
-                else if (index == 20)
+                    characterData = fontData.get(fontSize).boldData;
+                    ;
+                }else if (index == 20) {
                     // Sets the character data to the italics type.
-                    characterData = italicsData;
-                else if (index == 21)
+                    characterData = fontData.get(fontSize).italicsData;
+                    ;
+                }else if (index == 21)
                     // Sets the character data to the regular type.
-                    characterData = regularData;
+                    characterData = fontData.get(fontSize).regularData;;
             } else {
                 // Continues to not crash!
                 if (character > 255) continue;
@@ -544,7 +565,7 @@ public class DisplayFont {
         }
 
         // Returns the height.
-        return height / 2.0f - MARGIN / 2.0f;
+        return (int)(height / 2.0f - MARGIN / 2.0f);
     }
 
     /**
@@ -648,12 +669,12 @@ public class DisplayFont {
         }
     }
 
-    public Font getFont() {
-        return font;
-    }
-
-    public boolean isLoaded(){
-        return regularDataState.get() && boldDataState.get() && italicDataState.get();
+    public boolean isLoadedSize(int fontSize){
+        FontData fontData = this.fontData.get(fontSize);
+        if(fontData == null) return false;
+        return fontData.regularDataState.get()
+                && fontData.boldDataState.get()
+                && fontData.italicDataState.get();
     }
 
     public void addAfterLoad(Runnable runnable){
@@ -663,7 +684,7 @@ public class DisplayFont {
     /**
      * Class that holds the data for each character.
      */
-    static class CharacterData {
+    protected static class CharacterData {
 
         /**
          * The character the data belongs to.

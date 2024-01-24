@@ -8,18 +8,20 @@ import me.phoenixra.atumodcore.api.display.font.DisplayFont;
 import me.phoenixra.atumodcore.api.display.font.Fonts;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
+import me.phoenixra.atumodcore.api.display.misc.variables.OptimizedVariableInt;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.StringUtils;
-import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
 import java.util.HashMap;
+
 @RegisterDisplayElement(templateId = "text")
 public class ElementText extends BaseElement {
     private DisplayFont font;
+    private OptimizedVariableInt optimizedFontSize;
     private String text = "EMPTY TEXT";
 
     private HashMap<DisplayResolution, DisplayFont> optimizedFont = new HashMap<>();
@@ -28,6 +30,10 @@ public class ElementText extends BaseElement {
     public ElementText(@NotNull AtumMod atumMod,
                        @NotNull DisplayCanvas elementOwner) {
         super(atumMod, elementOwner);
+        optimizedFontSize = new OptimizedVariableInt(
+                "settings.fontSize",
+                25
+        );
     }
 
     @Override
@@ -37,30 +43,57 @@ public class ElementText extends BaseElement {
                 this.text,
                 PlaceholderContext.of(getElementOwner().getDisplayRenderer())
         );
-        int textWidth =  Minecraft.getMinecraft().fontRenderer.getStringWidth(
-                StringUtils.removeColorCodes(text)
+        DisplayFont font = optimizedFont.getOrDefault(resolution,this.font);
+        int fontSize = (int) (optimizedFontSize.getValue(resolution)/scaleFactor);
+        if(!font.isLoadedSize(fontSize)){
+            if(!font.isLoadingSize(fontSize)){
+                font.loadFontSize(fontSize);
+            }
+            return;
+        }
+        int textWidth =  font.getWidth(
+                StringUtils.removeColorCodes(text),
+                fontSize
         ) - 2;
         int localX = getX();
         if(textWidth>getWidth()){
             localX = getX() - (textWidth - getWidth())/2;
         }
-        DisplayFont font = optimizedFont.getOrDefault(resolution,this.font);
+        //centralize by height
+        int textHeight = font.getHeight(
+                StringUtils.removeColorCodes(text),
+                fontSize
+        );
+        int localY = getY();
+        if(textHeight>getHeight()){
+            localY = getY() - (textHeight - getHeight())/2;
+        }else if(textHeight<getHeight()){
+            localY = getY() + (getHeight() - textHeight)/2;
+        }
+
         font.drawString(
                 text,
                 localX,
-                getY(),
-                AtumColor.WHITE
+                localY,
+                AtumColor.WHITE,
+                fontSize
         );
     }
 
     @Override
     public void updateElementVariables(@NotNull Config config,
                                        @Nullable String configKey) {
-        Integer fontSize = config.getIntOrNull("fontSize");
+         optimizedFontSize.setDefaultValue(
+                config.getIntOrDefault("fontSize",25)
+        );
+
         String fontName = config.getStringOrNull("font");
         if(fontName!=null){
             try(InputStream stream = getAtumMod().getClass().getResourceAsStream("/assets/"+getAtumMod().getModID()+"/fonts/"+fontName)) {
-                font = Fonts.registerFont(fontName,fontSize,stream);
+                font = Fonts.registerFont(fontName,
+                        optimizedFontSize.getDefaultValue(),
+                        stream
+                );
             }catch (Exception e){
                 e.printStackTrace();
             }
