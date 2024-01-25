@@ -9,6 +9,7 @@ import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterOptimizedVariable;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.display.misc.OptimizedVariable;
 import me.phoenixra.atumodcore.api.display.misc.variables.OptimizedVariableInt;
@@ -22,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,13 +38,13 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter
     private DisplayLayer layer;
 
-    @Getter @Setter
+    @Getter @Setter @RegisterOptimizedVariable
     private OptimizedVariableInt originX;
-    @Getter @Setter
+    @Getter @Setter @RegisterOptimizedVariable
     private OptimizedVariableInt originY;
-    @Getter @Setter
+    @Getter @Setter @RegisterOptimizedVariable
     private OptimizedVariableInt originWidth;
-    @Getter @Setter
+    @Getter @Setter @RegisterOptimizedVariable
     private OptimizedVariableInt originHeight;
 
     @Getter @Setter
@@ -270,7 +270,9 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         //get all variables using reflection
         if(optimizedVariables == null){
             optimizedVariables = new ArrayList<>();
-            for(Field field : ClassUtils.getAllFields(getClass(), OptimizedVariable.class)){
+            for(Field field : ClassUtils.getAllFields(getClass(),
+                    OptimizedVariable.class)){
+                if(!field.isAnnotationPresent(RegisterOptimizedVariable.class)) return;
                 field.setAccessible(true);
                 try {
                     optimizedVariables.add((OptimizedVariable<?>) field.get(this));

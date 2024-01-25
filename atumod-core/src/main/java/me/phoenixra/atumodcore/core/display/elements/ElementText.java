@@ -4,6 +4,7 @@ import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayElement;
+import me.phoenixra.atumodcore.api.display.annotations.RegisterOptimizedVariable;
 import me.phoenixra.atumodcore.api.display.font.DisplayFont;
 import me.phoenixra.atumodcore.api.display.font.Fonts;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 @RegisterDisplayElement(templateId = "text")
 public class ElementText extends BaseElement {
     private DisplayFont font;
+    @RegisterOptimizedVariable
     private OptimizedVariableInt optimizedFontSize;
     private String text = "EMPTY TEXT";
 

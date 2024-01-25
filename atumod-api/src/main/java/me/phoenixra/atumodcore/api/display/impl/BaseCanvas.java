@@ -18,6 +18,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.GL11;
 
 import java.util.*;
 
@@ -43,7 +44,9 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         super(atumMod,layer, x, y, width, height, elementOwner);
 
         this.setElementOwner(elementOwner == null ? this : elementOwner);
-
+        if(elementOwner!=null && elementOwner.getDisplayRenderer() != null){
+            this.setDisplayRenderer(elementOwner.getDisplayRenderer());
+        }
     }
     public BaseCanvas(@NotNull AtumMod atumMod,
                       @NotNull DisplayLayer layer,
@@ -77,12 +80,34 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             initialized = true;
         }
         super.draw(resolution, scaleFactor, mouseX, mouseY);
-        for(DisplayElement element : displayedElementsReversed){
-            boolean active = getDisplayRenderer().getDisplayData()
-                    .isElementEnabled(element.getConfigKey());
 
-            if(active) {
-                element.draw(resolution, scaleFactor, mouseX, mouseY);
+        if(displayedElementsReversed.isEmpty()){
+            return;
+        }
+
+        boolean fullScreen = getOriginX().getDefaultValue() == 0 &&
+                getOriginY().getDefaultValue() == 0;
+        //translate position to the origin
+        if(fullScreen) {
+            GL11.glPushMatrix();
+            GL11.glTranslatef(getX(), getY(), 0);
+            for (DisplayElement element : displayedElementsReversed) {
+                boolean active = getDisplayRenderer().getDisplayData()
+                        .isElementEnabled(element.getConfigKey());
+
+                if (active) {
+                    element.draw(resolution, scaleFactor, mouseX, mouseY);
+                }
+            }
+            GL11.glPopMatrix();
+        }else{
+            for (DisplayElement element : displayedElementsReversed) {
+                boolean active = getDisplayRenderer().getDisplayData()
+                        .isElementEnabled(element.getConfigKey());
+
+                if (active) {
+                    element.draw(resolution, scaleFactor, mouseX, mouseY);
+                }
             }
         }
     }

@@ -20,6 +20,7 @@ public class BaseScreen extends GuiScreen {
         this.atumMod = atumMod;
         this.renderer = renderer != null ? renderer :
                 new BaseRenderer(atumMod,canvas,this);
+        canvas.setDisplayRenderer(this.renderer);
     }
     public BaseScreen(@NotNull AtumMod atumMod, @NotNull DisplayCanvas canvas) {
         this(atumMod,canvas,null);
