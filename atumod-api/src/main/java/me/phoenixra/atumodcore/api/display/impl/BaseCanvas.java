@@ -77,6 +77,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                     getId(),
                     this
             );
+            setActive(true);
             initialized = true;
         }
         super.draw(resolution, scaleFactor, mouseX, mouseY);
