@@ -19,7 +19,7 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
     @Nullable DisplayElement getElementFromCoordinates(int posX, int posY);
 
 
-    @NotNull DisplayRenderer getDisplayRenderer();
+    @Nullable DisplayRenderer getDisplayRenderer();
     void setDisplayRenderer(@NotNull DisplayRenderer displayRenderer);
 
 

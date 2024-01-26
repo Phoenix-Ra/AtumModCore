@@ -65,6 +65,11 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter
     private int height;
 
+    @Getter
+    private int globalX;
+    @Getter
+    private int globalY;
+
 
     @Getter
     private int lastMouseX;
@@ -138,6 +143,8 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         y = coords[1];
         width = coords[2];
         height = coords[3];
+        globalX = elementOwner == null ? x : elementOwner.getGlobalX() + x;
+        globalY = elementOwner == null ? y : elementOwner.getGlobalY() + y;
         onDraw(resolution, scaleFactor,mouseX,mouseY);
         if(outline_selected){
             RenderUtils.drawDashedOutline(
@@ -262,6 +269,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Override
     public void setActive(boolean active) {
         this.active = active;
+        if(getElementOwner().getDisplayRenderer() == null) return;
         getElementOwner().getDisplayRenderer().getDisplayData()
                 .setElementEnabled(getConfigKey(),active);
     }

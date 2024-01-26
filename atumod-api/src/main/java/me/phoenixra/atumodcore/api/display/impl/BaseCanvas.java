@@ -278,12 +278,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             if(list == null){
                 continue;
             }
-            //check if different element is already displayed on the same position
-            for(DisplayElement layerElement : list){
-                if(displayedElements.stream().noneMatch(layerElement::isElementInsideThis)){
-                    displayedElements.add(layerElement);
-                }
-            }
+            displayedElements.addAll(list);
         }
         //add to reversed set
         displayedElementsReversed.clear();

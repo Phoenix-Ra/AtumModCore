@@ -29,6 +29,9 @@ public interface DisplayElement extends Cloneable{
     int getWidth();
     int getHeight();
 
+    int getGlobalX();
+    int getGlobalY();
+
     OptimizedVariableInt getOriginX();
     OptimizedVariableInt getOriginY();
     OptimizedVariableInt getOriginWidth();
@@ -70,17 +73,18 @@ public interface DisplayElement extends Cloneable{
     void updateBaseVariables(@NotNull Config config, @Nullable String configKey);
     void updateElementVariables(@NotNull Config config, @Nullable String configKey);
 
+    //@TODO fix the translation of position
     default boolean isCoordinateInElement(int mouseX, int mouseY){
-        return mouseX >= getX() &&
-                mouseX <= getX() + getWidth()
-                && mouseY >= getY()
-                && mouseY <= getY() + getHeight();
+        return mouseX >= getGlobalX() &&
+                mouseX <= getGlobalX() + getWidth()
+                && mouseY >= getGlobalY()
+                && mouseY <= getGlobalY() + getHeight();
     }
     default boolean isElementInsideThis(@NotNull DisplayElement element){
-        return  element.getX() <= getX() &&
-                element.getX() + element.getWidth() >= getX() + getWidth()
-                && element.getY() <= getY()
-                &&  element.getY() + element.getHeight() >= getY() + getHeight();
+        return  element.getGlobalX() <= getGlobalX() &&
+                element.getGlobalX() + element.getWidth() >= getGlobalX() + getWidth()
+                && element.getGlobalY() <= getGlobalY()
+                &&  element.getGlobalY() + element.getHeight() >= getGlobalY() + getHeight();
     }
 
     boolean isActive();
