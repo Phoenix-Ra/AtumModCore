@@ -11,9 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-/**
- * Placeholder which cannot be registered and exists only in injection
- */
 public final class StaticPlaceholder implements InjectablePlaceholder {
 
     private final String identifier;

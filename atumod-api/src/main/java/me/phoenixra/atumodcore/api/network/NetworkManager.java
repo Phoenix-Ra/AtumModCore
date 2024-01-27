@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -26,6 +27,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+/**
+ * Manages the network of the mod.
+ * <p>It is recommended to use this class to work with packets</p>
+ *
+ * STILL IN DEVELOPMENT THE DISPLAY NETWORK SYSTEM
+ */
 public abstract class NetworkManager {
     @Getter
     private final AtumMod atumMod;
@@ -129,6 +136,15 @@ public abstract class NetworkManager {
 
 
 
+    /**
+     * Register a packet message.
+     *
+     * @param messageHandler     The message handler.
+     * @param requestMessageType The request message type.
+     * @param side               The side.
+     * @param <REQUEST>          The request message type.
+     * @param <REPLY>            The reply message type.
+     */
     protected final  <REQUEST extends IMessage, REPLY extends IMessage> void registerMessage(
             Class<? extends IMessageHandler<REQUEST, REPLY>> messageHandler,
             Class<REQUEST> requestMessageType,
@@ -137,41 +153,105 @@ public abstract class NetworkManager {
         NETWORK_CHANNEL.registerMessage(messageHandler, requestMessageType, discriminator.incrementAndGet(), side);
     }
 
-
+    /**
+     * Construct a minecraft packet from the supplied message.
+     * Can be used where minecraft packets are required
+     *
+     * @param message The message to translate into packet form
+     * @return A minecraft {@link Packet} suitable for use in minecraft APIs
+     */
     protected final Packet<?> getPacketFrom(IMessage message) {
         return NETWORK_CHANNEL.getPacketFrom(message);
     }
 
-
+    /**
+     * Send this message to everyone.
+     * The {@link IMessageHandler} for this message type
+     * should be on the CLIENT side.
+     *
+     * @param message The message to send
+     */
     @SideOnly(Side.SERVER)
     protected final void sendToAll(IMessage message) {
         NETWORK_CHANNEL.sendToAll(message);
     }
 
+    /**
+     * Send this message to the specified player.
+     * The {@link IMessageHandler} for this message type
+     * should be on the CLIENT side.
+     *
+     * @param message The message to send
+     * @param player The player to send it to
+     */
     @SideOnly(Side.SERVER)
     protected final void sendTo(IMessage message, EntityPlayerMP player) {
         NETWORK_CHANNEL.sendTo(message, player);
     }
 
-
+    /**
+     * Send this message to everyone within a certain range of a point.
+     * The {@link IMessageHandler} for this message type
+     * should be on the CLIENT side.
+     *
+     * @param message The message to send
+     * @param point The {@link NetworkRegistry.TargetPoint} around which to send
+     */
     @SideOnly(Side.SERVER)
-    protected final void sendToAllAround(IMessage message, NetworkRegistry.TargetPoint point) {
+    protected final void sendToAllAround(IMessage message,
+                                         NetworkRegistry.TargetPoint point) {
         NETWORK_CHANNEL.sendToAllAround(message, point);
     }
 
+    /**
+     * Sends this message to everyone tracking a point.
+     * The {@link IMessageHandler} for this message type should be on the CLIENT side.
+     * The {@code range} field of the {@link NetworkRegistry.TargetPoint} is ignored.
+     *
+     * @param message The message to send
+     * @param point The tracked {@link NetworkRegistry.TargetPoint} around which to send
+     */
     @SideOnly(Side.SERVER)
-    protected final void sendToAllTracking(IMessage message, NetworkRegistry.TargetPoint point) {
+    protected final void sendToAllTracking(IMessage message,
+                                           NetworkRegistry.TargetPoint point) {
         NETWORK_CHANNEL.sendToAllTracking(message, point);
     }
+
+    /**
+     * Sends this message to everyone tracking an entity.
+     * The {@link IMessageHandler} for this message type should be on the CLIENT side.
+     * This is not equivalent to {@link #sendToAllTracking(IMessage, NetworkRegistry.TargetPoint)}
+     * because entities have different tracking distances based on their type.
+     *
+     * @param message The message to send
+     * @param entity The tracked entity around which to send
+     */
     @SideOnly(Side.SERVER)
-    protected final void sendToAllTracking(IMessage message, Entity entity) {
+    protected final void sendToAllTracking(IMessage message,
+                                           Entity entity) {
         NETWORK_CHANNEL.sendToAllTracking(message, entity);
     }
 
+    /**
+     * Send this message to everyone within the supplied dimension.
+     * The {@link IMessageHandler} for this message type should be on the CLIENT side.
+     *
+     * @param message The message to send
+     * @param dimensionId The dimension id to target
+     */
     @SideOnly(Side.SERVER)
-    protected final void sendToDimension(IMessage message, int dimensionId) {
+    protected final void sendToDimension(IMessage message,
+                                         int dimensionId) {
         NETWORK_CHANNEL.sendToDimension(message, dimensionId);
     }
+
+    /**
+     * Send this message to the server.
+     * The {@link IMessageHandler} for this message type should
+     * be on the SERVER side.
+     *
+     * @param message The message to send
+     */
     @SideOnly(Side.CLIENT)
     protected final void sendToServer(IMessage message) {
         if(Minecraft.getMinecraft().playerController==null ||
@@ -182,7 +262,11 @@ public abstract class NetworkManager {
         NETWORK_CHANNEL.sendToServer(message);
     }
 
-
+    /**
+     * Get the network channel.
+     *
+     * @return The network channel.
+     */
     protected final SimpleNetworkWrapper getNetwork() {
         return NETWORK_CHANNEL;
     }

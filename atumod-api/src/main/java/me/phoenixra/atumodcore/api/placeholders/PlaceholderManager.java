@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlaceholderManager {
+
     /**
      * All registered placeholders.
      */
@@ -54,7 +55,7 @@ public class PlaceholderManager {
     };
 
     /**
-     * Register a arguments.
+     * Register an arguments.
      *
      * @param placeholder The arguments to register.
      */

@@ -11,6 +11,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A class that contains the injectable placeholders.
+ */
 public class PlaceholderContext {
 
     /**
@@ -45,8 +48,6 @@ public class PlaceholderContext {
         return injectableContext;
     }
 
-
-
     /**
      * Copy with an extra injectable context.
      *
@@ -59,11 +60,22 @@ public class PlaceholderContext {
         );
     }
 
+    /**
+     * Create PlaceholderContext of a PlaceholderInjectable parseContext.
+     *
+     * @param injectableContext The PlaceholderInjectable parseContext.
+     * @return The context.
+     */
+    public static PlaceholderContext of(@NotNull final InjectablePlaceholderList injectableContext) {
+        return new PlaceholderContext(
+                injectableContext
+        );
+    }
+
+
     @Override
-    public String toString() {
-        return "PlaceholderContext{" +
-                ", injectableContext=" + injectableContext +
-                '}';
+    public int hashCode() {
+        return Objects.hash(getInjectableContext());
     }
 
     @Override
@@ -80,20 +92,10 @@ public class PlaceholderContext {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(getInjectableContext());
-    }
-
-    /**
-     * Create PlaceholderContext of a PlaceholderInjectable parseContext.
-     *
-     * @param injectableContext The PlaceholderInjectable parseContext.
-     * @return The context.
-     */
-    public static PlaceholderContext of(@NotNull final InjectablePlaceholderList injectableContext) {
-        return new PlaceholderContext(
-                injectableContext
-        );
+    public String toString() {
+        return "PlaceholderContext{" +
+                ", injectableContext=" + injectableContext +
+                '}';
     }
 
     private static final InjectablePlaceholderList EMPTY_INJECTABLE = new InjectablePlaceholderList() {

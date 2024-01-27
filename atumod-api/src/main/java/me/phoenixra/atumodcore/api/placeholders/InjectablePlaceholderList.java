@@ -1,6 +1,7 @@
 package me.phoenixra.atumodcore.api.placeholders;
 
-import com.google.common.collect.Sets;
+
+import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.placeholders.types.injectable.StaticPlaceholder;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,6 +9,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * An interface that represents a list of injectable placeholders
+ * that is used in {@link PlaceholderContext}.
+ */
 public interface InjectablePlaceholderList {
     /**
      * Inject arguments.

@@ -41,9 +41,9 @@ public interface Placeholder {
     }
 
     /**
-     * Get the plugin that holds the arguments.
+     * Get the mod that holds the arguments.
      *
-     * @return The plugin.
+     * @return The mod.
      */
     @Nullable
     AtumMod getAtumMod();

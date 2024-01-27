@@ -3,6 +3,11 @@ package me.phoenixra.atumodcore.api.placeholders;
 import me.phoenixra.atumodcore.api.AtumMod;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents a placeholder that
+ * can be registered in {@link PlaceholderManager}
+ * <p>It is so-called global placeholder.</p>
+ */
 public interface RegistrablePlaceholder extends Placeholder{
 
     /**
@@ -17,9 +22,9 @@ public interface RegistrablePlaceholder extends Placeholder{
     }
 
     /**
-     * Get the plugin that holds the arguments.
+     * Get the mod that holds the arguments.
      *
-     * @return The plugin.
+     * @return The mod.
      */
     @NotNull
     @Override
