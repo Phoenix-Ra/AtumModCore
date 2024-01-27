@@ -65,23 +65,78 @@ public abstract class AtumMod {
     }
 
 
+    /**
+     * Get the mod name
+     *
+     * @return The name.
+     */
     public abstract @NotNull String getName();
+
+    /**
+     * Get the mod id
+     *
+     * @return The id.
+     */
     public abstract @NotNull String getModID();
+
+    /**
+     * Get the mod package path
+     *<p></p>
+     * It is used in java reflection to register display elements
+     *
+     * @return The package path.
+     */
     public abstract @NotNull String getPackagePath();
 
+    /**
+     * Is debug enabled.
+     * <p></p>
+     * Enables special debug features and logs.
+     *
+     * @return true if enabled
+     */
     public abstract boolean isDebugEnabled();
+
+    /**
+     * Create the API.
+     * <p></p>
+     * This method is called only in AtumModCore.
+     * So, it is basically useless for you if you are not planning
+     * to create your own API implementation.
+     *
+     * @return The API implementation.
+     */
     protected AtumAPI createAPI() {
         return null;
     }
 
+    /**
+     * Get the mod service by id
+     *
+     * @param id The id
+     */
     @Nullable
     public AtumModService getModService(@NotNull String id){
         return modServices.get(id);
     }
+
+    /**
+     * Provide the mod service/
+     * <p></p>
+     * It is a convenient feature to listen
+     * for FMLEvent outside the mod class
+     *
+     */
     public void provideModService(@NotNull AtumModService service){
         if(modServices.containsKey(service.getId())) return;
         modServices.put(service.getId(), service);
     }
+
+    /**
+     * Remove the mod service
+     *
+     * @param id The id of a mod service to remove
+     */
     public void removeModService(@NotNull String id){
         AtumModService atumModService = modServices.get(id);
         if(atumModService==null) return;
@@ -89,12 +144,24 @@ public abstract class AtumMod {
         modServices.remove(id);
     }
 
+    /**
+     * Clear all mod services
+     *
+     */
     public void clearAllModServices(){
         for(AtumModService entry : modServices.values()){
             entry.onRemove();
             modServices.remove(entry.getId());
         }
     }
+
+    /**
+     * Notify all mod services about the FML event
+     * <p></p>
+     * Make sure to call this method in your mod class
+     * if you are planning to use mod services
+     *
+     */
     protected void notifyModServices(@NotNull FMLEvent event){
         for(AtumModService entry : modServices.values()){
             entry.handleFmlEvent(event);

@@ -21,7 +21,7 @@ public interface AtumAPI {
     /**
      * Create an input handler
      *
-     * @param atumMod The mod.
+     * @param atumMod The mod to attach to.
      * @return The handler
      */
     @NotNull
@@ -30,7 +30,7 @@ public interface AtumAPI {
     /**
      * Create a config manager
      *
-     * @param atumMod The mod.
+     * @param atumMod The mod to attach to.
      * @return The manager
      */
     @NotNull
@@ -39,17 +39,16 @@ public interface AtumAPI {
     /**
      * Create a logger
      *
-     * @param atumMod The mod.
+     * @param atumMod The mod to attach to.
      * @return The logger
      */
     @NotNull
     Logger createLogger(@NotNull AtumMod atumMod);
 
-
     /**
      * Load configuration from file
      *
-     * @param atumMod The mod.
+     * @param atumMod The mod to attach to.
      * @param file the file to load configuration from
      * @return loaded config
      */
@@ -58,18 +57,18 @@ public interface AtumAPI {
                                      @NotNull File file);
 
     /**
-     * loads an existing config from the plugin folder
-     * and adds it to a configManager of a plugin
+     * Loads an existing config from the mod folder
+     * and adds it to a configManager of a mod
      * <p></p>
-     * if specified config doesn't exists
+     * if specified config doesn't exist
      * creates a new config with content
-     * from the plugin resources
+     * from the mod resources
      * <p></p>
      *
-     * @param atumMod The mod.
+     * @param atumMod The mod to attach to.
      * @param name name of a config (without extension)
      * @param directory The directory of a config. Use empty if root directory
-     * @param type The type of a config
+     * @param type The type of config
      * @param forceLoadResource if true - throws NullPointerException
      *                       when file not found inside the resources folder,
      *                          otherwise creates an empty file
@@ -82,10 +81,10 @@ public interface AtumAPI {
                                         @NotNull ConfigType type,
                                         boolean forceLoadResource);
 
-
     /**
      * Create config.
      *
+     * @param atumMod The mod to attach to.
      * @param values The values.
      * @param type   The config type.
      * @return The config
@@ -95,12 +94,24 @@ public interface AtumAPI {
                         @Nullable Map<String, Object> values,
                         @NotNull ConfigType type);
 
-
+    /**
+     * Create a display manager
+     *
+     * @param atumMod The mod to attach to.
+     * @return The manager
+     */
     @NotNull
     DisplayManager createDisplayManager(@NotNull AtumMod atumMod);
 
+    /**
+     * Create a network manager
+     *
+     * @param atumMod The mod to attach to.
+     * @return The manager
+     */
     @NotNull
     NetworkManager createNetworkManager(@NotNull AtumMod atumMod);
+
     /**
      * Evaluate an expression.
      *
@@ -112,12 +123,39 @@ public interface AtumAPI {
                     @NotNull String expression,
                     @NotNull PlaceholderContext context);
 
-
+    /**
+     * Get the core mod.
+     * @return The core mod.
+     */
     AtumMod getCoreMod();
+
+    /**
+     * Get the loaded mod.
+     *
+     * @param name The name of the mod.
+     * @return The mod or null if not found.
+     */
     @Nullable AtumMod getLoadedAtumMod(String name);
+
+    /**
+     * Get all loaded mods.
+     *
+     * @return The mods.
+     */
     @NotNull Collection<AtumMod> getLoadedAtumMods();
+
+    /**
+     * Register a mod.
+     *
+     * @param atumMod The mod.
+     */
     void registerAtumMod(@NotNull AtumMod atumMod);
 
+    /**
+     * Get the instance.
+     *
+     * @return The instance.
+     */
     static AtumAPI getInstance() {
         return Instance.get();
     }
