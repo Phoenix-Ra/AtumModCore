@@ -3,20 +3,12 @@ package me.phoenixra.atumodcore.api.display;
 
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
-import me.phoenixra.atumodcore.api.config.variables.ConfigVariable;
 import me.phoenixra.atumodcore.api.display.actions.ActionArgs;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.display.misc.variables.OptimizedVariableInt;
-import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
-import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
-import me.phoenixra.atumodcore.api.registry.Registrable;
-import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.input.Mouse;
-
-import java.util.HashMap;
 
 public interface DisplayElement extends Cloneable{
 
