@@ -3,6 +3,10 @@ package me.phoenixra.atumodcore.api.events.data;
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import net.minecraftforge.fml.common.eventhandler.Event;
+
+/**
+ * Called when a display data is changed.
+ */
 public class DisplayDataChangedEvent extends Event{
 
     @Getter

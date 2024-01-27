@@ -7,6 +7,9 @@ import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
 import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
+/**
+ * Called when mouse is released on a display element.
+ */
 public class ElementInputReleaseEvent extends Event {
     @Getter
     private final DisplayElement clickedElement;

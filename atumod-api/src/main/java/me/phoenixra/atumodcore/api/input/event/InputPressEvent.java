@@ -3,6 +3,9 @@ package me.phoenixra.atumodcore.api.input.event;
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.input.InputType;
 
+/**
+ * Called when an input is pressed.
+ */
 public class InputPressEvent {
 
     @Getter
