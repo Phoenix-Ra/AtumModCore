@@ -7,31 +7,31 @@ import org.jetbrains.annotations.Nullable;
 public interface ConfigManager {
 
     /**
-     * load all configs from disk
+     * Reload all configs except config categories
      */
     void reloadAllConfigs();
 
     /**
-     * load the specified config from disk
+     * reload the specified config
      *
-     * @param name the name of a config
+     * @param name the name of a config without extension
      */
     void reloadConfig(@NotNull String name);
 
     /**
-     * Save all configs.
+     * Save all configs. This will not save config categories
      */
     void saveAllConfigs();
 
     /**
      * Save the specified config
      *
-     * @param name the name of a config
+     * @param name the name of a config without extension
      */
     void saveConfig(@NotNull String name);
 
     /**
-     * get config added to the manager
+     * Get config added to the manager
      * or null if not found
      * @param name The name of a config
      * @return this
@@ -47,20 +47,21 @@ public interface ConfigManager {
     ConfigManager addConfig(@NotNull LoadableConfig config);
 
     /**
-     * reload all config categories
+     * Reload all config categories
      */
     void reloadAllConfigCategories();
 
     /**
-     * reload the config category
+     * Reload the config category
      *
-     * @param id the id
+     * @param id the id of a category
      */
     void reloadConfigCategory(@NotNull String id);
 
     /**
-     * get config category added to the manager
+     * Get config category added to the manager
      * or null if not found
+     *
      * @param id The id
      * @return The config category
      */
@@ -75,9 +76,9 @@ public interface ConfigManager {
     void addConfigCategory(@NotNull ConfigCategory configCategory);
 
     /**
-     * Get the plugin.
+     * Get the mod.
      *
-     * @return The plugin instance.
+     * @return The mod instance.
      */
     @NotNull
     AtumMod getAtumMod();

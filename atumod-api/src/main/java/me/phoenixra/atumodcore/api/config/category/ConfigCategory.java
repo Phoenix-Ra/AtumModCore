@@ -92,7 +92,7 @@ public abstract class ConfigCategory {
     protected abstract void clear();
 
     /**
-     * Accept the config
+     * Accept the config object loaded from file
      */
     protected abstract void acceptConfig(@NotNull String id, @NotNull Config config);
 

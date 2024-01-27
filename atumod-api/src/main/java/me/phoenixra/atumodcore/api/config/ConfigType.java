@@ -13,7 +13,6 @@ public enum ConfigType {
 
     /**
      * .yml file
-     * <p>NOT IMPLEMENTED YET</p>
      */
     YAML("yml"),
 
