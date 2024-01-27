@@ -10,6 +10,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 public class WebUtils {
+
+    /**
+     * Checks if the given url is valid.
+     * @param url the url to check
+     * @return true if the url is valid, false otherwise
+     */
     public static boolean isValidUrl(String url) {
         if ((url == null) || (!url.startsWith("http://") && !url.startsWith("https://"))) {
             return false;
@@ -46,6 +52,11 @@ public class WebUtils {
         return false;
     }
 
+    /**
+     * Gets the plain text content of a web page.
+     * @param webLink the url to get the content from
+     * @return the plain text content of the web page
+     */
     public static List<String> getPlainTextContentOfPage(URL webLink) {
         List<String> l = new ArrayList<>();
         BufferedReader r = null;

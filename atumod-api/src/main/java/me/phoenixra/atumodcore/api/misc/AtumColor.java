@@ -3,6 +3,10 @@ package me.phoenixra.atumodcore.api.misc;
 import lombok.Getter;
 import net.minecraft.client.renderer.GlStateManager;
 
+/**
+ * Use this class to store colors and
+ * draw colored stuff with OpenGL.
+ */
 public class AtumColor {
     public static final AtumColor WHITE = new AtumColor(1,1,1,1);
     public static final AtumColor BLACK = new AtumColor(0,0,0,1);
