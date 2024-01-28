@@ -68,6 +68,9 @@ public interface Config extends InjectablePlaceholderList {
      * Set null to remove the config section
      * <p></p>
      * You can also set a {@link Config} object, so it will be a subsection
+     * <p></p>
+     * If you want to set it to config file as well,
+     * use {@link LoadableConfig#save()}
      *
      * @param path The path.
      * @param obj  The object.
