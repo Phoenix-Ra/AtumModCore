@@ -16,3 +16,5 @@ Planned to support:
 
 Used in projects:
 - GTW:  https://github.com/Grand-Theft-Warzone
+
+WIKI: https://github.com/Phoenix-Ra/AtumModCore/wiki
