@@ -19,10 +19,24 @@ public class StringUtils {
 
 
 
+
+    /**
+     * Format a string with color codes.
+     *
+     * @param text The text to format.
+     * @return The formatted string.
+     */
     @NotNull
     public static String format(@NotNull String text) {
         return replaceFast(text, "&", "§");
     }
+
+    /**
+     * Format a list of strings with color codes.
+     *
+     * @param list The list to format.
+     * @return The formatted list.
+     */
     @NotNull
     public static Collection<String> format(@NotNull Collection<String> list) {
         Collection<String> output= new ArrayList<>();
@@ -31,6 +45,15 @@ public class StringUtils {
         }
         return output;
     }
+
+    /**
+     * Format a string with color codes and placeholders.
+     *
+     * @param atumMod The mod.
+     * @param text The text to format.
+     * @param context The placeholder context.
+     * @return The formatted string.
+     */
     @NotNull
     public static String formatWithPlaceholders(@NotNull AtumMod atumMod,
                                                 @NotNull String text,
@@ -38,6 +61,14 @@ public class StringUtils {
         return PlaceholderManager.translatePlaceholders(atumMod,format(text),context);
     }
 
+    /**
+     * Format a list of strings with color codes and placeholders.
+     *
+     * @param atumMod The mod.
+     * @param list The list to format.
+     * @param context The placeholder context.
+     * @return The formatted list.
+     */
     @NotNull
     public static List<String> formatWithPlaceholders(@NotNull AtumMod atumMod,
                                                       @NotNull List<String> list,
@@ -68,6 +99,7 @@ public class StringUtils {
         }
         return result.toString();
     }
+
     /**
      * Fast implementation of {@link String#replace(CharSequence, CharSequence)}
      *
@@ -134,6 +166,7 @@ public class StringUtils {
         result.append(input, start, inputLength);
         return result.toString();
     }
+
     /**
      * Parse string into tokens.
      * <p>
@@ -190,7 +223,6 @@ public class StringUtils {
     public static int getMargin(@NotNull final String input) {
         return input.indexOf(input.trim());
     }
-
 
     /**
      * Better implementation of {@link Object#toString()}.

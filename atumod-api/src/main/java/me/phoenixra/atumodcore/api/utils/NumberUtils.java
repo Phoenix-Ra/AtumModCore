@@ -25,8 +25,9 @@ public class NumberUtils {
         NUMERALS.put(4, "IV");
         NUMERALS.put(1, "I");
     }
+
     /**
-     * Format double to string.
+     * Format double to string with 2 decimal places.
      *
      * @param toFormat The number to format.
      * @return Formatted.
@@ -37,6 +38,7 @@ public class NumberUtils {
 
         return formatted.endsWith("00") ? String.valueOf((int) toFormat) : formatted;
     }
+
     /**
      * Get Roman Numeral from number.
      *
@@ -47,6 +49,7 @@ public class NumberUtils {
     public static String toNumeral(final int number) {
         return toNumeral(number, -1);
     }
+
     /**
      * Get Roman Numeral from number.
      *
@@ -86,6 +89,12 @@ public class NumberUtils {
         return 0;
     }
 
+    /**
+     * Get if is an integer or double.
+     *
+     * @param value The String to check
+     * @return If is integer or double.
+     */
     public static boolean isIntegerOrDouble(String value) {
         try {
             if (value.contains(".")) {
@@ -98,6 +107,12 @@ public class NumberUtils {
         return false;
     }
 
+    /**
+     * Get if is an integer.
+     *
+     * @param value The String to check
+     * @return If is integer.
+     */
     public static boolean isInteger(String value) {
         try {
             Integer.parseInt(value);
@@ -106,6 +121,12 @@ public class NumberUtils {
         return false;
     }
 
+    /**
+     * Get if is a double.
+     *
+     * @param value The String to check
+     * @return If is double.
+     */
     public static boolean isDouble(String value) {
         try {
             Double.parseDouble(value);
@@ -114,6 +135,12 @@ public class NumberUtils {
         return false;
     }
 
+    /**
+     * Get if is a long.
+     *
+     * @param value The String to check
+     * @return If is long.
+     */
     public static boolean isLong(String value) {
         try {
             Long.parseLong(value);
@@ -122,6 +149,12 @@ public class NumberUtils {
         return false;
     }
 
+    /**
+     * Get if is a float.
+     *
+     * @param value The String to check
+     * @return If is float.
+     */
     public static boolean isFloat(String value) {
         try {
             Float.parseFloat(value);

@@ -33,7 +33,15 @@ public class RenderUtils {
     private static int guiScaleCache = 1;
     private static int scaleFactorCache = 1;
 
-    public static void fill(float minX, float minY, float maxX, float maxY, int color, float opacity) {
+    /**
+     * Draw a filled rectangle.
+     * <p>min and max are the corners of the rectangle.</p>
+     *
+     */
+    public static void fill(float minX, float minY,
+                            float maxX, float maxY,
+                            int color,
+                            float opacity) {
 
         if (minX < maxX) {
             float i = minX;
@@ -69,8 +77,21 @@ public class RenderUtils {
         GlStateManager.disableBlend();
 
     }
-    public static void drawCircle(float centerX, float centerY, float radius,
-                                  int polygons, AtumColor color){
+
+    /**
+     * Draw a filled circle
+     *
+     * @param centerX The center X coordinate
+     * @param centerY The center Y coordinate
+     * @param radius The radius of the circle
+     * @param polygons The number of polygons to use to draw the circle.
+     *                 In most cases 40 is optimal
+     * @param color The color of the circle
+     */
+    public static void drawCircle(float centerX, float centerY,
+                                  float radius,
+                                  int polygons,
+                                  AtumColor color){
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         GlStateManager.enableBlend();
@@ -118,16 +139,14 @@ public class RenderUtils {
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
     }
 
-    public static void bindTexture(ResourceLocation texture, boolean depthTest) {
-        Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
-        GlStateManager.enableBlend();
-        if (depthTest) {
-            GlStateManager.enableDepth();
-        }
-    }
 
+    /**
+     *  Bind a texture to the OpenGL context.
+     *
+     * @param texture The texture to bind.
+     */
     public static void bindTexture(ResourceLocation texture) {
-        bindTexture(texture, false);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
     }
 
     private static ResourceLocation WHITE = null;
@@ -155,7 +174,19 @@ public class RenderUtils {
     }
 
 
-    public static void drawRect(int posX, int posY, int width, int height, AtumColor color) {
+
+    /**
+     * Draw a rectangle.
+     *
+     * @param posX The X position.
+     * @param posY The Y position.
+     * @param width The width.
+     * @param height The height.
+     * @param color The color.
+     */
+    public static void drawRect(int posX, int posY,
+                                int width, int height,
+                                AtumColor color) {
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         //draw
@@ -188,7 +219,20 @@ public class RenderUtils {
         GlStateManager.color(1f, 1f, 1f);
     }
 
-    public static void drawOutline(int x, int y, int width, int height, int outlineSize, AtumColor color) {
+    /**
+     * Draw an outline.
+     *
+     * @param x The X position.
+     * @param y The Y position.
+     * @param width The width.
+     * @param height The height.
+     * @param outlineSize The outline size.
+     * @param color The color.
+     */
+    public static void drawOutline(int x, int y,
+                                   int width, int height,
+                                   int outlineSize,
+                                   AtumColor color) {
         x -= outlineSize;
         y -= outlineSize;
         width += outlineSize*2;
@@ -198,9 +242,21 @@ public class RenderUtils {
         drawRect(x + width - outlineSize, y+outlineSize, outlineSize, height-(outlineSize*2), color);
         drawRect( x, y + height - outlineSize, width, outlineSize, color);
     }
-    public static void drawOutline(int x, int y, int width, int height, AtumColor color) {
+    public static void drawOutline(int x, int y,
+                                   int width, int height,
+                                   AtumColor color) {
         drawOutline(x, y, width, height, 1, color);
     }
+
+    /**
+     * Draw a dashed outline.
+     *
+     * @param x The X position.
+     * @param y The Y position.
+     * @param width The width.
+     * @param height The height.
+     * @param color The color.
+     */
     public static void drawDashedOutline(int x, int y, int width, int height, AtumColor color) {
         GlStateManager.enableBlend();
         GlStateManager.disableDepth();
@@ -228,8 +284,6 @@ public class RenderUtils {
     }
 
 
-
-
     public static void drawCustomBar(int x, int y, int width, int height,
                                      double value,
                                      @NotNull AtumColor colorEmpty,
@@ -250,7 +304,16 @@ public class RenderUtils {
         }
     }
 
-    public static void drawCompleteImage(int posX, int posY, int width, int height)
+    /**
+     * Draw a complete image.
+     *
+     * @param posX The X position.
+     * @param posY The Y position.
+     * @param width The width.
+     * @param height The height.
+     */
+    public static void drawCompleteImage(int posX, int posY,
+                                         int width, int height)
     {
         GlStateManager.enableBlend();
         GlStateManager.enableAlpha();
@@ -270,25 +333,34 @@ public class RenderUtils {
         GlStateManager.disableBlend();
     }
 
-    public static void drawPartialImage(int posX,
-                                        int posY,
-                                        int width,
-                                        int height,
-                                        int imageX,
-                                        int imageY,
-                                        int imagePartWidth,
-                                        int imagePartHeight)
+    /**
+     * Draw the specified part of a texture
+     *
+     * @param posX The X position.
+     * @param posY The Y position.
+     * @param width The width.
+     * @param height The height.
+     * @param textureX The X position of the image.
+     * @param textureY The Y position of the image.
+     * @param texturePartWidth The width of the image part.
+     * @param texturePartHeight The height of the image part.
+     */
+    public static void drawPartialImage(int posX, int posY,
+                                        int width, int height,
+                                        int textureX, int textureY,
+                                        int texturePartWidth,
+                                        int texturePartHeight)
     {
         double imageWidth = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
         double imageHeight = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
 
         double einsTeilerWidth = 1F / imageWidth;
-        double uvWidth = einsTeilerWidth * imagePartWidth;
-        double uvX = einsTeilerWidth * imageX;
+        double uvWidth = einsTeilerWidth * texturePartWidth;
+        double uvX = einsTeilerWidth * textureX;
 
         double einsTeilerHeight = 1F / imageHeight;
-        double uvHeight = einsTeilerHeight * imagePartHeight;
-        double uvY = einsTeilerHeight * imageY;
+        double uvHeight = einsTeilerHeight * texturePartHeight;
+        double uvY = einsTeilerHeight * textureY;
 
         GlStateManager.enableBlend();
         GlStateManager.enableAlpha();
@@ -351,7 +423,7 @@ public class RenderUtils {
      * Get the mouse X and Y positions.
      * Attention! This method uses cached scale factor, so, you should use
      * {@link #getScaleFactor()} before calling this method.
-     * @return
+     * @return The mouse X and Y positions.
      */
     public static int[] getMousePos(){
         double scaleX = (scaleFactorCache/windowRatioXCache);
@@ -368,7 +440,21 @@ public class RenderUtils {
         return new int[]{mouseX,mouseZ};
     }
 
-    public static int[] fixCoordinates(int x, int y, int width, int height, boolean fixRatio) {
+    /**
+     * Fix the coordinates to ignore the mc scale factor.
+     *
+     * <p>Attention! This method uses cached scale factor, so, you should use
+     * {@link #getScaleFactor()} before calling this method.</p>
+     * @param x The X coordinate.
+     * @param y The Y coordinate.
+     * @param width The width.
+     * @param height The height.
+     * @param fixRatio If true, the size will keep the ratio.
+     * @return The fixed coordinates.
+     */
+    public static int[] fixCoordinates(int x, int y,
+                                       int width, int height,
+                                       boolean fixRatio) {
 
 
         double scaleX = (scaleFactorCache*0.9925/windowRatioXCache);
@@ -401,6 +487,16 @@ public class RenderUtils {
                 MathHelper.ceil (height / scaleY)
         };
     }
+
+    /**
+     * Fix the coordinates to ignore the mc scale factor.
+     *
+     * <p>Attention! This method uses cached scale factor, so, you should use
+     * {@link #getScaleFactor()} before calling this method.</p>
+     * @param x The X coordinate.
+     * @param y The Y coordinate.
+     * @return The fixed coordinates.
+     */
     public static int[] fixCoordinates(int x, int y) {
         double scaleX = (scaleFactorCache/windowRatioXCache);
         double scaleY = (scaleFactorCache/windowRatioYCache);
@@ -410,6 +506,14 @@ public class RenderUtils {
                 (int) (y / scaleY)
         };
     }
+
+    /**
+     * Get the minecraft scale factor.
+     * <p>If the guiScale and window size wasn't changed</p>
+     * <p>the method will return the cached value</p>
+     *
+     * @return The scale factor
+     */
     public static int getScaleFactor(){
         Minecraft mc = Minecraft.getMinecraft();
         int scaledWidth = mc.displayWidth;

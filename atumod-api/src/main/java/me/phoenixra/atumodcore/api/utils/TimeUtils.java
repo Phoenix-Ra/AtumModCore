@@ -13,6 +13,7 @@ public class TimeUtils {
      * <p>Example: 1h 30m 20s</p>
      * <p>You can change the symbols used: </p>
      * <p>{@link #SYMBOL_SECOND} {@link #SYMBOL_MINUTE} {@link #SYMBOL_HOUR}</p>
+     *
      * @param time the time
      * @return the result
      */
@@ -86,6 +87,7 @@ public class TimeUtils {
     /**
      * Get time left parsed to string
      * <p>see also {@link #parseTimeToString(long)}</p>
+     *
      * @param startTime the start time
      * @param endTime the end time
      * @return the result
@@ -97,6 +99,7 @@ public class TimeUtils {
     /**
      * Parse string time to long
      * <p>see also {@link #parseTimeToString(long)}</p>
+     *
      * @param text the text to parse
      * @return time
      */
