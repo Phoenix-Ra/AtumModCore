@@ -165,18 +165,6 @@ public abstract class NetworkManager {
     }
 
     /**
-     * Send this message to everyone.
-     * The {@link IMessageHandler} for this message type
-     * should be on the CLIENT side.
-     *
-     * @param message The message to send
-     */
-    @SideOnly(Side.SERVER)
-    protected final void sendToAll(IMessage message) {
-        NETWORK_CHANNEL.sendToAll(message);
-    }
-
-    /**
      * Send this message to the specified player.
      * The {@link IMessageHandler} for this message type
      * should be on the CLIENT side.
@@ -187,6 +175,18 @@ public abstract class NetworkManager {
     @SideOnly(Side.SERVER)
     protected final void sendTo(IMessage message, EntityPlayerMP player) {
         NETWORK_CHANNEL.sendTo(message, player);
+    }
+
+    /**
+     * Send this message to everyone.
+     * The {@link IMessageHandler} for this message type
+     * should be on the CLIENT side.
+     *
+     * @param message The message to send
+     */
+    @SideOnly(Side.SERVER)
+    protected final void sendToAll(IMessage message) {
+        NETWORK_CHANNEL.sendToAll(message);
     }
 
     /**

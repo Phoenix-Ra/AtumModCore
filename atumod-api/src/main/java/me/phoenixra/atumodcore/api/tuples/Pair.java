@@ -13,18 +13,20 @@ import java.util.Objects;
  * @param <A> The first value type.
  * @param <B> The second value type.
  */
+@Setter
+@Getter
 @AllArgsConstructor
 public class Pair<A, B> {
     /**
      * The first item in the tuple.
      */
-    @Nullable @Getter @Setter
+    @Nullable
     private A first;
 
     /**
      * The second item in the tuple.
      */
-    @Nullable @Getter @Setter
+    @Nullable
     private B second;
 
     @Override

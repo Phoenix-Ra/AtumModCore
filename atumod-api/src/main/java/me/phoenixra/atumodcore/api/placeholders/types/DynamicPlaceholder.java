@@ -4,6 +4,7 @@ package me.phoenixra.atumodcore.api.placeholders.types;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.placeholders.RegistrablePlaceholder;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
+import me.phoenixra.atumodcore.api.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,6 +40,7 @@ public class DynamicPlaceholder implements RegistrablePlaceholder {
         this.plugin = plugin;
         this.pattern = Pattern.compile("%" + plugin.getName()+"_"+pattern + "%");
         this.function = function;
+
     }
 
     @Override

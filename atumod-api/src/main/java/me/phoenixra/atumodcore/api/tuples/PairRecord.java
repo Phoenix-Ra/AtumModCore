@@ -13,20 +13,20 @@ import java.util.Objects;
  * @param <A> The first value type.
  * @param <B> The second value type.
  */
+@Setter
+@Getter
 @AllArgsConstructor
 public class PairRecord<A, B> {
     /**
      * The first item in the tuple.
      */
     @NotNull
-    @Getter
-    @Setter
     private A first;
 
     /**
      * The second item in the tuple.
      */
-    @NotNull @Getter @Setter
+    @NotNull
     private B second;
 
     @Override

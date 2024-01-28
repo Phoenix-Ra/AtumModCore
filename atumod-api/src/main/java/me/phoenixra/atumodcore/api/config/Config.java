@@ -67,7 +67,7 @@ public interface Config extends InjectablePlaceholderList {
      * <p></p>
      * Set null to remove the config section
      * <p></p>
-     * You can also set a {@link Config} object, so it will be a section
+     * You can also set a {@link Config} object, so it will be a subsection
      *
      * @param path The path.
      * @param obj  The object.
@@ -476,7 +476,8 @@ public interface Config extends InjectablePlaceholderList {
      * @param context The placeholder context.
      * @return The evaluated value.
      */
-    double getEvaluated(@NotNull String path, @NotNull PlaceholderContext context);
+    double getEvaluated(@NotNull String path,
+                        @NotNull PlaceholderContext context);
 
 
 
@@ -497,7 +498,7 @@ public interface Config extends InjectablePlaceholderList {
     @NotNull ConfigType getType();
 
     /**
-     * Get the mod.
+     * Get the mod that owns this config
      *
      * @return The mod instance.
      */

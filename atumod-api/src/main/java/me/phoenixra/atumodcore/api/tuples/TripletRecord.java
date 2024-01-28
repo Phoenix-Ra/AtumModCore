@@ -14,6 +14,8 @@ import java.util.Objects;
  * @param <B> The second value type.
  * @param <C> The third value type.
  */
+@Setter
+@Getter
 @AllArgsConstructor
 public class TripletRecord<A,B,C> {
 
@@ -21,20 +23,18 @@ public class TripletRecord<A,B,C> {
      * The first item in the tuple.
      */
     @NotNull
-    @Getter
-    @Setter
     private A first;
 
     /**
      * The second item in the tuple.
      */
-    @NotNull @Getter @Setter
+    @NotNull
     private B second;
 
     /**
      * The third item in the tuple.
      */
-    @NotNull @Getter @Setter
+    @NotNull
     private C third;
 
     @Override
