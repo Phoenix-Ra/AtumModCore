@@ -10,6 +10,7 @@ import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerRegistry;
 import me.phoenixra.atumodcore.api.service.AtumModService;
 import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
@@ -21,22 +22,64 @@ public interface DisplayManager{
 
 
 
-    DisplayElementRegistry getElementRegistry();
+    /**
+     * Get the element registry.
+     *
+     * @return The element registry.
+     */
+    @NotNull DisplayElementRegistry getElementRegistry();
 
-    DisplayActionRegistry getActionRegistry();
+    /**
+     * Get the action registry.
+     *
+     * @return The action registry.
+     */
+    @NotNull DisplayActionRegistry getActionRegistry();
 
-    DisplayTriggerRegistry getTriggerRegistry();
+    /**
+     * Get the trigger registry.
+     *
+     * @return The trigger registry.
+     */
+    @NotNull DisplayTriggerRegistry getTriggerRegistry();
 
-
+    /**
+     * Set HUD canvas.
+     * <p>Use it to make your own HUD</p>
+     *
+     * @param canvas The canvas.
+     */
     void setHUDCanvas(@NotNull DisplayCanvas canvas);
 
-    DisplayCanvas getHUDCanvas();
+    /**
+     * Get the HUD canvas currently used.
+     *
+     * @return The HUD canvas.
+     */
+    @NotNull DisplayCanvas getHUDCanvas();
 
+    /**
+     * Get the enabled canvas.
+     *
+     * @param id The id of the canvas.
+     * @return The enabled canvas or null
+     */
+    @Nullable DisplayCanvas getEnabledCanvas(@NotNull String id);
 
-    DisplayCanvas getEnabledCanvas(@NotNull String id);
+    /**
+     * Register an enabled canvas.
+     *
+     * @param id The id of the canvas.
+     * @param canvas The canvas.
+     */
+    void registerEnabledCanvas(@NotNull String id,
+                               @NotNull DisplayCanvas canvas);
 
-    void registerEnabledCanvas(@NotNull String id, @NotNull DisplayCanvas canvas);
-
+    /**
+     * Unregister an enabled canvas.
+     *
+     * @param id The id of the canvas.
+     */
     void unregisterEnabledCanvas(@NotNull String id);
 
     /**

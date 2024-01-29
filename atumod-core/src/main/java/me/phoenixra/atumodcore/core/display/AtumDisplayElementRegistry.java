@@ -57,7 +57,7 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
     @Override
     public DisplayCanvas compileCanvasTemplate(@NotNull String id, @NotNull Config config) {
 
-        String canvasType = config.getStringOrDefault("type","canvas");
+        String canvasType = config.getStringOrDefault("template","canvas");
         DisplayElement element = this.getElementTemplate(canvasType);
         if(element == null){
             this.atumMod.getLogger().error("Could not find canvas type: " + canvasType);

@@ -137,7 +137,7 @@ public class BaseRenderer implements DisplayRenderer {
             Config config = baseCanvas.getSettingsConfig().getSubsection("triggers");
             for(String key : config.getKeys(false)){
                 DisplayTrigger trigger = getAtumMod().getDisplayManager()
-                        .getTriggerRegistry().getTemplate(config.getString(key+".type"));
+                        .getTriggerRegistry().getTemplate(config.getString(key+".template"));
                 if(trigger == null){
                     continue;
                 }

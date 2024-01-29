@@ -26,6 +26,7 @@ public interface DisplayElementRegistry{
      */
     @Nullable
     DisplayElement getElementTemplate(@NotNull String id);
+
     /**
      * Get the canvas template.
      * Caution! It is not prepared for drawing.
@@ -35,12 +36,34 @@ public interface DisplayElementRegistry{
     @Nullable
     DisplayCanvas getCanvasTemplate(@NotNull String id);
 
+    /**
+     * Compile the canvas template.
+     * This method loads the canvas template with
+     * elements and default data from config.
+     * <p>Caution! It is not prepared for drawing.</p>
+     *
+     * @param id The id of the canvas template.
+     * @param config The config to apply to the canvas.
+     * @return The canvas template.
+     */
     DisplayCanvas compileCanvasTemplate(@NotNull String id,
                                         @NotNull Config config);
 
+    /**
+     * Register the display element template.
+     *
+     * @param id The id of the element template.
+     * @param template The display element template.
+     */
+    void registerTemplate(@NotNull String id, @NotNull DisplayElement template);
 
-    void registerTemplate(@NotNull String id, @NotNull DisplayElement chain);
+    /**
+     * Unregister the display element template.
+     *
+     * @param id The id of the element template.
+     */
     void unregisterTemplate(@NotNull String id);
+
     /**
      * Get the mod.
      *

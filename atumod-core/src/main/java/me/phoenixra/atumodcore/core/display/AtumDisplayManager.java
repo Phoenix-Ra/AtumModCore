@@ -127,7 +127,7 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
         );
     }
     @Override
-    public DisplayCanvas getHUDCanvas() {
+    public @NotNull DisplayCanvas getHUDCanvas() {
         return displayRenderer.getBaseCanvas();
     }
 

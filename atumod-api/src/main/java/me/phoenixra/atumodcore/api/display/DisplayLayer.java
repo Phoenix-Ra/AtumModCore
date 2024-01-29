@@ -4,6 +4,10 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
+/**
+ * Enum for display layers.
+ * <p>Used to determine the rendering order of elements.</p>
+ */
 public enum DisplayLayer {
     BACKGROUND(0),
     LOW(1),

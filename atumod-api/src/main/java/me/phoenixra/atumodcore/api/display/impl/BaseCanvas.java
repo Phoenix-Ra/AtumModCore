@@ -132,15 +132,15 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         DisplayElementRegistry registry = getAtumMod().getDisplayManager().getElementRegistry();
         for(String key : config.getSubsection("elements").getKeys(false)){
             Config elementSection = config.getSubsection("elements." + key);
-            String elementType = elementSection.getStringOrDefault("type", "image");
+            String elementType = elementSection.getStringOrDefault("template", "image");
             getAtumMod().getLogger().info("Found element: " + elementType);
             DisplayElement elementElement = registry.getElementTemplate(elementType);
             if(elementElement == null){
-                getAtumMod().getLogger().error("Could not find element type: " + elementType);
+                getAtumMod().getLogger().error("Could not find element template: " + elementType);
                 continue;
             }
             if(!(elementElement instanceof BaseElement)){
-                getAtumMod().getLogger().error("Element type: " + elementType + " is not an element!");
+                getAtumMod().getLogger().error("Element template: " + elementType + " is not a BaseElement!");
                 continue;
             }
             BaseElement elementBaseElement = (BaseElement)( elementElement).cloneWithNewVariables(
