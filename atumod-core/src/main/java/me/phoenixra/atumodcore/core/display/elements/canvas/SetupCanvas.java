@@ -51,7 +51,7 @@ public class SetupCanvas extends BaseCanvas {
     }
 
     @Override
-    public void draw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
+    public void draw(@NotNull DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
         super.draw(resolution,scaleFactor,mouseX, mouseY);
 
     }
@@ -180,7 +180,7 @@ public class SetupCanvas extends BaseCanvas {
 
     private void clearSelection() {
         if (selectedElement != null) {
-            selectedElement.setOutline_selected(false);
+            selectedElement.setOutlineSelected(false);
             selectedElement = null;
             selectionState = ElementSelectionState.NONE;
         }
@@ -202,7 +202,7 @@ public class SetupCanvas extends BaseCanvas {
         if (event.getParentEvent().getType() != InputType.MOUSE_LEFT) return;
         if (selectedElement == null) {
             selectedElement = event.getClickedElement();
-            selectedElement.setOutline_selected(true);
+            selectedElement.setOutlineSelected(true);
             mousePos = getAtumMod().getInputHandler().getMouseOriginPosition();
             mousePos.setFirst((int) (mousePos.getFirst() / RenderUtils.getWindowRatioWidth()));
             mousePos.setSecond((int) (mousePos.getSecond() / RenderUtils.getWindowRatioWidth()));

@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 @RegisterDisplayTrigger(templateId = "data_changed")
 public class TriggerDataChanged extends BaseTrigger {
 
@@ -54,7 +53,7 @@ public class TriggerDataChanged extends BaseTrigger {
 
 
     @Override
-    public DisplayTrigger cloneWithNewVariables(@NotNull Config config, @Nullable DisplayRenderer owner) {
+    public @NotNull DisplayTrigger cloneWithNewVariables(@NotNull Config config, @Nullable DisplayRenderer owner) {
         DisplayTrigger trigger = super.cloneWithNewVariables(config, owner);
         if(config.hasPath("filters")) {
             ((TriggerDataChanged)trigger).dataId = config.getStringOrNull("filters.data_id");

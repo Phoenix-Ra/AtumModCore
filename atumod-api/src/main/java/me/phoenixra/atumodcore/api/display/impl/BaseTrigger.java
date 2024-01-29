@@ -49,7 +49,7 @@ public abstract class BaseTrigger implements DisplayTrigger {
     public abstract boolean filter(DisplayTriggerData triggerData);
 
     @Override
-    public DisplayTrigger cloneWithNewVariables(@NotNull Config config, @Nullable DisplayRenderer owner) {
+    public @NotNull DisplayTrigger cloneWithNewVariables(@NotNull Config config, @Nullable DisplayRenderer owner) {
         DisplayTrigger clone = clone();
         if(clone == null){
             return null;
@@ -72,7 +72,7 @@ public abstract class BaseTrigger implements DisplayTrigger {
     }
 
     @Override
-    public DisplayTrigger clone() {
+    public @NotNull DisplayTrigger clone() {
         try {
             DisplayTrigger clone = (DisplayTrigger) super.clone();
             ((BaseTrigger)clone).actions = new ArrayList<>();

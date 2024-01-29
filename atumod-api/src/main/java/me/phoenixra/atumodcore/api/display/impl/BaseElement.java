@@ -82,7 +82,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     private boolean active = true;
 
     @Setter
-    private boolean outline_selected;
+    private boolean outlineSelected;
 
     protected boolean hasOutline = false;
     private AtumColor outlineColor = AtumColor.WHITE;
@@ -124,7 +124,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
 
     @Override
-    public void draw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
+    public void draw(@NotNull DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
         if(!initialized){
             MinecraftForge.EVENT_BUS.register(this);
             initialized = true;
@@ -146,7 +146,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         globalX = elementOwner == null ? x : elementOwner.getGlobalX() + x;
         globalY = elementOwner == null ? y : elementOwner.getGlobalY() + y;
         onDraw(resolution, scaleFactor,mouseX,mouseY);
-        if(outline_selected){
+        if(outlineSelected){
             RenderUtils.drawDashedOutline(
                     getX(),
                     getY(),
@@ -295,10 +295,10 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
 
     @Override
-    public DisplayElement cloneWithNewVariables(@NotNull String id,
-                                                @NotNull Config config,
-                                                @Nullable String configKey,
-                                                @Nullable DisplayCanvas elementOwner) {
+    public @NotNull DisplayElement cloneWithNewVariables(@NotNull String id,
+                                                         @NotNull Config config,
+                                                         @Nullable String configKey,
+                                                         @Nullable DisplayCanvas elementOwner) {
         DisplayElement clone = clone();
         ((BaseElement)clone).id = id;
         ((BaseElement)clone).templateId = id;
@@ -310,14 +310,14 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     }
 
     @Override
-    public DisplayElement cloneWithRandomId() {
+    public @NotNull DisplayElement cloneWithRandomId() {
         DisplayElement clone = clone();
         ((BaseElement)clone).id = id.split("@")[0]+"@"+UUID.randomUUID().toString();
         return clone;
     }
 
     @Override
-    public DisplayElement clone() {
+    public @NotNull DisplayElement clone() {
         try {
             BaseElement clone = (BaseElement) super.clone();
             clone.id = UUID.randomUUID().toString();

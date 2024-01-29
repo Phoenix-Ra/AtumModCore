@@ -65,7 +65,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
 
     @Override
-    public void draw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
+    public void draw(@NotNull DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
         if(!initialized && getElementOwner() == this){
             AtumAPI.getInstance().getCoreMod().getInputHandler().addListenerOnPress(getId()+"-press",
                     this::onPress
@@ -393,7 +393,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     }
 
     @Override
-    public final DisplayElement clone() {
+    public final @NotNull DisplayElement clone() {
         BaseCanvas clone = (BaseCanvas) super.clone();
         HashMap<DisplayLayer, LinkedHashSet<DisplayElement>> map = clone.elements;
         clone.elements = new HashMap<>();

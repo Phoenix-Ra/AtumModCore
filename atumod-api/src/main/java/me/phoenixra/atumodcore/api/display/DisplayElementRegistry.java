@@ -46,6 +46,7 @@ public interface DisplayElementRegistry{
      * @param config The config to apply to the canvas.
      * @return The canvas template.
      */
+    @Nullable
     DisplayCanvas compileCanvasTemplate(@NotNull String id,
                                         @NotNull Config config);
 
@@ -55,7 +56,8 @@ public interface DisplayElementRegistry{
      * @param id The id of the element template.
      * @param template The display element template.
      */
-    void registerTemplate(@NotNull String id, @NotNull DisplayElement template);
+    void registerTemplate(@NotNull String id,
+                          @NotNull DisplayElement template);
 
     /**
      * Unregister the display element template.

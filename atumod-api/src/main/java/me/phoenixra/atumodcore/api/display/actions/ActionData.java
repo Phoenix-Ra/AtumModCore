@@ -25,6 +25,12 @@ public class ActionData {
 
 
 
+    /**
+     * Create an empty action data.
+     *
+     * @param atumMod The mod.
+     * @return The action data.
+     */
     public static ActionData empty(AtumMod atumMod){
         return new ActionData(atumMod,null, null, 0, 0, null);
     }

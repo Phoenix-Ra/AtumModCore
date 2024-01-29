@@ -10,6 +10,8 @@ import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +32,7 @@ public class BaseDisplayData implements DisplayData {
         MinecraftForge.EVENT_BUS.register(this);
     }
     @Override
-    public void setData(String id, String value) {
+    public void setData(@NotNull String id, @NotNull String value) {
         //remove previous if exists to not cause conflicts
         removeDataCache(id,true);
 
@@ -39,7 +41,7 @@ public class BaseDisplayData implements DisplayData {
     }
 
     @Override
-    public void setTemporaryData(String id, String value, long lifetime, boolean queued) {
+    public void setTemporaryData(@NotNull String id, @NotNull String value, long lifetime, boolean queued) {
 
         List<PairRecord<String,Long>> list = queued ? dataTemp.get(id) : null;
         if(list==null){
@@ -60,7 +62,7 @@ public class BaseDisplayData implements DisplayData {
     }
 
     @Override
-    public void setDefaultData(String id, String value) {
+    public void setDefaultData(@NotNull String id, @NotNull String value) {
         if(value == null)
             defaultData.remove(id);
         else
@@ -78,7 +80,7 @@ public class BaseDisplayData implements DisplayData {
     }
 
     @Override
-    public String getData(String id) {
+    public @Nullable String getData(@NotNull String id) {
         String out = data.get(id);
         if(out == null && dataTemp.containsKey(id)) {
             out = dataTemp.get(id).get(0).getFirst();
@@ -87,7 +89,7 @@ public class BaseDisplayData implements DisplayData {
     }
 
     @Override
-    public boolean hasData(String id) {
+    public boolean hasData(@NotNull String id) {
         String out = data.get(id);
         if(out == null && dataTemp.containsKey(id)) {
             out = dataTemp.get(id).get(0).getFirst();
@@ -96,7 +98,7 @@ public class BaseDisplayData implements DisplayData {
     }
 
     @Override
-    public Map<String, String> getAllData() {
+    public @NotNull Map<String, String> getAllData() {
         //merged data and dataTemp
         Map<String, String> mergedData = new HashMap<>(data);
         for(Map.Entry<String,List<PairRecord<String,Long>>> entry
@@ -108,7 +110,7 @@ public class BaseDisplayData implements DisplayData {
     }
 
     @Override
-    public void removeData(String id) {
+    public void removeData(@NotNull String id) {
         removeDataCache(id,true);
         MinecraftForge.EVENT_BUS.post(new DisplayDataRemovedEvent(displayRenderer,id));
     }

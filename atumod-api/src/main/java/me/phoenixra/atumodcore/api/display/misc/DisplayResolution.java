@@ -7,6 +7,17 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+/**
+ * The display resolution.
+ * <p>
+ *      <br>
+ *     This enum contains all the display resolutions that are supported by the mod.
+ *     <br> <br>
+ *     The enum also contains a static variable that represents the current resolution.
+ *     <br> <br>
+ *     The current resolution can be changed by calling {@link #changeResolution(DisplayResolution)}.
+ * </p>
+ */
 @Getter
 public enum DisplayResolution {
 
@@ -55,7 +66,7 @@ public enum DisplayResolution {
     public static DisplayResolution getCurrentResolution() {
         return CURRENT_RESOLUTION;
     }
-    public static void changeResolution(DisplayResolution newResolution) {
+    public static void changeResolution(@NotNull DisplayResolution newResolution) {
         if (Display.isResizable()) {
             Display.setResizable(false);
         }

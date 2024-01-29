@@ -7,6 +7,12 @@ import org.jetbrains.annotations.Nullable;
 
 @FunctionalInterface
 public interface DisplayAction {
+
+    /**
+     * Perform the action.
+     *
+     * @param data The action data.
+     */
     void perform(ActionData data);
 
 
