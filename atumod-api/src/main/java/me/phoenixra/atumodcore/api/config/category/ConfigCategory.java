@@ -51,6 +51,7 @@ public abstract class ConfigCategory {
         clear();
         File dir = new File(atumMod.getDataFolder(), directory);
         System.out.println("Reloading " + id + " configs...");
+        //@TODO add check for missing files
         if (!dir.exists()) {
             loadDefaults();
         }

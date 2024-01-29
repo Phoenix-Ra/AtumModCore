@@ -151,8 +151,8 @@ public abstract class AtumMod {
     public void clearAllModServices(){
         for(AtumModService entry : modServices.values()){
             entry.onRemove();
-            modServices.remove(entry.getId());
         }
+        modServices.clear();
     }
 
     /**
