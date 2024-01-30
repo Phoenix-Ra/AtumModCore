@@ -4,6 +4,7 @@ import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
@@ -25,13 +26,17 @@ public class ActionPlaySound implements DisplayAction {
                 new net.minecraft.util.ResourceLocation(soundId)
         );
         if(soundEvent == null){
+            System.out.println("Sound event not found: "+soundId);
             return;
         }
         float volume = argsLength > 1 ? Float.parseFloat(actionData.getActionArgs().getArgs()[1]) : 1.0f;
         float pitch = argsLength > 2 ? Float.parseFloat(actionData.getActionArgs().getArgs()[2]) : 1.0f;
 
-        Minecraft.getMinecraft().player.playSound(soundEvent,
-                volume, pitch);
+        Minecraft.getMinecraft().getSoundHandler().playSound(
+                PositionedSoundRecord.getRecord(
+                        soundEvent, pitch, volume
+                )
+        );
 
     }
 }
