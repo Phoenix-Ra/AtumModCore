@@ -10,10 +10,6 @@ import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.PlayerUtils;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,34 +18,31 @@ import org.jetbrains.annotations.Nullable;
  * <br> <br>
  * Settings:
  * <ul>
- *     <li>image - image resource location</li>
  *     <li>color - color (RGB)</li>
  *     <li>textureX - texture X</li>
  *     <li>textureY - texture Y</li>
  *     <li>textureWidth - texture width</li>
  *     <li>textureHeight - texture height</li>
  * </ul>
+ *
  */
-@RegisterDisplayElement(templateId = "image")
-public class ElementImage extends BaseElement {
+@RegisterDisplayElement(templateId = "image_player_skin")
+public class ElementPlayerSkin extends BaseElement {
     private Runnable imageBinder;
-
-
     private AtumColor color = AtumColor.WHITE;
     private int textureX;
     private int textureY;
     private int textureWidth;
     private int textureHeight;
-
-
-    public ElementImage(@NotNull AtumMod atumMod,
-                        @NotNull DisplayCanvas elementOwner) {
+    public ElementPlayerSkin(@NotNull AtumMod atumMod,
+                             @NotNull DisplayCanvas elementOwner) {
         super(atumMod,elementOwner);
 
     }
 
     @Override
-    protected void onDraw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
+    protected void onDraw(DisplayResolution resolution,
+                          float scaleFactor, int mouseX, int mouseY) {
         imageBinder.run();
         color.useColor();
         if(textureHeight==0||textureWidth==0){
@@ -76,11 +69,9 @@ public class ElementImage extends BaseElement {
     @Override
     public void updateElementVariables(@NotNull Config config,
                                        @Nullable String configKey) {
-        TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         PlaceholderContext context = PlaceholderContext.of(getElementOwner().getDisplayRenderer());
-        String image = config.getString("image");
-        ResourceLocation imageLocation = new ResourceLocation(image);
-        this.imageBinder = () -> textureManager.bindTexture(imageLocation);
+
+        this.imageBinder = PlayerUtils::bindPlayerSkinTexture;
 
         String color = config.getStringOrNull("color");
         if(color!=null){
@@ -119,7 +110,7 @@ public class ElementImage extends BaseElement {
 
     @Override
     protected BaseElement onClone(BaseElement clone) {
-        ElementImage cloneImage = (ElementImage) clone;
+        ElementPlayerSkin cloneImage = (ElementPlayerSkin) clone;
         try {
             if (cloneImage.color != null) {
                 cloneImage.color = color.clone();
@@ -127,5 +118,4 @@ public class ElementImage extends BaseElement {
         }catch (CloneNotSupportedException ignored){}
         return cloneImage;
     }
-
 }
