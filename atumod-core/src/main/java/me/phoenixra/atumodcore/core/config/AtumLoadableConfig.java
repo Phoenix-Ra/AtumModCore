@@ -123,8 +123,8 @@ public class AtumLoadableConfig extends AtumConfig implements LoadableConfig {
     @Override
     public String getResourcePath() {
         String path = subDirectoryPath.replace(" ","").isEmpty() ?
-                getFileName() : subDirectoryPath +File.pathSeparator+ getFileName();
-        return File.pathSeparator + path;
+                getFileName() : subDirectoryPath +"/"+ getFileName();
+        return "/" + path;
     }
 
     @Override
