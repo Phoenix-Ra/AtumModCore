@@ -141,7 +141,7 @@ public class AtumModCore extends AtumMod {
 
     @Override
     public @NotNull String getModID() {
-        return "assets/atumodcore";
+        return "atumodcore";
     }
 
     @Override
