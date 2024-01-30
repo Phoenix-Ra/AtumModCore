@@ -14,6 +14,33 @@ import me.phoenixra.atumodcore.core.display.elements.ElementImage;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+/**
+ * Choose bool element.
+ * <br><br>
+ * General settings:
+ * <ul>
+ *     <li>display-data-attached - the data attached to the element</li>
+ *     <li>displayType - the type, it specifies the settings and behaviour</li>
+ * </ul>
+ *
+ * Settings For 'image' type:
+ * <ul>
+ *     <li>imageTrue - the image for true</li>
+ *     <li>imageFalse - the image for false</li>
+ * </ul>
+ *
+ * Settings for 'phone_like' type:
+ * <ul>
+ *     <li>circleColor - the circle color</li>
+ *     <li>circleRadiusMultiplier - the circle radius multiplier</li>
+ *     <li>circlePolygons - the circle polygons</li>
+ *     <li>rectColorTrue - the rect color for true</li>
+ *     <li>rectColorFalse - the rect color for false</li>
+ *     <li>maxAnimationTicks - the max animation ticks</li>
+ * </ul>
+ *
+ */
 @RegisterDisplayElement(templateId = "choose_bool")
 public class ElementChooseBool extends BaseElement {
     private Type displayType = Type.PHONE_LIKE;
@@ -245,22 +272,6 @@ public class ElementChooseBool extends BaseElement {
 
     }
 
-    @Override
-    protected BaseElement onClone(BaseElement clone) {
-        ElementChooseBool cloneImage = (ElementChooseBool) clone;
-
-        cloneImage.circleColor = AtumColor.from(
-                this.circleColor.toInt(),false
-        );
-        if(this.imageTrue != null) {
-            cloneImage.imageTrue = (ElementImage) this.imageTrue.cloneWithRandomId();
-        }
-        if(this.imageFalse != null) {
-            cloneImage.imageFalse = (ElementImage) this.imageFalse.cloneWithRandomId();
-        }
-        return cloneImage;
-    }
-
 
     @SubscribeEvent
     public void onPressed(ElementInputPressEvent event) {
@@ -297,5 +308,21 @@ public class ElementChooseBool extends BaseElement {
     protected enum Type{
         IMAGE,
         PHONE_LIKE
+    }
+
+    @Override
+    protected BaseElement onClone(BaseElement clone) {
+        ElementChooseBool cloneImage = (ElementChooseBool) clone;
+
+        cloneImage.circleColor = AtumColor.from(
+                this.circleColor.toInt(),false
+        );
+        if(this.imageTrue != null) {
+            cloneImage.imageTrue = (ElementImage) this.imageTrue.cloneWithRandomId();
+        }
+        if(this.imageFalse != null) {
+            cloneImage.imageFalse = (ElementImage) this.imageFalse.cloneWithRandomId();
+        }
+        return cloneImage;
     }
 }

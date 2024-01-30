@@ -1,14 +1,23 @@
 package me.phoenixra.atumodcore.core.display.actions.renderer;
 
+import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
 
+/**
+ * Action that closes the renderer.
+ * <br>
+ * Usage Example: 'close_renderer'
+ */
 @RegisterDisplayAction(templateId = "close_renderer")
 public class ActionCloseRenderer implements DisplayAction {
     @Override
     public void perform(ActionData data) {
         if(data.getAttachedElement()==null) return;
-        data.getAttachedElement().getElementOwner().getDisplayRenderer().closeRenderer();
+        DisplayRenderer renderer = data.getAttachedElement().getElementOwner().
+                getDisplayRenderer();
+        if(renderer == null) return;
+        renderer.closeRenderer();
     }
 }

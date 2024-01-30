@@ -1,10 +1,16 @@
 package me.phoenixra.atumodcore.core.display.actions.renderer;
 
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
+import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
 
+/**
+ * Action that changes the base canvas of the renderer.
+ * <br>
+ * Usage Example: 'change_base_canvas@canvas_template_id'
+ */
 @RegisterDisplayAction(templateId = "change_base_canvas")
 public class ActionChangeBaseCanvas implements DisplayAction {
     @Override
@@ -15,9 +21,10 @@ public class ActionChangeBaseCanvas implements DisplayAction {
         DisplayCanvas canvas = data.getAtumMod().getDisplayManager().
                 getElementRegistry().getDrawableCanvas(canvasTemplateId);
         if(canvas==null) return;
-        data.getAttachedElement().getElementOwner().
-                getDisplayRenderer()
-                .setBaseCanvas(
+        DisplayRenderer renderer = data.getAttachedElement().getElementOwner().
+                getDisplayRenderer();
+        if(renderer == null) return;
+        renderer.setBaseCanvas(
                         canvas
                 );
     }

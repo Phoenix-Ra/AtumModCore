@@ -12,6 +12,18 @@ import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+/**
+ * Progress bar element.
+ * <br> <br>
+ * Settings:
+ * <ul>
+ *     <li>color-filled - filled color (RGB)</li>
+ *     <li>color-empty - empty color (RGB)</li>
+ *     <li>progress-expression - progress expression</li>
+ * </ul>
+ * You can use placeholders in progress expression.
+ */
 @RegisterDisplayElement(templateId = "progress_bar")
 public class ElementProgressBar extends BaseElement {
 
@@ -72,12 +84,14 @@ public class ElementProgressBar extends BaseElement {
     @Override
     protected BaseElement onClone(BaseElement clone) {
         ElementProgressBar cloneImage = (ElementProgressBar) clone;
-        if(cloneImage.barColorFilled !=null) {
-            cloneImage.barColorFilled = new AtumColor(cloneImage.barColorFilled.getRed(), cloneImage.barColorFilled.getGreen(), cloneImage.barColorFilled.getBlue(), cloneImage.barColorFilled.getAlpha());
-        }
-        if(cloneImage.barColorEmpty !=null) {
-            cloneImage.barColorEmpty = new AtumColor(cloneImage.barColorEmpty.getRed(), cloneImage.barColorEmpty.getGreen(), cloneImage.barColorEmpty.getBlue(), cloneImage.barColorEmpty.getAlpha());
-        }
+        try {
+            if (cloneImage.barColorFilled != null) {
+                cloneImage.barColorFilled = barColorFilled.clone();
+            }
+            if(cloneImage.barColorEmpty !=null) {
+                cloneImage.barColorEmpty = barColorEmpty.clone();
+            }
+        }catch (CloneNotSupportedException ignored){}
         return cloneImage;
     }
 }

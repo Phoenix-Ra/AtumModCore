@@ -5,6 +5,11 @@ import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
+/**
+ * Action that connects to a server.
+ * <br>
+ * Usage Example: 'connect_to_server@host:port'
+ */
 @RegisterDisplayAction(templateId = "connect_to_server")
 public class ActionConnectToServer implements DisplayAction {
     @Override

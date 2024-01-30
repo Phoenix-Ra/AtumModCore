@@ -26,6 +26,26 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * Default button.
+ *
+ * Settings:
+ *  <ul>
+ *      <li>image - the image to display</li>
+ *      <li>textureX - the x position of the texture</li>
+ *      <li>textureY - the y position of the texture</li>
+ *      <li>textureWidth - the width of the texture</li>
+ *      <li>textureHeight - the height of the texture</li>
+ *      <li>brightness - the brightness of the image</li>
+ *      <li>brightness-onHover - the brightness of the image when hovered</li>
+ *      <li>brightness-onClick - the brightness of the image when clicked</li>
+ *      <li>actions-onPress - the actions to perform when pressed</li>
+ *      <li>actions-onRelease - the actions to perform when released</li>
+ *  </ul>
+ *
+ *  For brightness use '1.0;1.0;1.0' format.
+ */
 @RegisterDisplayElement(templateId = "button")
 public class ElementButton extends BaseElement {
 
@@ -196,14 +216,6 @@ public class ElementButton extends BaseElement {
         }
     }
 
-    @Override
-    protected BaseElement onClone(BaseElement clone) {
-        ElementButton cloneImage = (ElementButton) clone;
-        cloneImage.actionsOnPress = new ArrayList<>(this.actionsOnPress);
-        cloneImage.actionsOnRelease = new ArrayList<>(this.actionsOnRelease);
-        return cloneImage;
-    }
-
     @SubscribeEvent
     public void onPressed(ElementInputPressEvent event) {
         if (!isActive()) return;
@@ -239,4 +251,13 @@ public class ElementButton extends BaseElement {
             }
         }
     }
+
+    @Override
+    protected BaseElement onClone(BaseElement clone) {
+        ElementButton cloneImage = (ElementButton) clone;
+        cloneImage.actionsOnPress = new ArrayList<>(this.actionsOnPress);
+        cloneImage.actionsOnRelease = new ArrayList<>(this.actionsOnRelease);
+        return cloneImage;
+    }
+
 }

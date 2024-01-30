@@ -5,6 +5,11 @@ import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
 import me.phoenixra.atumodcore.api.network.data.DisplayEventData;
 
+/**
+ * Action that sends a display event to the server.
+ * <br>
+ * Usage Example: 'send_display_event@integer'
+ */
 @RegisterDisplayAction(templateId = "send_display_event")
 public class ActionSendDisplayEvent implements DisplayAction {
     @Override

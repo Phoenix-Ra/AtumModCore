@@ -7,6 +7,11 @@ import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiOptions;
 
+/**
+ * Action that opens the settings menu.
+ * <br>
+ * Usage Example: 'open_settings'
+ */
 @RegisterDisplayAction(templateId = "open_settings")
 public class ActionOpenSettings implements DisplayAction {
     @Override

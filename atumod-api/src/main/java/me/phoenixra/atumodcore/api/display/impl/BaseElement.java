@@ -118,7 +118,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
         this.elementOwner = elementOwner;
     }
-    public BaseElement(@NotNull AtumMod atumMod, @NotNull DisplayCanvas elementOwner){
+    public BaseElement(@NotNull AtumMod atumMod, @Nullable DisplayCanvas elementOwner){
         this(atumMod,DisplayLayer.MIDDLE, 0, 0, 0, 0, elementOwner);
     }
 

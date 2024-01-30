@@ -7,6 +7,11 @@ import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
 import java.awt.*;
 import java.net.URI;
 
+/**
+ * Action that opens a link in the default browser.
+ * <br>
+ * Usage Example: 'open_link@place_link_here'
+ */
 @RegisterDisplayAction(templateId = "open_link")
 public class ActionOpenLink implements DisplayAction {
     @Override

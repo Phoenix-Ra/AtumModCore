@@ -10,6 +10,11 @@ import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
+/**
+ * Default canvas.
+ */
 @RegisterDisplayElement(templateId = "canvas")
 public class DefaultCanvas extends BaseCanvas{
 
@@ -39,10 +44,10 @@ public class DefaultCanvas extends BaseCanvas{
             canvasSettingsConfig.save();
             getAtumMod().getDisplayManager().getElementRegistry().registerTemplate(
                     canvasSettingsConfig.getName(),
-                    getAtumMod().getDisplayManager().getElementRegistry().compileCanvasTemplate(
+                    Objects.requireNonNull(getAtumMod().getDisplayManager().getElementRegistry().compileCanvasTemplate(
                             canvasSettingsConfig.getName(),
                             getSettingsConfig()
-                    )
+                    ))
             );
         }catch (Exception e){
             e.printStackTrace();

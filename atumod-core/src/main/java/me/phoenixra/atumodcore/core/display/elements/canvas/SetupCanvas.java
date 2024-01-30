@@ -24,6 +24,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+/**
+ * OUTDATED - DO NOT USE
+ */
 public class SetupCanvas extends BaseCanvas {
 
     private LoadableConfig canvasConfig;

@@ -19,6 +19,25 @@ import org.jetbrains.annotations.Nullable;
 import java.io.InputStream;
 import java.util.HashMap;
 
+/**
+ * Text element.
+ * <br> <br>
+ * Settings:
+ * <ul>
+ *     <li>font - font name</li>
+ *     <li>fontSize - font size</li>
+ *     <li>text - text</li>
+ * </ul>
+ * For font name you can use any font from assets/atumod/fonts
+ * <br>
+ * For text you can use placeholders and color codes.
+ * <br> <br>
+ * You can optimize:
+ * <ul>
+ *     <li>font</li>
+ *     <li>fontSize</li>
+ * </ul>
+ */
 @RegisterDisplayElement(templateId = "text")
 public class ElementText extends BaseElement {
     private DisplayFont font;

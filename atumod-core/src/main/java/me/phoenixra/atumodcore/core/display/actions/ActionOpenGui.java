@@ -7,6 +7,11 @@ import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
 import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
 import net.minecraft.client.Minecraft;
 
+/**
+ * Action that opens a canvas as a gui.
+ * <br>
+ * Usage Example: 'open_gui@place_canvasId_here'
+ */
 @RegisterDisplayAction(templateId = "open_gui")
 public class ActionOpenGui implements DisplayAction {
     @Override

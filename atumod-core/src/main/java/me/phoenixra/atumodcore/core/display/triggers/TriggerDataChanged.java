@@ -12,6 +12,17 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Triggered when the data is changed.
+ * <br><br>
+ * Filters:
+ * <ul>
+ *     <li>data_id - the data id</li>
+ *     <li>value - the data value</li>
+ *     <li>change_type - the change type</li>
+ * </ul>
+ * For change types, see {@link DisplayDataChangedEvent.ChangeType}
+ */
 @RegisterDisplayTrigger(templateId = "data_changed")
 public class TriggerDataChanged extends BaseTrigger {
 

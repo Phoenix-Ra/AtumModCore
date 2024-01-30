@@ -4,7 +4,11 @@ import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayAction;
 import net.minecraft.client.Minecraft;
-
+/**
+ * Action that quits the game.
+ * <br>
+ * Usage Example: 'quit'
+ */
 @RegisterDisplayAction(templateId = "quit")
 public class ActionQuit implements DisplayAction {
     @Override

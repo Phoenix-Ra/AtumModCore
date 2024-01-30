@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.GlStateManager;
  * Use this class to store colors and
  * draw colored stuff with OpenGL.
  */
-public class AtumColor {
+public class AtumColor implements Cloneable{
     public static final AtumColor WHITE = new AtumColor(1,1,1,1);
     public static final AtumColor BLACK = new AtumColor(0,0,0,1);
     public static final AtumColor RED = new AtumColor(1,0,0,1);
@@ -139,5 +139,15 @@ public class AtumColor {
                 ", blue=" + blue +
                 ", alpha=" + alpha +
                 '}';
+    }
+
+    @Override
+    public AtumColor clone() throws CloneNotSupportedException{
+        AtumColor color = (AtumColor) super.clone();
+        color.red = red;
+        color.green = green;
+        color.blue = blue;
+        color.alpha = alpha;
+        return color;
     }
 }

@@ -7,6 +7,11 @@ import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiWorldSelection;
 
+/**
+ * Action that opens the singleplayer menu.
+ * <br>
+ * Usage Example: 'open_singleplayer'
+ */
 @RegisterDisplayAction(templateId = "open_singleplayer")
 public class ActionOpenSingleplayer implements DisplayAction {
     @Override

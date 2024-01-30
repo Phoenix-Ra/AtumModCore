@@ -7,6 +7,11 @@ import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMultiplayer;
 
+/**
+ * Action that opens the multiplayer menu.
+ * <br>
+ * Usage Example: 'open_multiplayer'
+ */
 @RegisterDisplayAction(templateId = "open_multiplayer")
 public class ActionOpenMultiplayer implements DisplayAction{
     @Override
