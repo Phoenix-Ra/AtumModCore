@@ -1,31 +1,26 @@
-package me.phoenixra.atumodcore.api.input.event;
+package me.phoenixra.atumodcore.api.events.input;
 
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.input.InputType;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
- * Called when an input is pressed.
+ * Called when an input is released.
  */
-public class InputPressEvent {
+@Getter
+public class InputReleaseEvent extends Event {
 
-    @Getter
     private final InputType type;
-    @Getter
     private final int mouseX;
-    @Getter
     private final int mouseY;
-    @Getter
     private final int mouseDeltaX;
-    @Getter
     private final int mouseDeltaY;
-    @Getter
     private final int mouseScrollDelta;
-    @Getter
     private final int keyboardKey;
-    @Getter
     private final char keyboardCharacter;
 
-    public InputPressEvent(InputType type, int keyboardKey, char keyboardCharacter,int mouseX, int mouseY, int mouseDeltaX, int mouseDeltaY, int mouseScrollDelta) {
+
+    public InputReleaseEvent(InputType type, int keyboardKey, char keyboardCharacter,int mouseX, int mouseY, int mouseDeltaX, int mouseDeltaY, int mouseScrollDelta) {
         if(type == InputType.KEYBOARD_KEY){
             switch (keyboardKey){
                 case 29:
@@ -73,10 +68,10 @@ public class InputPressEvent {
         this.mouseDeltaY = mouseDeltaY;
         this.mouseScrollDelta = mouseScrollDelta;
     }
-    public InputPressEvent(InputType type, int mouseX, int mouseY, int mouseDeltaX, int mouseDeltaY, int mouseScrollDelta) {
+    public InputReleaseEvent(InputType type, int mouseX, int mouseY, int mouseDeltaX, int mouseDeltaY, int mouseScrollDelta) {
         this(type, 0, ' ', mouseX, mouseY, mouseDeltaX, mouseDeltaY, mouseScrollDelta);
     }
-    public InputPressEvent(InputType type, int keyboardKey, char keyboardCharacter) {
+    public InputReleaseEvent(InputType type, int keyboardKey, char keyboardCharacter) {
         this(type, keyboardKey, keyboardCharacter, 0, 0, 0, 0, 0);
     }
 }

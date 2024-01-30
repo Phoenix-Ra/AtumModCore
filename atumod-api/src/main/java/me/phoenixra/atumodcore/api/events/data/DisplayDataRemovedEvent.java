@@ -6,10 +6,9 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 /**
  * Called when a display data is removed
  */
+@Getter
 public class DisplayDataRemovedEvent extends Event {
-    @Getter
     private final DisplayRenderer displayRenderer;
-    @Getter
     private final String dataId;
 
     public DisplayDataRemovedEvent(DisplayRenderer displayRenderer, String dataId) {

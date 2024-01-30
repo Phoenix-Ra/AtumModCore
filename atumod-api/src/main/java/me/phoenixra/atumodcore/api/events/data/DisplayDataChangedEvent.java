@@ -7,15 +7,12 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 /**
  * Called when a display data is changed.
  */
+@Getter
 public class DisplayDataChangedEvent extends Event{
 
-    @Getter
     private final DisplayRenderer displayRenderer;
-    @Getter
     private final String dataId;
-    @Getter
     private final String value;
-    @Getter
     private final ChangeType changeType;
 
     public DisplayDataChangedEvent(DisplayRenderer displayRenderer,

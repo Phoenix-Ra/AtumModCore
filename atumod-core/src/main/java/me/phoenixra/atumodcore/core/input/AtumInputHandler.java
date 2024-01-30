@@ -5,8 +5,8 @@ import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.input.CursorType;
 import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.input.InputType;
-import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
-import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
+import me.phoenixra.atumodcore.api.events.input.InputPressEvent;
+import me.phoenixra.atumodcore.api.events.input.InputReleaseEvent;
 import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
@@ -32,15 +32,13 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 
 public class AtumInputHandler implements InputHandler {
+    @Getter
     private final AtumMod atumMod;
     private static Cursor RESIZE_VERTICAL_CURSOR;
     private static Cursor RESIZE_HORIZONTAL_CURSOR;
     private static Cursor RESIZE_TOP_LEFT_CURSOR;
     private static Cursor RESIZE_TOP_RIGHT_CURSOR;
     private static Cursor POSITIONING_CURSOR;
-
-    private HashMap<String,Consumer<InputPressEvent>> onPressListeners = new HashMap<>();
-    private HashMap<String,Consumer<InputReleaseEvent>> onReleaseListeners = new HashMap<>();
 
     @Getter
     private boolean inputBlocked = false;
@@ -72,7 +70,10 @@ public class AtumInputHandler implements InputHandler {
 
 
 
-    private Cursor loadCursor(InputStream resource, int width, int height, int xHotspot, int yHotspot) {
+    @Override
+    public Cursor loadCursor(InputStream resource,
+                             int width, int height,
+                             int xHotspot, int yHotspot) {
         try {
             BufferedImage i = TextureUtil.readBufferedImage(resource);
             if (i.getType() != BufferedImage.TYPE_INT_ARGB) {
@@ -200,23 +201,11 @@ public class AtumInputHandler implements InputHandler {
         }
     }
 
-    private void callOnPressListeners(InputPressEvent e) {
-        for (Consumer<InputPressEvent> c : new ArrayList<>(onPressListeners.values())) {
-            try {
-                c.accept(e);
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-        }
+    private void callOnPressListeners(InputPressEvent event) {
+        MinecraftForge.EVENT_BUS.post(event);
     }
-    private void callOnReleaseListeners(InputReleaseEvent e) {
-        for (Consumer<InputReleaseEvent> c : new ArrayList<>(onReleaseListeners.values())) {
-            try {
-                c.accept(e);
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-        }
+    private void callOnReleaseListeners(InputReleaseEvent event) {
+        MinecraftForge.EVENT_BUS.post(event);
     }
 
     @Override
@@ -248,7 +237,7 @@ public class AtumInputHandler implements InputHandler {
     }
 
     @Override
-    public PairRecord<Integer, Integer> getMousePosition() {
+    public @NotNull PairRecord<Integer, Integer> getMousePosition() {
         int newScaleFactor = RenderUtils.getScaleFactor();
         if(mouseXCache == Mouse.getX() && mouseYCache == Mouse.getY() && scaleFactorCache == newScaleFactor){
             return lastMousePos;
@@ -268,7 +257,7 @@ public class AtumInputHandler implements InputHandler {
     }
 
     @Override
-    public PairRecord<Integer, Integer> getMouseOriginPosition() {
+    public @NotNull PairRecord<Integer, Integer> getMouseOriginPosition() {
         return new PairRecord<>(Mouse.getX(), Minecraft.getMinecraft().displayHeight - Mouse.getY());
     }
 
@@ -282,21 +271,4 @@ public class AtumInputHandler implements InputHandler {
         inputBlocked = false;
     }
 
-    @Override
-    public void addListenerOnPress(String id, Consumer<InputPressEvent> listener) {
-        onPressListeners.put(id,listener);
-    }
-    @Override
-    public void addListenerOnRelease(String id, Consumer<InputReleaseEvent> listener) {
-        onReleaseListeners.put(id,listener);
-    }
-
-    @Override
-    public void removeListenerOnPress(String id) {
-        onPressListeners.remove(id);
-    }
-    @Override
-    public void removeListenerOnRelease(String id) {
-        onReleaseListeners.remove(id);
-    }
 }

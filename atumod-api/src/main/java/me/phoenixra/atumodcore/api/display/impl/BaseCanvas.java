@@ -11,8 +11,8 @@ import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.InputType;
-import me.phoenixra.atumodcore.api.input.event.InputPressEvent;
-import me.phoenixra.atumodcore.api.input.event.InputReleaseEvent;
+import me.phoenixra.atumodcore.api.events.input.InputPressEvent;
+import me.phoenixra.atumodcore.api.events.input.InputReleaseEvent;
 import me.phoenixra.atumodcore.api.placeholders.types.injectable.StaticPlaceholder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -67,12 +67,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Override
     public void draw(@NotNull DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
         if(!initialized && getElementOwner() == this){
-            AtumAPI.getInstance().getCoreMod().getInputHandler().addListenerOnPress(getId()+"-press",
-                    this::onPress
-            );
-            AtumAPI.getInstance().getCoreMod().getInputHandler().addListenerOnRelease(getId()+"-release",
-                    this::onRelease
-            );
             getAtumMod().getDisplayManager().registerEnabledCanvas(
                     getId(),
                     this
@@ -86,10 +80,11 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             return;
         }
 
-        boolean fullScreen = getOriginX().getDefaultValue() == 0 &&
+        boolean positionAtBeginning = getOriginX().getDefaultValue() == 0 &&
                 getOriginY().getDefaultValue() == 0;
-        //translate position to the origin
-        if(fullScreen) {
+
+         //translate position to the x and y to make elements relative to the canvas
+        if(!positionAtBeginning) {
             GL11.glPushMatrix();
             GL11.glTranslatef(getX(), getY(), 0);
             for (DisplayElement element : displayedElementsReversed) {
@@ -161,39 +156,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         //do nothing
     }
 
-    protected void onPress(InputPressEvent event) {
-        if(!isActive() && !isSetupState()){
-            return;
-        }
-
-        DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
-        if(element != null){
-            if(element instanceof BaseCanvas){
-                ((BaseCanvas) element).onPress(event);
-                return;
-            }
-            MinecraftForge.EVENT_BUS.post(new ElementInputPressEvent(element,event));
-        }else{
-            MinecraftForge.EVENT_BUS.post(new ElementInputPressEvent(this,event));
-        }
-    }
-
-    protected void onRelease(InputReleaseEvent event) {
-        if(!isActive() && !isSetupState()){
-            return;
-        }
-
-        DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
-        if(element != null){
-            if(element instanceof BaseCanvas){
-                ((BaseCanvas) element).onRelease(event);
-                return;
-            }
-            MinecraftForge.EVENT_BUS.post(new ElementInputReleaseEvent(element,event));
-        }else{
-            MinecraftForge.EVENT_BUS.post(new ElementInputReleaseEvent(this,event));
-        }
-    }
 
     @Override
     public void reloadCanvas() {
@@ -205,10 +167,10 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             config.reload();
             getAtumMod().getDisplayManager().getElementRegistry().registerTemplate(
                     config.getName(),
-                    getAtumMod().getDisplayManager().getElementRegistry().compileCanvasTemplate(
+                    Objects.requireNonNull(getAtumMod().getDisplayManager().getElementRegistry().compileCanvasTemplate(
                             config.getName(),
                             getSettingsConfig()
-                    )
+                    ))
             );
             getDisplayRenderer().reloadRenderer();
         }catch (Exception e){
@@ -224,8 +186,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                 element.onRemove();
             }
         }
-        AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnPress(getId()+"-press");
-        AtumAPI.getInstance().getCoreMod().getInputHandler().removeListenerOnRelease(getId()+"-release");
         setActive(false);
         elements.clear();
         displayedElements.clear();
@@ -364,6 +324,41 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         }
     }
 
+    @SubscribeEvent
+    protected void onPress(InputPressEvent event) {
+        if(!isActive() && !isSetupState()){
+            return;
+        }
+
+        DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
+        if(element != null){
+            if(element instanceof BaseCanvas){
+                ((BaseCanvas) element).onPress(event);
+                return;
+            }
+            MinecraftForge.EVENT_BUS.post(new ElementInputPressEvent(element,event));
+        }else{
+            MinecraftForge.EVENT_BUS.post(new ElementInputPressEvent(this,event));
+        }
+    }
+
+    @SubscribeEvent
+    protected void onRelease(InputReleaseEvent event) {
+        if(!isActive() && !isSetupState()){
+            return;
+        }
+
+        DisplayElement element = getElementFromCoordinates(event.getMouseX(),event.getMouseY());
+        if(element != null){
+            if(element instanceof BaseCanvas){
+                ((BaseCanvas) element).onRelease(event);
+                return;
+            }
+            MinecraftForge.EVENT_BUS.post(new ElementInputReleaseEvent(element,event));
+        }else{
+            MinecraftForge.EVENT_BUS.post(new ElementInputReleaseEvent(this,event));
+        }
+    }
     @SubscribeEvent
     public void onPressed1(ElementInputPressEvent event){
         if(!isActive() || (getDisplayRenderer() == null
