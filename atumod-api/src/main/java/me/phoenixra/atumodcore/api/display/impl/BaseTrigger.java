@@ -48,13 +48,14 @@ public abstract class BaseTrigger implements DisplayTrigger {
 
     public abstract boolean filter(DisplayTriggerData triggerData);
 
+    public abstract @NotNull DisplayTrigger updateVariables(@NotNull Config config);
+
+    public abstract @NotNull DisplayTrigger onClone(@NotNull DisplayTrigger cloned);
+
     @Override
     public @NotNull DisplayTrigger cloneWithNewVariables(@NotNull Config config, @Nullable DisplayRenderer owner) {
-        DisplayTrigger clone = clone();
-        if(clone == null){
-            return null;
-        }
-        ((BaseTrigger)clone).owner = owner;
+        BaseTrigger clone = (BaseTrigger) clone();
+        clone.owner = owner;
 
         for(String key : config.getSubsection("actions").getKeys(false)){
             Pair<DisplayAction, ActionArgs> action = DisplayAction.parseActionFromString(
@@ -64,11 +65,11 @@ public abstract class BaseTrigger implements DisplayTrigger {
             if(action == null){
                 continue;
             }
-            ((BaseTrigger)clone).actions.add(action);
+            clone.actions.add(action);
 
         }
 
-        return clone;
+        return clone.updateVariables(config);
     }
 
     @Override
@@ -76,10 +77,9 @@ public abstract class BaseTrigger implements DisplayTrigger {
         try {
             DisplayTrigger clone = (DisplayTrigger) super.clone();
             ((BaseTrigger)clone).actions = new ArrayList<>();
-            return clone;
+            return onClone(clone);
         }catch (Exception e){
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
     }
 }

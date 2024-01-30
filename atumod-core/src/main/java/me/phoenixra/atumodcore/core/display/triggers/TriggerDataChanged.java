@@ -54,28 +54,31 @@ public class TriggerDataChanged extends BaseTrigger {
         return true;
     }
 
-    @SubscribeEvent
-    public void onDataChanged(DisplayDataChangedEvent event){
-        trigger(new DisplayTriggerData(
-                event.getDataId()+";"+event.getValue()+";"+event.getChangeType().name()
-                )
-        );
-    }
-
-
     @Override
-    public @NotNull DisplayTrigger cloneWithNewVariables(@NotNull Config config, @Nullable DisplayRenderer owner) {
-        DisplayTrigger trigger = super.cloneWithNewVariables(config, owner);
+    public @NotNull DisplayTrigger updateVariables(@NotNull Config config) {
         if(config.hasPath("filters")) {
-            ((TriggerDataChanged)trigger).dataId = config.getStringOrNull("filters.data_id");
-            ((TriggerDataChanged)trigger).value = config.getStringOrNull("filters.value");
+            dataId = config.getStringOrNull("filters.data_id");
+            value = config.getStringOrNull("filters.value");
             //from string
             if(config.hasPath("filters.change_type")) {
-                ((TriggerDataChanged)trigger).changeType = DisplayDataChangedEvent.ChangeType.valueOf(
+                changeType = DisplayDataChangedEvent.ChangeType.valueOf(
                         config.getString("filters.change_type").toUpperCase()
                 );
             }
         }
-        return trigger;
+        return this;
+    }
+
+    @Override
+    public @NotNull DisplayTrigger onClone(@NotNull DisplayTrigger cloned) {
+        return cloned;
+    }
+
+    @SubscribeEvent
+    public void onDataChanged(DisplayDataChangedEvent event){
+        trigger(new DisplayTriggerData(
+                        event.getDataId()+";"+event.getValue()+";"+event.getChangeType().name()
+                )
+        );
     }
 }
