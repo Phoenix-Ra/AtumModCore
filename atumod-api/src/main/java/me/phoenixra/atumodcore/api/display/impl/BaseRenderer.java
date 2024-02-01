@@ -62,6 +62,10 @@ public class BaseRenderer implements DisplayRenderer {
     }
     @Override
     public void initRenderer() {
+        if(init){
+            //double check to have only one init
+            return;
+        }
         renderDebugger =
         new AtumDebugger(atumMod,"testMenu-"+baseCanvas.getId(),"Drawing the menu");
         if(!baseCanvas.isActive()) {
@@ -78,6 +82,9 @@ public class BaseRenderer implements DisplayRenderer {
                         getId(),
                         DisplayEventData.EVENT_OPENED
                 )
+        );
+        getAtumMod().getDisplayManager().registerRenderer(
+                getId(), this
         );
         init = true;
     }
@@ -120,7 +127,9 @@ public class BaseRenderer implements DisplayRenderer {
         );
         baseCanvas.onRemove();
         onRendererClosed();
-
+        getAtumMod().getDisplayManager().unregisterRenderer(
+                getId()
+        );
     }
 
     @Override

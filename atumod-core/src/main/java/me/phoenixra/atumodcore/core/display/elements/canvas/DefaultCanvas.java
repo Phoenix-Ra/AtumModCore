@@ -140,7 +140,6 @@ public class DefaultCanvas extends BaseCanvas{
 
     @Override
     protected BaseElement onClone(BaseElement clone) {
-        System.out.println("REMOVAL CLONE");
         ( (DefaultCanvas)clone).setupCanvas = null;
         return clone;
     }
