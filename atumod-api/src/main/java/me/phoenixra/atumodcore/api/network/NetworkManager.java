@@ -59,7 +59,16 @@ public abstract class NetworkManager {
         }
     }
 
-
+    /**
+     *  Send a display action to player.
+     *  <br>
+     *  If you want to perform action that do not require the
+     *  element, for example play_sound, you can pass null
+     *  or empty string as element id.
+     *  <br>
+     * @param player
+     * @param data
+     */
    @SideOnly(Side.SERVER)
    public abstract void sendDisplayActionForPlayer(
             @NotNull EntityPlayerMP player,
@@ -67,6 +76,13 @@ public abstract class NetworkManager {
    );
 
 
+   /**
+        * Send a display event to player.
+        * <br>
+        * You can also send display events via action "send_display_event@{event_id}"
+        * <br>
+        * @param data
+        */
     @SideOnly(Side.CLIENT)
     public abstract void sendDisplayEvent(
             @NotNull DisplayEventData data
@@ -79,6 +95,7 @@ public abstract class NetworkManager {
     ){
         return openedDisplays.getOrDefault(player, new ArrayList<>());
     }
+
     @SideOnly(Side.SERVER)
     public void clearOpenedRenderersForPlayer(
             @NotNull EntityPlayerMP player
