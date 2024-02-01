@@ -98,7 +98,7 @@ public abstract class NetworkManager {
             );
             list.add(pair);
             openedDisplays.put(player, list);
-            MinecraftForge.EVENT_BUS.post(new PlayerOpenedDisplay(pair));
+            MinecraftForge.EVENT_BUS.post(new PlayerOpenedDisplay(player, pair));
         } else if(data.getEventId() == DisplayEventData.EVENT_CLOSED) {
             List<ActiveDisplayData> list = openedDisplays.get(player);
             ActiveDisplayData pair = new ActiveDisplayData(
@@ -112,13 +112,14 @@ public abstract class NetworkManager {
             }
             list.remove(pair);
             openedDisplays.put(player, list);
-            MinecraftForge.EVENT_BUS.post(new PlayerClosedDisplay(pair));
+            MinecraftForge.EVENT_BUS.post(new PlayerClosedDisplay(player, pair));
         }else {
             List<ActiveDisplayData> list = openedDisplays.get(player);
             for(ActiveDisplayData pair : list){
                 if(pair.getRendererId() == data.getRendererId()){
                     MinecraftForge.EVENT_BUS.post(
                             new PlayerDisplayEvent(
+                                    player,
                                     pair,
                                     data.getElementId(),
                                     data.getEventId()

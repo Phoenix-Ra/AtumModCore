@@ -18,7 +18,7 @@ public class PacketHandlerPerformDisplayAction implements IMessageHandler<Packet
     @Override
     public IMessage onMessage(PacketPerformDisplayAction message, MessageContext ctx) {
         System.out.println("ATUM MOD NAME FROM PACKET PerformDisplayAction: " + message.atumModId);
-        AtumMod atumMod = AtumAPI.getInstance().getLoadedAtumMod(message.actionId);
+        AtumMod atumMod = AtumAPI.getInstance().getLoadedAtumMod(message.atumModId);
         if(atumMod==null) {
             return null;
         }
@@ -37,6 +37,7 @@ public class PacketHandlerPerformDisplayAction implements IMessageHandler<Packet
                             .actionArgs(new ActionArgs(message.args))
                             .build()
             );
+            return null;
 
         }
         DisplayRenderer renderer = atumMod.getDisplayManager().getRenderer(message.rendererId);

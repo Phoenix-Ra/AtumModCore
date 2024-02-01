@@ -36,7 +36,7 @@ public class PacketPerformDisplayAction implements IMessage {
         for(String arg : args){
             argsBuilder.append(arg).append(";");
         }
-        this.args = argsBuilder.toString();
+        this.args = argsBuilder.substring(0, argsBuilder.length()-1);
 
         this.rendererId = rendererId;
     }
@@ -48,7 +48,7 @@ public class PacketPerformDisplayAction implements IMessage {
         for(String arg : data.getArgs()){
             argsBuilder.append(arg).append(";");
         }
-        this.args = argsBuilder.toString();
+        this.args = argsBuilder.substring(0, argsBuilder.length()-1);
     }
 
     @Override
