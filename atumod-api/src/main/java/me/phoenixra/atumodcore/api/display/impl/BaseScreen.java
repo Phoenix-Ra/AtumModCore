@@ -25,10 +25,7 @@ public class BaseScreen extends GuiScreen {
     public BaseScreen(@NotNull AtumMod atumMod, @NotNull DisplayCanvas canvas) {
         this(atumMod,canvas,null);
     }
-    @Override
-    public void initGui() {
-        renderer.initRenderer();
-    }
+
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
