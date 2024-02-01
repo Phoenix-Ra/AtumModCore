@@ -71,7 +71,6 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
                     canvasHUD
             );
 
-            MinecraftForge.EVENT_BUS.register(this);
         }
     }
     @Override

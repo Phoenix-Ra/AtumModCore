@@ -8,10 +8,10 @@ import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.network.NetworkManager;
 import me.phoenixra.atumodcore.api.service.AtumModService;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -20,8 +20,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public abstract class AtumMod {
 
@@ -132,7 +130,6 @@ public abstract class AtumMod {
     public void provideModService(@NotNull AtumModService service){
         if(modServices.containsKey(service.getId())) return;
         modServices.put(service.getId(), service);
-        MinecraftForge.EVENT_BUS.register(service);
     }
 
     /**
@@ -168,8 +165,15 @@ public abstract class AtumMod {
      *
      */
     protected void notifyModServices(@NotNull FMLEvent event){
-        for(AtumModService entry : modServices.values()){
-            entry.handleFmlEvent(event);
+        if(event instanceof FMLPreInitializationEvent){
+            for(AtumModService entry : modServices.values()){
+                MinecraftForge.EVENT_BUS.register(entry);
+                entry.handleFmlEvent(event);
+            }
+        }else {
+            for (AtumModService entry : modServices.values()) {
+                entry.handleFmlEvent(event);
+            }
         }
     }
 
