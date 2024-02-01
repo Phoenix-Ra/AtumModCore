@@ -22,7 +22,9 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
      * <br>
      * If it is in main canvas, then: - '<code>canvasId#elementId</code>'
      * <br>
-     * It is pretty similar to how the Config system works.
+     * It is pretty similar to how the Config system works, with
+     * the difference that here you can use an id
+     * of the canvas to receive itself (used in networking)
      * <br>
      * @param id The id of the element.
      * @return The element from the canvas.

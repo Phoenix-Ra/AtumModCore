@@ -223,6 +223,9 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             }
             return ((DisplayCanvas) element).getElement(split[1]);
         }else {
+            if(getId().equals(id)){
+                return this;
+            }
             for (LinkedHashSet<DisplayElement> list : elements.values()) {
                 for (DisplayElement element : list) {
                     if (element.getId().equals(id)) {
