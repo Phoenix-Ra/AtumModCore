@@ -49,6 +49,7 @@ public class PacketPerformDisplayAction implements IMessage {
             argsBuilder.append(arg).append(";");
         }
         this.args = argsBuilder.substring(0, argsBuilder.length()-1);
+        this.rendererId = data.getRendererId();
     }
 
     @Override
