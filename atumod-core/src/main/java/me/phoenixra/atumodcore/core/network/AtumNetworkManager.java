@@ -12,12 +12,10 @@ import me.phoenixra.atumodcore.core.network.packets.PacketPerformDisplayAction;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.event.FMLEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class AtumNetworkManager extends NetworkManager implements AtumModService {
     private AtumMod atumMod;
@@ -56,8 +54,16 @@ public class AtumNetworkManager extends NetworkManager implements AtumModService
 
     }
 
+
+    @SubscribeEvent
+    public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event){
+        if(event.player instanceof EntityPlayerMP){
+            clearOpenedRenderersForPlayer((EntityPlayerMP) event.player);
+        }
+    }
     @Override
     public @NotNull String getId() {
         return "network";
     }
+
 }

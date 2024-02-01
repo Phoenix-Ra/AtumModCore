@@ -2,7 +2,6 @@ package me.phoenixra.atumodcore.api.display.impl;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
-import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.config.LoadableConfig;
@@ -67,10 +66,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Override
     public void draw(@NotNull DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
         if(!initialized && getElementOwner() == this){
-            getAtumMod().getDisplayManager().registerEnabledCanvas(
-                    getId(),
-                    this
-            );
             setActive(true);
             initialized = true;
         }
@@ -88,20 +83,22 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             GL11.glPushMatrix();
             GL11.glTranslatef(getX(), getY(), 0);
             for (DisplayElement element : displayedElementsReversed) {
-                boolean active = getDisplayRenderer().getDisplayData()
-                        .isElementEnabled(element.getConfigKey());
-
-                if (active) {
+                if ((getDisplayRenderer() == null && element.isActive())
+                        ||
+                        (getDisplayRenderer() != null &&
+                                getDisplayRenderer().getDisplayData()
+                                .isElementEnabled(element.getId()))) {
                     element.draw(resolution, scaleFactor, mouseX, mouseY);
                 }
             }
             GL11.glPopMatrix();
         }else{
             for (DisplayElement element : displayedElementsReversed) {
-                boolean active = getDisplayRenderer().getDisplayData()
-                        .isElementEnabled(element.getConfigKey());
-
-                if (active) {
+                if ((getDisplayRenderer() == null && element.isActive())
+                        ||
+                        (getDisplayRenderer() != null &&
+                                getDisplayRenderer().getDisplayData()
+                                        .isElementEnabled(element.getId()))) {
                     element.draw(resolution, scaleFactor, mouseX, mouseY);
                 }
             }
@@ -139,7 +136,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                 continue;
             }
             BaseElement elementBaseElement = (BaseElement)( elementElement).cloneWithNewVariables(
-                    key,
                     elementSection,
                     key,
                     this
@@ -152,7 +148,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     }
 
     @Override
-    public void updateElementVariables(@NotNull Config config, @Nullable String configKey) {
+    public void updateElementVariables(@NotNull Config config) {
         //do nothing
     }
 
@@ -160,7 +156,8 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Override
     public void reloadCanvas() {
         try {
-            if(!(getSettingsConfig() instanceof LoadableConfig)){
+            if(!(getSettingsConfig() instanceof LoadableConfig) ||
+            getDisplayRenderer() == null){
                 return;
             }
             LoadableConfig config = (LoadableConfig) getSettingsConfig();
@@ -190,7 +187,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         elements.clear();
         displayedElements.clear();
         displayedElementsReversed.clear();
-        getAtumMod().getDisplayManager().unregisterEnabledCanvas(getId());
     }
 
     @Override
@@ -205,11 +201,39 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             elements.put(element.getLayer(), list);
         }
         element.setElementOwner(this);
-        if(element instanceof DisplayCanvas){
+        if((element instanceof DisplayCanvas) && getDisplayRenderer() != null){
             ((DisplayCanvas) element).setDisplayRenderer(getDisplayRenderer());
         }
         updateDisplayedElements();
     }
+
+    @Override
+    public @Nullable DisplayElement getElement(@NotNull String id) {
+        if(id.contains("#")){
+            String[] split = id.split("#");
+            if(split.length != 2){
+                return null;
+            }
+            DisplayElement element = getElement(split[0]);
+            if(element == null){
+                return null;
+            }
+            if(!(element instanceof DisplayCanvas)){
+                return null;
+            }
+            return ((DisplayCanvas) element).getElement(split[1]);
+        }else {
+            for (LinkedHashSet<DisplayElement> list : elements.values()) {
+                for (DisplayElement element : list) {
+                    if (element.getId().equals(id)) {
+                        return element;
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
     @Override
     public void removeElement(@NotNull DisplayElement element) {
         Set<DisplayElement> list = elements.get(element.getLayer());
@@ -406,14 +430,4 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         return clone;
     }
 
-
-
-    @Override
-    public boolean equals(Object obj) {
-        if(obj instanceof BaseCanvas){
-            BaseCanvas canvas = (BaseCanvas) obj;
-            return canvas.getId().equals(getId());
-        }
-        return super.equals(obj);
-    }
 }

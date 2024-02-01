@@ -97,8 +97,8 @@ public class AtumAPIImpl implements AtumAPI {
     }
 
     @Override
-    public AtumMod getLoadedAtumMod(String name) {
-        return mods.get(name);
+    public AtumMod getLoadedAtumMod(String id) {
+        return mods.get(id);
     }
 
     @Override
@@ -108,6 +108,6 @@ public class AtumAPIImpl implements AtumAPI {
 
     @Override
     public void registerAtumMod(@NotNull AtumMod atumMod) {
-        mods.put(atumMod.getName(), atumMod);
+        mods.put(atumMod.getModID(), atumMod);
     }
 }

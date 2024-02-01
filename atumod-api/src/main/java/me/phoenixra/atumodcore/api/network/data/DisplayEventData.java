@@ -7,8 +7,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class DisplayEventData {
     private String atumModId;
-    private String canvasId;
     private String elementId;
+    private int rendererId;
     private int eventId;
 
 

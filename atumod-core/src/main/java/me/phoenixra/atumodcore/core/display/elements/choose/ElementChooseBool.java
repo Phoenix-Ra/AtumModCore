@@ -70,7 +70,7 @@ public class ElementChooseBool extends BaseElement {
     private boolean init;
 
     public ElementChooseBool(@NotNull AtumMod atumMod,
-                             @NotNull DisplayCanvas elementOwner) {
+                             @Nullable DisplayCanvas elementOwner) {
         super(atumMod, elementOwner);
     }
     public ElementChooseBool(@NotNull AtumMod atumMod) {
@@ -203,8 +203,7 @@ public class ElementChooseBool extends BaseElement {
     }
 
     @Override
-    public void updateElementVariables(@NotNull Config config,
-                                       @Nullable String configKey) {
+    public void updateElementVariables(@NotNull Config config) {
 
         displayDataAttached = config.getString("display-data-attached");
 
@@ -216,24 +215,22 @@ public class ElementChooseBool extends BaseElement {
 
         switch (displayType){
             case IMAGE:
-                imageTrue = new ElementImage(getAtumMod(),getElementOwner());
+                imageTrue = new ElementImage(getAtumMod(),null);
                 imageTrue.updateBaseVariables(
                         config,
-                        configKey+".settings.imageTrue"
+                        null
                 );
                 imageTrue.updateElementVariables(
-                        config.getSubsection("imageTrue"),
-                        configKey+".settings.imageTrue"
+                        config.getSubsection("imageTrue")
                 );
 
-                imageFalse = new ElementImage(getAtumMod(),getElementOwner());
+                imageFalse = new ElementImage(getAtumMod(),null);
                 imageFalse.updateBaseVariables(
                         config,
-                        configKey+".settings.imageFalse"
+                        null
                 );
                 imageFalse.updateElementVariables(
-                        config.getSubsection("imageFalse"),
-                        configKey+".settings.imageFalse"
+                        config.getSubsection("imageFalse")
                 );
 
                 break;
@@ -318,10 +315,10 @@ public class ElementChooseBool extends BaseElement {
                 this.circleColor.toInt(),false
         );
         if(this.imageTrue != null) {
-            cloneImage.imageTrue = (ElementImage) this.imageTrue.cloneWithRandomId();
+            cloneImage.imageTrue = (ElementImage) this.imageTrue.clone();
         }
         if(this.imageFalse != null) {
-            cloneImage.imageFalse = (ElementImage) this.imageFalse.cloneWithRandomId();
+            cloneImage.imageFalse = (ElementImage) this.imageFalse.clone();
         }
         return cloneImage;
     }

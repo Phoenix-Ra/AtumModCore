@@ -8,30 +8,31 @@ import java.nio.charset.StandardCharsets;
 
 public class PacketDisplayEvent implements IMessage {
     protected String atumModId;
-    protected String canvasId;
     protected String elementId;
+
+    protected int rendererId;
     protected int eventId;
 
     public PacketDisplayEvent(){
         atumModId = "";
-        canvasId = "";
         elementId = "";
+        rendererId = 0;
         eventId = 0;
     }
     public PacketDisplayEvent(DisplayEventData data){
         this.atumModId = data.getAtumModId();
-        this.canvasId = data.getCanvasId();
         this.elementId = data.getElementId();
+        this.rendererId = data.getRendererId();
         this.eventId = data.getEventId();
     }
 
     public PacketDisplayEvent(String atumModId,
-                              String canvasId,
                               String elementId,
+                              int rendererId,
                               int eventId){
         this.atumModId = atumModId;
-        this.canvasId = canvasId;
         this.elementId = elementId;
+        this.rendererId = rendererId;
         this.eventId = eventId;
     }
 
@@ -44,16 +45,12 @@ public class PacketDisplayEvent implements IMessage {
         buf.readBytes(atumModIdBytes);
         atumModId = new String(atumModIdBytes, 0, atumModIdLength, StandardCharsets.UTF_8);
 
-        int canvasIdLength = buf.readInt();
-        byte[] canvasIdBytes = new byte[canvasIdLength];
-        buf.readBytes(canvasIdBytes);
-        canvasId = new String(canvasIdBytes, 0, canvasIdLength, StandardCharsets.UTF_8);
-
         int elementIdLength = buf.readInt();
         byte[] elementIdBytes = new byte[elementIdLength];
         buf.readBytes(elementIdBytes);
         elementId = new String(elementIdBytes, 0, elementIdLength, StandardCharsets.UTF_8);
 
+        rendererId = buf.readInt();
         eventId = buf.readInt();
     }
 
@@ -63,13 +60,11 @@ public class PacketDisplayEvent implements IMessage {
         buf.writeInt(atumModIdBytes.length);
         buf.writeBytes(atumModIdBytes);
 
-        byte[] canvasIdBytes = canvasId.getBytes(StandardCharsets.UTF_8);
-        buf.writeInt(canvasIdBytes.length);
-        buf.writeBytes(canvasIdBytes);
-
         byte[] elementIdBytes = elementId.getBytes(StandardCharsets.UTF_8);
         buf.writeInt(elementIdBytes.length);
         buf.writeBytes(elementIdBytes);
+
+        buf.writeInt(rendererId);
 
         buf.writeInt(eventId);
 
@@ -78,8 +73,8 @@ public class PacketDisplayEvent implements IMessage {
     public DisplayEventData asDisplayEventData(){
         return new DisplayEventData(
                 atumModId,
-                canvasId,
                 elementId,
+                rendererId,
                 eventId
         );
     }

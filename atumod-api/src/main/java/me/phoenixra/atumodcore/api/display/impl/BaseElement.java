@@ -28,10 +28,10 @@ import java.util.UUID;
 
 public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter
-    private String id = UUID.randomUUID().toString();
+    private String id = UUID.randomUUID().toString(); //default id before loading from config
     @Getter
     private String configKey = null;
-    @Getter
+    @Getter @Setter
     private String templateId = null;
     @Getter
     private final AtumMod atumMod;
@@ -95,7 +95,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     private Config settingsConfig = null;
 
     private List<OptimizedVariable<?>> optimizedVariables;
-    private List<Field> optimizedVariableFields = new ArrayList<>();
+    private final List<Field> optimizedVariableFields = new ArrayList<>();
     private boolean initialized;
 
     public BaseElement(@NotNull AtumMod atumMod,
@@ -171,13 +171,26 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     public final void updateVariables(@NotNull Config config,
                                       @Nullable String configKey) {
         updateBaseVariables(config, configKey);
-        updateElementVariables(config.getSubsection("settings"), configKey);
+        updateElementVariables(config.getSubsection("settings"));
     }
 
     @Override
     public void updateBaseVariables(@NotNull Config config, @Nullable String configKey) {
         settingsConfig = config;
         this.configKey = configKey;
+        if(configKey == null){
+            this.id = UUID.randomUUID().toString();
+        }else {
+            if (elementOwner == null) {
+                this.id = configKey;
+            } else {
+                if (elementOwner.isRootCanvas()) {
+                    this.id = configKey;
+                } else {
+                    this.id = elementOwner.getId() + "#" + configKey;
+                }
+            }
+        }
         String layer = config.getStringOrNull("layer");
         if(layer != null){
             this.layer = DisplayLayer.valueOf(layer.toUpperCase());
@@ -271,7 +284,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         this.active = active;
         if(getElementOwner().getDisplayRenderer() == null) return;
         getElementOwner().getDisplayRenderer().getDisplayData()
-                .setElementEnabled(getConfigKey(),active);
+                .setElementEnabled(getId(),active);
     }
 
     private void loadOptimizedVariables(){
@@ -295,12 +308,10 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
 
 
     @Override
-    public @NotNull DisplayElement cloneWithNewVariables(@NotNull String id,
-                                                         @NotNull Config config,
+    public @NotNull DisplayElement cloneWithNewVariables(@NotNull Config config,
                                                          @Nullable String configKey,
                                                          @Nullable DisplayCanvas elementOwner) {
         DisplayElement clone = clone();
-        ((BaseElement)clone).id = id;
         ((BaseElement)clone).templateId = id;
         if(elementOwner != null) {
             clone.setElementOwner(elementOwner);
@@ -310,17 +321,9 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     }
 
     @Override
-    public @NotNull DisplayElement cloneWithRandomId() {
-        DisplayElement clone = clone();
-        ((BaseElement)clone).id = id.split("@")[0]+"@"+UUID.randomUUID().toString();
-        return clone;
-    }
-
-    @Override
     public @NotNull DisplayElement clone() {
         try {
             BaseElement clone = (BaseElement) super.clone();
-            clone.id = UUID.randomUUID().toString();
             clone.initialized = false;
             clone.active = true;
             try {
@@ -344,17 +347,5 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     protected abstract BaseElement onClone(BaseElement clone);
 
 
-    @Override
-    public boolean equals(Object obj) {
-        if(obj instanceof BaseElement){
-            BaseElement element = (BaseElement) obj;
-            return element.getId().equals(getId());
-        }
-        return super.equals(obj);
-    }
 
-    @Override
-    public int hashCode() {
-        return getId().hashCode();
-    }
 }

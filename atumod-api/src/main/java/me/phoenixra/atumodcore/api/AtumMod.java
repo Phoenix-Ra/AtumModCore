@@ -8,6 +8,8 @@ import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.network.NetworkManager;
 import me.phoenixra.atumodcore.api.service.AtumModService;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -60,8 +62,8 @@ public abstract class AtumMod {
             dataFolder =  new File(Minecraft.getMinecraft().mcDataDir,"config/" + getName());
 
             displayManager = AtumAPI.getInstance().createDisplayManager(this);
-            networkManager = AtumAPI.getInstance().createNetworkManager(this);
         }
+        networkManager = AtumAPI.getInstance().createNetworkManager(this);
     }
 
 
@@ -130,6 +132,7 @@ public abstract class AtumMod {
     public void provideModService(@NotNull AtumModService service){
         if(modServices.containsKey(service.getId())) return;
         modServices.put(service.getId(), service);
+        MinecraftForge.EVENT_BUS.register(service);
     }
 
     /**
@@ -142,6 +145,7 @@ public abstract class AtumMod {
         if(atumModService==null) return;
         atumModService.onRemove();
         modServices.remove(id);
+        MinecraftForge.EVENT_BUS.unregister(atumModService);
     }
 
     /**
@@ -151,6 +155,7 @@ public abstract class AtumMod {
     public void clearAllModServices(){
         for(AtumModService entry : modServices.values()){
             entry.onRemove();
+            MinecraftForge.EVENT_BUS.unregister(entry);
         }
         modServices.clear();
     }

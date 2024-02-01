@@ -240,10 +240,16 @@ public interface DisplayElement extends Cloneable{
 
     /**
      * Get the element owner
+     * If the element owner is equals to itself,
+     * then it is the root canvas
      *
      * @return The element owner
      */
     @NotNull DisplayCanvas getElementOwner();
+
+    default boolean isRootCanvas(){
+        return getElementOwner() == this;
+    }
 
     /**
      * Update the variables of the element from config
@@ -265,9 +271,8 @@ public interface DisplayElement extends Cloneable{
      * Update the element variables from config
      *
      * @param config The config
-     * @param configKey The config key to save
      */
-    void updateElementVariables(@NotNull Config config, @Nullable String configKey);
+    void updateElementVariables(@NotNull Config config);
 
     /**
      * Is element inside the given coordinates?
@@ -371,6 +376,8 @@ public interface DisplayElement extends Cloneable{
      * @return The template id
      */
     @Nullable String getTemplateId();
+
+    void setTemplateId(@Nullable String templateId);
     /**
      * Get the config key of the element
      *
@@ -382,26 +389,15 @@ public interface DisplayElement extends Cloneable{
     /**
      * Clone the element with new variables
      *
-     * @param id The new id
      * @param config The new config
      * @param configKey The new config key
      * @param elementOwner The new element owner
      * @return The cloned element
      */
     @NotNull
-    DisplayElement cloneWithNewVariables(@NotNull String id,
-                                         @NotNull Config config,
+    DisplayElement cloneWithNewVariables(@NotNull Config config,
                                          @Nullable String configKey,
                                          @Nullable DisplayCanvas elementOwner);
-    /**
-     * Clone the element with a new id
-     * The new id going to have the following pattern:
-     * "[configName]@[randomUUID]"
-     * So, you can recognize the specific element splitting the id with "@"
-
-     * @return The cloned element
-     */
-    @NotNull DisplayElement cloneWithRandomId();
 
     /**
      * Clone the element

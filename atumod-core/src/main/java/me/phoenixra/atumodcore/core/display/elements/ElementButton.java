@@ -116,8 +116,7 @@ public class ElementButton extends BaseElement {
 
 
     @Override
-    public void updateElementVariables(@NotNull Config config,
-                                       @Nullable String configKey) {
+    public void updateElementVariables(@NotNull Config config) {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         PlaceholderContext context = PlaceholderContext.of(getElementOwner().getDisplayRenderer());
 

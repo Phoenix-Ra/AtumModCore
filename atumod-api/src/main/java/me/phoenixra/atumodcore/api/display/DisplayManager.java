@@ -44,6 +44,12 @@ public interface DisplayManager{
     @NotNull DisplayTriggerRegistry getTriggerRegistry();
 
     /**
+     * Generate a new renderer id.
+     * @return The id.
+     */
+    int generateRendererId();
+
+    /**
      * Set HUD canvas.
      * <p>Use it to make your own HUD</p>
      *
@@ -59,28 +65,28 @@ public interface DisplayManager{
     @NotNull DisplayCanvas getHUDCanvas();
 
     /**
-     * Get the enabled canvas.
+     * Get the renderer
      *
      * @param id The id of the canvas.
      * @return The enabled canvas or null
      */
-    @Nullable DisplayCanvas getEnabledCanvas(@NotNull String id);
+    @Nullable DisplayRenderer getRenderer(int id);
 
     /**
-     * Register an enabled canvas.
+     * Register the renderer
      *
-     * @param id The id of the canvas.
-     * @param canvas The canvas.
+     * @param id The id.
+     * @param renderer The renderer.
      */
-    void registerEnabledCanvas(@NotNull String id,
-                               @NotNull DisplayCanvas canvas);
+    void registerRenderer(int id,
+                          @NotNull DisplayRenderer renderer);
 
     /**
-     * Unregister an enabled canvas.
+     * Unregister the renderer.
      *
-     * @param id The id of the canvas.
+     * @param id The id.
      */
-    void unregisterEnabledCanvas(@NotNull String id);
+    void unregisterRenderer(int id);
 
     /**
      * Get the mod.

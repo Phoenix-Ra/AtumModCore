@@ -65,8 +65,7 @@ public class ElementProgressBar extends BaseElement {
 
 
     @Override
-    public void updateElementVariables(@NotNull Config config,
-                                       @Nullable String configKey) {
+    public void updateElementVariables(@NotNull Config config) {
         String color = config.getStringOrNull("color-filled");
         if(color!=null){
             this.barColorFilled = AtumColor.fromHex(color);

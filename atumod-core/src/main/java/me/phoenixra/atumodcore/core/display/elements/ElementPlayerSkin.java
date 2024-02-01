@@ -67,8 +67,7 @@ public class ElementPlayerSkin extends BaseElement {
     }
 
     @Override
-    public void updateElementVariables(@NotNull Config config,
-                                       @Nullable String configKey) {
+    public void updateElementVariables(@NotNull Config config) {
         PlaceholderContext context = PlaceholderContext.of(getElementOwner().getDisplayRenderer());
 
         this.imageBinder = PlayerUtils::bindPlayerSkinTexture;

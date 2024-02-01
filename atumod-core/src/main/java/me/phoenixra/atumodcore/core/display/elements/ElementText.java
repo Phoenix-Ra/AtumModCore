@@ -102,8 +102,7 @@ public class ElementText extends BaseElement {
     }
 
     @Override
-    public void updateElementVariables(@NotNull Config config,
-                                       @Nullable String configKey) {
+    public void updateElementVariables(@NotNull Config config) {
          optimizedFontSize.setDefaultValue(
                 config.getIntOrDefault("fontSize",25)
         );

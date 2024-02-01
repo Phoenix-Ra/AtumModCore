@@ -36,11 +36,13 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
     @Getter
     private DisplayTriggerRegistry triggerRegistry;
 
-    private Map<String, DisplayCanvas> enabledCanvases;
+    private Map<Integer, DisplayRenderer> activeRenderers;
 
-    private DisplayRenderer displayRenderer;
+    private DisplayRenderer hudRenderer;
 
     private boolean initResolution;
+    private int lastRendererId = 0;
+
 
     public AtumDisplayManager(AtumMod atumMod) {
         this.atumMod = atumMod;
@@ -54,7 +56,7 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
             this.actionRegistry = new AtumDisplayActionRegistry(atumMod);
             this.triggerRegistry = new AtumDisplayTriggerRegistry(atumMod);
 
-            enabledCanvases = new ConcurrentHashMap<>();
+            activeRenderers = new ConcurrentHashMap<>();
 
             DisplayCanvas canvasHUD = new DefaultCanvas(
                     atumMod,
@@ -64,13 +66,17 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
             canvasHUD.getOriginY().setDefaultValue(0);
             canvasHUD.getOriginWidth().setDefaultValue(1920);
             canvasHUD.getOriginHeight().setDefaultValue(1080);
-            displayRenderer = new BaseRenderer(
+            hudRenderer = new BaseRenderer(
                     atumMod,
                     canvasHUD
             );
 
             MinecraftForge.EVENT_BUS.register(this);
         }
+    }
+    @Override
+    public int generateRendererId(){
+        return ++lastRendererId;
     }
 
     @Override
@@ -112,7 +118,7 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
 
             int[] mousePos = RenderUtils.getMousePos();
 
-            displayRenderer.render(
+            hudRenderer.render(
                     mousePos[0], mousePos[1]
             );
         }
@@ -120,30 +126,30 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
 
     @Override
     public void setHUDCanvas(@NotNull DisplayCanvas canvas) {
-        displayRenderer.closeRenderer();
-        displayRenderer = new BaseRenderer(
+        hudRenderer.closeRenderer();
+        hudRenderer = new BaseRenderer(
                 atumMod,
                 canvas
         );
     }
     @Override
     public @NotNull DisplayCanvas getHUDCanvas() {
-        return displayRenderer.getBaseCanvas();
+        return hudRenderer.getBaseCanvas();
     }
 
     @Override
-    public DisplayCanvas getEnabledCanvas(@NotNull String id) {
-        return enabledCanvases.get(id);
+    public DisplayRenderer getRenderer(int id) {
+        return activeRenderers.get(id);
     }
 
     @Override
-    public void registerEnabledCanvas(@NotNull String id, @NotNull DisplayCanvas canvas) {
-        enabledCanvases.put(id, canvas);
+    public void registerRenderer(int id, @NotNull DisplayRenderer renderer) {
+        activeRenderers.put(id, renderer);
     }
 
     @Override
-    public void unregisterEnabledCanvas(@NotNull String id) {
-        enabledCanvases.remove(id);
+    public void unregisterRenderer(int id) {
+        activeRenderers.remove(id);
     }
     @Override
     public @NotNull String getId() {

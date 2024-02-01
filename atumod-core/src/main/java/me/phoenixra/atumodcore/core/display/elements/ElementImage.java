@@ -43,7 +43,7 @@ public class ElementImage extends BaseElement {
 
 
     public ElementImage(@NotNull AtumMod atumMod,
-                        @NotNull DisplayCanvas elementOwner) {
+                        @Nullable DisplayCanvas elementOwner) {
         super(atumMod,elementOwner);
 
     }
@@ -74,8 +74,7 @@ public class ElementImage extends BaseElement {
     }
 
     @Override
-    public void updateElementVariables(@NotNull Config config,
-                                       @Nullable String configKey) {
+    public void updateElementVariables(@NotNull Config config) {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         PlaceholderContext context = PlaceholderContext.of(getElementOwner().getDisplayRenderer());
         String image = config.getString("image");

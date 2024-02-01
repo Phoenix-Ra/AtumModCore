@@ -16,6 +16,20 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
     void addElement(@NotNull DisplayElement element);
 
     /**
+     * Get the element from the canvas.
+     * <br><br>
+     * Id pattern example: - '<code>canvasId1#canvasId2#elementId</code>'
+     * <br>
+     * If it is in main canvas, then: - '<code>canvasId#elementId</code>'
+     * <br>
+     * It is pretty similar to how the Config system works.
+     * <br>
+     * @param id The id of the element.
+     * @return The element from the canvas.
+     */
+    @Nullable
+    DisplayElement getElement(@NotNull String id);
+    /**
      * Remove the element from the canvas.
      * @param element The element to remove.
      */

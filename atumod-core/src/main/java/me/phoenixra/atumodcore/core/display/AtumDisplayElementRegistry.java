@@ -37,7 +37,7 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
         if(!(element instanceof DisplayCanvas)){
             return null;
         }
-        return (DisplayCanvas) element.cloneWithRandomId();
+        return (DisplayCanvas) element.clone();
     }
 
     @Override
@@ -68,11 +68,11 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
             return null;
         }
         BaseCanvas canvas = (BaseCanvas) (element).cloneWithNewVariables(
-                id,
                 config,
-                null,
+                id,
                 null
         );
+        canvas.setTemplateId(id);
         getAtumMod().getLogger().info("Found canvas: " + canvas.getTemplateId());
         canvas.applyResolutionOptimizerGlobally(config);
         return canvas;
@@ -109,10 +109,12 @@ public class AtumDisplayElementRegistry implements DisplayElementRegistry {
                     try {
                         getAtumMod()
                                 .getLogger().info("Loading "+clazz.getName()+" element template...");
+                        DisplayElement element =  (DisplayElement) clazz.getConstructor(AtumMod.class, DisplayCanvas.class)
+                                .newInstance(getAtumMod(),null);
+                        element.setTemplateId(annotation.templateId());
                         registerTemplate(
                                 annotation.templateId(),
-                                (DisplayElement) clazz.getConstructor(AtumMod.class, DisplayCanvas.class)
-                                        .newInstance(getAtumMod(),null)
+                                element
                         );
                     } catch (InstantiationException | IllegalAccessException e) {
                         e.printStackTrace();

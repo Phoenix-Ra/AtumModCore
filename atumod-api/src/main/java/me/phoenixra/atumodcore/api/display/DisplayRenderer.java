@@ -3,6 +3,7 @@ package me.phoenixra.atumodcore.api.display;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.data.DisplayData;
 import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
+import me.phoenixra.atumodcore.api.network.data.DisplayEventData;
 import me.phoenixra.atumodcore.api.placeholders.InjectablePlaceholderList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,6 +72,28 @@ public interface DisplayRenderer extends InjectablePlaceholderList {
      */
     @Nullable
     BaseScreen getAttachedGuiScreen();
+
+    /**
+     * Send the display event to the server
+     *
+     * @param displayEventData The display event data
+     */
+    void sendDisplayEvent(DisplayEventData displayEventData);
+    /**
+     * Is allowed to send packets to the server.
+     * <br>
+     * If not allowed, then the renderer and attached canvas
+     * won't send any data to server
+     *
+     * @return True if allowed, false otherwise
+     */
+    boolean isSendingPacketsAllowed();
+    /**
+     * Get the id of this renderer
+     *
+     * @return The id
+     */
+    int getId();
 
     /**
      * Get the mod instance that created this renderer

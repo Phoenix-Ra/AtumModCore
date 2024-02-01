@@ -1,6 +1,7 @@
 package me.phoenixra.atumodcore.api.display.impl;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
@@ -21,7 +22,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class BaseRenderer implements DisplayRenderer {
+    @Getter
     private final AtumMod atumMod;
+    @Getter
+    private final int id;
     @Getter
     private DisplayCanvas baseCanvas;
 
@@ -37,17 +41,23 @@ public class BaseRenderer implements DisplayRenderer {
 
     @Getter
     private List<DisplayTrigger> triggers = Collections.synchronizedList(new ArrayList<>());
+
+    @Getter @Setter
+    private boolean sendingPacketsAllowed = false;
     private boolean init = false;
 
-    public BaseRenderer(AtumMod atumMod, DisplayCanvas baseCanvas, BaseScreen attachedGuiScreen) {
+    public BaseRenderer(@NotNull AtumMod atumMod,
+                        @NotNull DisplayCanvas baseCanvas,
+                        @Nullable BaseScreen attachedGuiScreen) {
         this.atumMod = atumMod;
+        this.id = atumMod.getDisplayManager().generateRendererId();
         this.baseCanvas = baseCanvas;
         this.attachedGuiScreen = attachedGuiScreen;
         displayData = new BaseDisplayData(this);
         baseCanvas.setDisplayRenderer(this);
 
     }
-    public BaseRenderer(AtumMod atumMod, DisplayCanvas baseCanvas) {
+    public BaseRenderer(@NotNull AtumMod atumMod, @NotNull DisplayCanvas baseCanvas) {
         this(atumMod,baseCanvas,null);
     }
     @Override
@@ -61,11 +71,11 @@ public class BaseRenderer implements DisplayRenderer {
                     );
         }
         setBaseCanvas(baseCanvas);
-        getAtumMod().getNetworkManager().sendDisplayEvent(
+        sendDisplayEvent(
                 new DisplayEventData(
                         getAtumMod().getModID(),
                         baseCanvas.getId(),
-                        baseCanvas.getId(),
+                        getId(),
                         DisplayEventData.EVENT_OPENED
                 )
         );
@@ -79,6 +89,7 @@ public class BaseRenderer implements DisplayRenderer {
         }
         baseCanvas.draw(DisplayResolution.getCurrentResolution(), RenderUtils.getScaleFactor(),mouseX,mouseY);
     }
+
 
     @Override
     public void reloadRenderer() {
@@ -99,11 +110,11 @@ public class BaseRenderer implements DisplayRenderer {
 
     @Override
     public final void closeRenderer() {
-        getAtumMod().getNetworkManager().sendDisplayEvent(
+        sendDisplayEvent(
                 new DisplayEventData(
                         getAtumMod().getModID(),
                         baseCanvas.getId(),
-                        baseCanvas.getId(),
+                        getId(),
                         DisplayEventData.EVENT_CLOSED
                 )
         );
@@ -126,6 +137,8 @@ public class BaseRenderer implements DisplayRenderer {
             System.out.println("Settings config is null for canvas: " + baseCanvas.getId());
             return;
         }
+        sendingPacketsAllowed = baseCanvas.getSettingsConfig()
+                .getBool("allow_sending_packets");
         if(baseCanvas.getSettingsConfig().hasPath("default_data")){
             Config config = baseCanvas.getSettingsConfig().getSubsection("default_data");
             for(String key : config.getKeys(false)){
@@ -151,7 +164,13 @@ public class BaseRenderer implements DisplayRenderer {
         }
     }
 
-
+    @Override
+    public void sendDisplayEvent(DisplayEventData displayEventData) {
+        if(!isSendingPacketsAllowed()) return;
+        getAtumMod().getNetworkManager().sendDisplayEvent(
+                displayEventData
+        );
+    }
     public void onRendererClosed() {
         //override if needed
     }
@@ -165,10 +184,6 @@ public class BaseRenderer implements DisplayRenderer {
         return attachedGuiScreen;
     }
 
-    @Override
-    public final @NotNull AtumMod getAtumMod() {
-        return atumMod;
-    }
 
     @Override
     public void addInjectablePlaceholder(@NotNull Iterable<InjectablePlaceholder> placeholders) {

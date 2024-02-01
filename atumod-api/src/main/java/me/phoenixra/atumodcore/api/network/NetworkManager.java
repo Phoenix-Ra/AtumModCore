@@ -2,13 +2,17 @@ package me.phoenixra.atumodcore.api.network;
 
 import lombok.Getter;
 import me.phoenixra.atumodcore.api.AtumMod;
+import me.phoenixra.atumodcore.api.events.network.PlayerClosedDisplay;
+import me.phoenixra.atumodcore.api.events.network.PlayerDisplayEvent;
+import me.phoenixra.atumodcore.api.events.network.PlayerOpenedDisplay;
+import me.phoenixra.atumodcore.api.network.data.ActiveDisplayData;
 import me.phoenixra.atumodcore.api.network.data.DisplayActionData;
 import me.phoenixra.atumodcore.api.network.data.DisplayEventData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -20,12 +24,10 @@ import org.jetbrains.annotations.NotNull;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 /**
  * Manages the network of the mod.
@@ -41,10 +43,7 @@ public abstract class NetworkManager {
 
 
     @SideOnly(Side.SERVER)
-    private List<Consumer<DisplayEventData>> displayEventConsumers;
-
-    @SideOnly(Side.SERVER)
-    private Map<EntityPlayerMP, List<String>> openedCanvases;
+    private Map<EntityPlayerMP, List<ActiveDisplayData>> openedDisplays;
 
     public NetworkManager(@NotNull AtumMod atumMod) {
         this.atumMod = atumMod;
@@ -56,8 +55,7 @@ public abstract class NetworkManager {
                 atumMod.getName() + "@atumodcore"
         );
         if(FMLCommonHandler.instance().getSide() == Side.SERVER) {
-            displayEventConsumers = Collections.synchronizedList(new ArrayList<>());
-            openedCanvases = new ConcurrentHashMap<>();
+            openedDisplays = new ConcurrentHashMap<>();
         }
     }
 
@@ -74,66 +72,63 @@ public abstract class NetworkManager {
             @NotNull DisplayEventData data
     );
 
+
+    @SideOnly(Side.SERVER)
+    public List<ActiveDisplayData> getOpenedRenderersForPlayer(
+            @NotNull EntityPlayerMP player
+    ){
+        return openedDisplays.getOrDefault(player, new ArrayList<>());
+    }
+    @SideOnly(Side.SERVER)
+    public void clearOpenedRenderersForPlayer(
+            @NotNull EntityPlayerMP player
+    ){
+        openedDisplays.remove(player);
+    }
     @SideOnly(Side.SERVER)
     public void handleDisplayEvent(
             @NotNull EntityPlayerMP player,
             @NotNull DisplayEventData data
     ){
         if(data.getEventId() == DisplayEventData.EVENT_OPENED) {
-            List<String> openedCanvasesForPlayer = openedCanvases.getOrDefault(player, new ArrayList<>());
-            openedCanvasesForPlayer.add(data.getCanvasId());
-            openedCanvases.put(player, openedCanvasesForPlayer);
+            List<ActiveDisplayData> list = openedDisplays.getOrDefault(player, new ArrayList<>());
+            ActiveDisplayData pair = new ActiveDisplayData(
+                    data.getRendererId(),
+                    data.getElementId()
+            );
+            list.add(pair);
+            openedDisplays.put(player, list);
+            MinecraftForge.EVENT_BUS.post(new PlayerOpenedDisplay(pair));
         } else if(data.getEventId() == DisplayEventData.EVENT_CLOSED) {
-            List<String> openedCanvasesForPlayer = openedCanvases.get(player);
-            if(openedCanvasesForPlayer == null ||
-                    !openedCanvasesForPlayer.contains(data.getCanvasId())) {
+            List<ActiveDisplayData> list = openedDisplays.get(player);
+            ActiveDisplayData pair = new ActiveDisplayData(
+                    data.getRendererId(),
+                    data.getElementId()
+            );
+            if(list == null ||
+                    !list.contains(pair)) {
                 //ignore unrecognized canvas events
                 return;
             }
-            openedCanvasesForPlayer.remove(data.getCanvasId());
-            openedCanvases.put(player, openedCanvasesForPlayer);
+            list.remove(pair);
+            openedDisplays.put(player, list);
+            MinecraftForge.EVENT_BUS.post(new PlayerClosedDisplay(pair));
         }else {
-            List<String> openedCanvasesForPlayer = openedCanvases.get(player);
-            if(openedCanvasesForPlayer == null ||
-                    !openedCanvasesForPlayer.contains(data.getCanvasId())) {
-                //ignore unrecognized canvas events
-                return;
+            List<ActiveDisplayData> list = openedDisplays.get(player);
+            for(ActiveDisplayData pair : list){
+                if(pair.getRendererId() == data.getRendererId()){
+                    MinecraftForge.EVENT_BUS.post(
+                            new PlayerDisplayEvent(
+                                    pair,
+                                    data.getElementId(),
+                                    data.getEventId()
+                            )
+                    );
+                    break;
+                }
             }
         }
-        displayEventConsumers.forEach(consumer -> consumer.accept(data));
     }
-
-
-    @SideOnly(Side.SERVER)
-    public final void registerDisplayEventConsumer(@NotNull Consumer<DisplayEventData> consumer) {
-        displayEventConsumers.add(consumer);
-    }
-
-    @SideOnly(Side.SERVER)
-    public final void unregisterDisplayEventConsumer(@NotNull Consumer<DisplayEventData> consumer) {
-        displayEventConsumers.remove(consumer);
-    }
-
-    @SideOnly(Side.SERVER)
-    public final void unregisterAllDisplayEventConsumers() {
-        displayEventConsumers.clear();
-    }
-
-
-
-    @SideOnly(Side.SERVER)
-    public List<String> getOpenedCanvasesForPlayer(
-            @NotNull EntityPlayerMP player
-    ){
-        return openedCanvases.getOrDefault(player, new ArrayList<>());
-    }
-    @SideOnly(Side.SERVER)
-    public void clearOpenedCanvasesForPlayer(
-            @NotNull EntityPlayerMP player
-    ){
-        openedCanvases.remove(player);
-    }
-
 
 
     /**
