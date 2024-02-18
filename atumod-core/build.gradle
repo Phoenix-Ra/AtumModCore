@@ -14,8 +14,7 @@ dependencies {
 
 
 group = mod_group
-version = mod_version
-
+version = rootProject.version
 
 publishing {
     publications {
