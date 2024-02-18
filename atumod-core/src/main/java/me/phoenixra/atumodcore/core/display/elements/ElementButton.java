@@ -1,7 +1,8 @@
 package me.phoenixra.atumodcore.core.display.elements;
 
+import me.phoenixra.atumconfig.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.config.Config;
+import me.phoenixra.atumconfig.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.actions.ActionArgs;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
@@ -12,9 +13,7 @@ import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
 import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.InputType;
-import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.tuples.Pair;
-import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;

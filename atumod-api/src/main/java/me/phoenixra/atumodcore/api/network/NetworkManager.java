@@ -66,8 +66,8 @@ public abstract class NetworkManager {
      *  element, for example play_sound, you can pass null
      *  or empty string as element id.
      *  <br>
-     * @param player
-     * @param data
+     * @param player the player
+     * @param data   the display action data
      */
    @SideOnly(Side.SERVER)
    public abstract void sendDisplayActionForPlayer(
@@ -81,7 +81,7 @@ public abstract class NetworkManager {
         * <br>
         * You can also send display events via action "send_display_event@{event_id}"
         * <br>
-        * @param data
+        * @param data the display event data
         */
     @SideOnly(Side.CLIENT)
     public abstract void sendDisplayEvent(

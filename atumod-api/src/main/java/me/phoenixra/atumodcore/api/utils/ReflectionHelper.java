@@ -7,6 +7,8 @@ public class ReflectionHelper {
     /**
      * Searches for a field and makes it accessible.
      *
+     * @param c c
+     * @param fieldname f
      * @return The field or null if the field couldn't be found.
      */
     public static Field getDeclaredField(Class<?> c, String fieldname) {
@@ -21,6 +23,9 @@ public class ReflectionHelper {
     }
 
     /**
+     * @param f f
+     * @param instance i
+     * @param value v
      * @return True if the field value was set correctly.
      */
     public static boolean setField(Field f, Object instance, Object value) {
@@ -34,6 +39,9 @@ public class ReflectionHelper {
     }
 
     /**
+     * @param f f
+     * @param c c
+     * @param value v
      * @return The old value.
      */
     public static Object setStaticFinalField(Field f, Class<?> c, Object value) {

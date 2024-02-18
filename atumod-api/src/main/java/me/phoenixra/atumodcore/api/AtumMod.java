@@ -2,7 +2,9 @@ package me.phoenixra.atumodcore.api;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.phoenixra.atumodcore.api.config.ConfigManager;
+import me.phoenixra.atumconfig.api.ConfigOwner;
+import me.phoenixra.atumconfig.api.config.ConfigManager;
+import me.phoenixra.atumconfig.core.config.AtumConfigManager;
 import me.phoenixra.atumodcore.api.display.DisplayManager;
 import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.network.NetworkManager;
@@ -21,7 +23,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-public abstract class AtumMod {
+public abstract class AtumMod implements ConfigOwner {
 
     @Getter
     private AtumAPI api;
@@ -30,14 +32,14 @@ public abstract class AtumMod {
     private Logger logger;
 
     @Getter
-    private ConfigManager configManager;
-
-    @Getter
     private DisplayManager displayManager;
     @Getter
     private InputHandler inputHandler;
     @Getter
     private NetworkManager networkManager;
+
+    @Getter
+    private ConfigManager configManager;
 
     @Getter @Setter
     protected File dataFolder;
@@ -54,11 +56,10 @@ public abstract class AtumMod {
         api = AtumAPI.getInstance();
         api.registerAtumMod(this);
         logger = AtumAPI.getInstance().createLogger(this);
-        configManager = AtumAPI.getInstance().createConfigManager(this);
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
             inputHandler = AtumAPI.getInstance().getCoreMod().getInputHandler();
             dataFolder =  new File(Minecraft.getMinecraft().mcDataDir,"config/" + getName());
-
+            configManager = new AtumConfigManager(this);
             displayManager = AtumAPI.getInstance().createDisplayManager(this);
         }
         networkManager = AtumAPI.getInstance().createNetworkManager(this);
@@ -81,7 +82,7 @@ public abstract class AtumMod {
 
     /**
      * Get the mod package path
-     *<p></p>
+     *<br><br>
      * It is used in java reflection to register display elements
      *
      * @return The package path.
@@ -90,7 +91,7 @@ public abstract class AtumMod {
 
     /**
      * Is debug enabled.
-     * <p></p>
+     * <br><br>
      * Enables special debug features and logs.
      *
      * @return true if enabled
@@ -99,7 +100,7 @@ public abstract class AtumMod {
 
     /**
      * Create the API.
-     * <p></p>
+     * <br><br>
      * This method is called only in AtumModCore.
      * So, it is basically useless for you if you are not planning
      * to create your own API implementation.
@@ -114,6 +115,7 @@ public abstract class AtumMod {
      * Get the mod service by id
      *
      * @param id The id
+     * @return the atum mod service
      */
     @Nullable
     public AtumModService getModService(@NotNull String id){
@@ -122,10 +124,11 @@ public abstract class AtumMod {
 
     /**
      * Provide the mod service/
-     * <p></p>
+     * <br><br>
      * It is a convenient feature to listen
      * for FMLEvent outside the mod class
      *
+     * @param service The atum mod service
      */
     public void provideModService(@NotNull AtumModService service){
         if(modServices.containsKey(service.getId())) return;
@@ -159,10 +162,11 @@ public abstract class AtumMod {
 
     /**
      * Notify all mod services about the FML event
-     * <p></p>
+     * <br><br>
      * Make sure to call this method in your mod class
      * if you are planning to use mod services
      *
+     * @param event the fml event
      */
     protected void notifyModServices(@NotNull FMLEvent event){
         if(event instanceof FMLPreInitializationEvent){
@@ -177,4 +181,22 @@ public abstract class AtumMod {
         }
     }
 
+    @Override
+    public boolean supportMinecraft() {
+        return true;
+    }
+
+    @Override
+    public void logInfo(String s) {
+        logger.info(s);
+    }
+
+    @Override
+    public void logError(String s) {
+        logger.error(s);
+    }
+    @Override
+    public void logWarning(String s) {
+        logger.warn(s);
+    }
 }

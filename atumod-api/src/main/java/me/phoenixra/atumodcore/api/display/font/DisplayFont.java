@@ -263,10 +263,11 @@ public class DisplayFont {
     /**
      * Renders the given string.
      *
-     * @param text  The text to be rendered.
-     * @param x     The x position of the text.
-     * @param y     The y position of the text.
-     * @param color The color of the text.
+     * @param text     The text to be rendered.
+     * @param x        The x position of the text.
+     * @param y        The y position of the text.
+     * @param color    The color of the text.
+     * @param fontSize The size of a font to draw
      */
     public void drawString(String text, float x, float y,
                            AtumColor color,
@@ -278,10 +279,11 @@ public class DisplayFont {
     /**
      * Renders the given string.
      *
-     * @param text  The text to be rendered.
-     * @param x     The x position of the text.
-     * @param y     The y position of the text.
-     * @param color The color of the text.
+     * @param text     The text to be rendered.
+     * @param x        The x position of the text.
+     * @param y        The y position of the text.
+     * @param color    The color of the text.
+     * @param fontSize The size of a font to draw
      */
     public void drawStringWithShadow(String text,
                                      float x, float y,
@@ -302,6 +304,7 @@ public class DisplayFont {
      * @param y      The y position of the text.
      * @param shadow If the text should be rendered with the shadow color.
      * @param color  The color of the text.
+     * @param fontSize The size of a font to draw
      */
     private void renderString(String text, float x, float y,
                               AtumColor color, boolean shadow,
@@ -450,6 +453,7 @@ public class DisplayFont {
      * Gets the width of the given text.
      *
      * @param text The text to get the width of.
+     * @param fontSize The size of a font to draw
      * @return The width of the given text.
      */
     public int getWidth(String text, int fontSize) {
@@ -511,6 +515,7 @@ public class DisplayFont {
      * Gets the height of the given text.
      *
      * @param text The text to get the height of.
+     * @param fontSize The size of a font to draw
      * @return The height of the given text.
      */
     public int getHeight(String text, int fontSize) {

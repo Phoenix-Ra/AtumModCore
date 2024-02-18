@@ -41,6 +41,7 @@ public interface InputHandler {
      * @param height the height of the cursor  (def: 32)
      * @param xHotspot the x hotspot  (def: 16)
      * @param yHotspot the y hotspot  (def: 16)
+     * @throws LWJGLException if failed to apply to GPU
      */
      default void loadAndApplyCursor(InputStream resource,
                                    int width, int height,

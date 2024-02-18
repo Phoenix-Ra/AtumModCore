@@ -18,6 +18,7 @@ public final class PlayerUtils {
     private static boolean isLoaded = false;
     /**
      * Binds the player's head skin texture to OpenGL
+     * @return if succeeded
      */
     public static boolean bindPlayerSkinTexture(){
         if(!isLoaded && !savePlayerSkin()) return false;
@@ -42,6 +43,7 @@ public final class PlayerUtils {
      * Saves the player's skin to a file
      * You can use that if player's UUID has been changed during the
      * game session or u want to make the first head skin binding faster
+     * @return if succeeded
      */
     public static boolean savePlayerSkin(){
         System.out.println("Saving player skin... "+Minecraft.getMinecraft().getSession().getProfile().getId().toString());

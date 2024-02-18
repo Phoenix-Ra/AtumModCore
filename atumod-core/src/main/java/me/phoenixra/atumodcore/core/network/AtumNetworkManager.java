@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 public class AtumNetworkManager extends NetworkManager implements AtumModService {
@@ -55,7 +56,7 @@ public class AtumNetworkManager extends NetworkManager implements AtumModService
     }
 
 
-    @SubscribeEvent
+    @SubscribeEvent //@TODO divide it for server and client(client will clear server side staff)
     public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event){
         if(event.player instanceof EntityPlayerMP){
             clearOpenedRenderersForPlayer((EntityPlayerMP) event.player);

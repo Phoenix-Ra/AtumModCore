@@ -2,7 +2,7 @@ package me.phoenixra.atumodcore.api.display;
 
 
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.config.Config;
+import me.phoenixra.atumconfig.api.config.Config;
 import me.phoenixra.atumodcore.api.display.actions.ActionArgs;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
@@ -89,7 +89,7 @@ public interface DisplayElement extends Cloneable{
 
     /**
      * Get the addition x coordinate of the element
-     * <p>It is used in animations/p>
+     * <p>It is used in animations</p>
      *
      * @return The addition x coordinate
      */
@@ -97,7 +97,7 @@ public interface DisplayElement extends Cloneable{
 
     /**
      * Get the addition y coordinate of the element
-     * <p>It is used in animations/p>
+     * <p>It is used in animations</p>
      *
      * @return The addition y coordinate
      */
@@ -105,7 +105,7 @@ public interface DisplayElement extends Cloneable{
 
     /**
      * Get the addition width of the element
-     * <p>It is used in animations/p>
+     * <p>It is used in animations</p>
      *
      * @return The addition width
      */
@@ -113,7 +113,7 @@ public interface DisplayElement extends Cloneable{
 
     /**
      * Get the addition height of the element
-     * <p>It is used in animations/p>
+     * <p>It is used in animations</p>
      *
      * @return The addition height
      */
@@ -149,7 +149,7 @@ public interface DisplayElement extends Cloneable{
 
     /**
      * Set the addition x coordinate of the element
-     * <p>It is used in animations/p>
+     * <p>It is used in animations</p>
      *
      * @param x The x coordinate
      */
@@ -157,7 +157,7 @@ public interface DisplayElement extends Cloneable{
 
     /**
      * Set the addition y coordinate of the element
-     * <p>It is used in animations/p>
+     * <p>It is used in animations</p>
      *
      * @param y The y coordinate
      */
@@ -165,7 +165,7 @@ public interface DisplayElement extends Cloneable{
 
     /**
      * Set the addition width of the element
-     * <p>It is used in animations/p>
+     * <p>It is used in animations</p>
      *
      * @param width The width
      */
@@ -173,7 +173,7 @@ public interface DisplayElement extends Cloneable{
 
     /**
      * Set the addition height of the element
-     * <p>It is used in animations/p>
+     * <p>It is used in animations</p>
      *
      * @param height The height
      */

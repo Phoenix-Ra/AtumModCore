@@ -1,8 +1,8 @@
 package me.phoenixra.atumodcore.api.display.impl;
 
 import lombok.Getter;
+import me.phoenixra.atumconfig.api.config.Config;
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.actions.ActionArgs;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;

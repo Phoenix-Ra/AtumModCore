@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * Register a display element in the
  * {@link me.phoenixra.atumodcore.api.display.DisplayManager}
  * implementation
- * <p></p>
+ * <br><br>
  * The element class must extend
  * {@link me.phoenixra.atumodcore.api.display.actions.DisplayAction}
  */

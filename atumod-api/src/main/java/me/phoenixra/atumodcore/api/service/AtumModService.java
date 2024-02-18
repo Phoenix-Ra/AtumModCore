@@ -29,6 +29,7 @@ public interface AtumModService {
     /**
      * Get the id of the service.
      *
+     * @return The id
      */
     @NotNull String getId();
 }

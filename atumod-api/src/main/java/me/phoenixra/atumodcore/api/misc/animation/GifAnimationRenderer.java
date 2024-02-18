@@ -41,6 +41,10 @@ public class GifAnimationRenderer implements IAnimationRenderer {
      *
      * @param resourcePath The path pointing to the GIF.
      * @param loop If the animation should run in an endless loop or just a single time.
+     * @param posX x
+     * @param posY y
+     * @param width w
+     * @param height h
      */
     public GifAnimationRenderer(String resourcePath, boolean loop, int posX, int posY, int width, int height) {
         this.loop = loop;

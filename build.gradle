@@ -37,10 +37,15 @@ allprojects {
     apply plugin: 'net.minecraftforge.gradle'
     apply plugin: 'eclipse'
     apply plugin: 'maven-publish'
+    apply plugin: 'com.github.johnrengelman.shadow'
     minecraft {
         mappings channel: 'snapshot', version: '20171003-1.12'
     }
 
+    repositories {
+        mavenCentral()
+        maven { url = 'https://jitpack.io' }
+    }
     dependencies {
         minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2855'
 
@@ -52,7 +57,8 @@ allprojects {
 
         implementation 'io.github.classgraph:classgraph:4.8.104'
 
-
+        implementation 'com.github.Phoenix-Ra.AtumConfiguration:api:2.0.3'
+        implementation 'com.github.Phoenix-Ra.AtumConfiguration:core:2.0.3'
         //annotations
         compileOnly 'org.projectlombok:lombok:1.18.24'
         compileOnly 'org.jetbrains:annotations:23.0.0'
@@ -96,8 +102,49 @@ allprojects {
     java{
         withSourcesJar()
     }
-}
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        archiveClassifier.set('javadoc')
+        from javadoc.destinationDir
+    }
+    artifacts {
+        archives javadocJar
+    }
+    shadowJar {
+        dependencies {
+            exclude(dependency ->
+                    (!dependency.moduleGroup.startsWith(mod_group) &&
+                            !dependency.moduleGroup.startsWith("org.yaml")
+                            &&
+                            !dependency.moduleGroup.startsWith("io.github.classgraph")
+                            &&
+                            !dependency.moduleGroup.startsWith("com.github.Phoenix-Ra.AtumConfiguration")
+                    )
 
+            )
+        }
+        duplicatesStrategy DuplicatesStrategy.EXCLUDE //prevent duplicates
+        classifier "" //prevent creation of unshadowed jar
+
+        //remove unsupported meta-inf staff from newer java versions
+        exclude 'META-INF/versions/**'
+        //to not to collide with the same libs on the server or client
+        relocate("org.yaml", "me.phoenixra.libs.org.yaml")
+        relocate("org.tomlj", "me.phoenixra.libs.org.tomlj")
+        relocate("org.antlr", "me.phoenixra.libs.org.antlr")
+        relocate("org.checkerframework", "me.phoenixra.libs.org.checkerframework")
+        relocate("redempt", "me.phoenixra.libs.redempt")
+        relocate("nonapi", "me.phoenixra.libs.nonapi")
+        relocate("io", "me.phoenixra.libs.io")
+        relocate("com.google", "me.phoenixra.libs.com.google")
+
+    }
+}
+java{
+    withSourcesJar()
+}
+artifacts {
+    archives javadocJar
+}
 
 minecraft {
     mappings channel: 'snapshot', version: '20171003-1.12'
@@ -118,22 +165,7 @@ mixin {
 
 
 shadowJar {
-    dependencies {
-        exclude(dependency ->
-                !dependency.moduleGroup.startsWith(mod_group) &&
-                        !dependency.moduleGroup.startsWith("org.yaml")
-                        &&
-                        !dependency.moduleGroup.startsWith("io.github.classgraph")
-        )
-    }
-    duplicatesStrategy DuplicatesStrategy.EXCLUDE //prevent duplicates
     archiveBaseName.set(mod_name)
-    classifier "" //prevent creation of unshadowed jar
-
-    //remove unsupported meta-inf staff from newer java versions
-    exclude 'META-INF/versions/**'
-    //to not to collide with the same lib on the server from bukkit
-    relocate("org.yaml", "me.phoenixra.atumodcore.libs.org.yaml")
 
 }
 

@@ -1,11 +1,11 @@
 package me.phoenixra.atumodcore.api.display.impl;
 
+import me.phoenixra.atumconfig.api.placeholders.InjectablePlaceholder;
+import me.phoenixra.atumconfig.api.placeholders.types.injectable.StaticPlaceholder;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.data.DisplayData;
 import me.phoenixra.atumodcore.api.events.data.DisplayDataChangedEvent;
 import me.phoenixra.atumodcore.api.events.data.DisplayDataRemovedEvent;
-import me.phoenixra.atumodcore.api.placeholders.InjectablePlaceholder;
-import me.phoenixra.atumodcore.api.placeholders.types.injectable.StaticPlaceholder;
 import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

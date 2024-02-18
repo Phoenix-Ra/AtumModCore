@@ -4,10 +4,10 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Registrable
- * <p></p>
+ * <br><br>
  * Implement it for a class
  * which you want to use in {@link Registry}
- * <p></p>
+ * <br><br>
  * Registrable class has an ID.
  * @see Registrable#onRegister()
  * @see Registrable#onRemove()

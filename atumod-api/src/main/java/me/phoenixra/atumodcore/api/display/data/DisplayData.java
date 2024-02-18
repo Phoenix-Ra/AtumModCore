@@ -20,9 +20,9 @@ public interface DisplayData {
 
     /**
      * Set temporary data for the display element.
-     * <p></p>
+     * <br><br>
      * Temporary data will be removed after the lifetime.
-     * <p></p>
+     * <br><br>
      * If the data is queued, it will be set after the current data is removed.
      * <p>If the data is not queued, it will be set immediately.</p>
      *
@@ -37,7 +37,7 @@ public interface DisplayData {
 
     /**
      * Set default data for the display element.
-     * <p></p>
+     * <br><br>
      * Default data will be also applied when temporary data is removed.
      *
      * @param id The id of the data.

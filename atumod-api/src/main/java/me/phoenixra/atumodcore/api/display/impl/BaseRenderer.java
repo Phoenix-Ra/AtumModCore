@@ -2,8 +2,9 @@ package me.phoenixra.atumodcore.api.display.impl;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.phoenixra.atumconfig.api.config.Config;
+import me.phoenixra.atumconfig.api.placeholders.InjectablePlaceholder;
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.data.DisplayData;
@@ -11,7 +12,6 @@ import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTrigger;
 import me.phoenixra.atumodcore.api.misc.AtumDebugger;
 import me.phoenixra.atumodcore.api.network.data.DisplayEventData;
-import me.phoenixra.atumodcore.api.placeholders.InjectablePlaceholder;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;

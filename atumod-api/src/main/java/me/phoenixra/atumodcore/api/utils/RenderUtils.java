@@ -36,7 +36,12 @@ public class RenderUtils {
     /**
      * Draw a filled rectangle.
      * <p>min and max are the corners of the rectangle.</p>
-     *
+     * @param minX    coord for upper left corner
+     * @param minY    coord for upper left corner
+     * @param maxX    coord for lower right corner
+     * @param maxY    coord for lower right corner
+     * @param color   the color
+     * @param opacity the opacity
      */
     public static void fill(float minX, float minY,
                             float maxX, float maxY,

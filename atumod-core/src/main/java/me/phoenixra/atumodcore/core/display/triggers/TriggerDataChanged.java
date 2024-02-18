@@ -1,8 +1,7 @@
 package me.phoenixra.atumodcore.core.display.triggers;
 
+import me.phoenixra.atumconfig.api.config.Config;
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.config.Config;
-import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayTrigger;
 import me.phoenixra.atumodcore.api.display.impl.BaseTrigger;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTrigger;
@@ -10,7 +9,6 @@ import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerData;
 import me.phoenixra.atumodcore.api.events.data.DisplayDataChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Triggered when the data is changed.

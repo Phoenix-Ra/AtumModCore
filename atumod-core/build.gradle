@@ -17,3 +17,12 @@ group = mod_group
 version = mod_version
 
 
+publishing {
+    publications {
+        jar(MavenPublication) {
+            from components.java
+            artifactId 'atumodcore-core'
+            artifact javadocJar
+        }
+    }
+}

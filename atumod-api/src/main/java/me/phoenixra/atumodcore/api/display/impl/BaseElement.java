@@ -2,8 +2,9 @@ package me.phoenixra.atumodcore.api.display.impl;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.phoenixra.atumconfig.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.config.Config;
+import me.phoenixra.atumconfig.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
@@ -14,7 +15,6 @@ import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.display.misc.OptimizedVariable;
 import me.phoenixra.atumodcore.api.display.misc.variables.OptimizedVariableInt;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
-import me.phoenixra.atumodcore.api.placeholders.context.PlaceholderContext;
 import me.phoenixra.atumodcore.api.utils.ClassUtils;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraftforge.common.MinecraftForge;
@@ -197,8 +197,8 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         }
         String x = config.getStringOrNull("posX");
         if(x != null){
-            this.x = (int) config.getAtumMod().getApi().evaluate(
-                    config.getAtumMod(),
+            this.x = (int) getAtumMod().getApi().evaluate(
+                     getAtumMod(),
                     x,
                     PlaceholderContext.of(config)
             );
@@ -206,8 +206,8 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         }
         String y = config.getStringOrNull("posY");
         if(y != null){
-            this.y = (int) config.getAtumMod().getApi().evaluate(
-                    config.getAtumMod(),
+            this.y = (int) getAtumMod().getApi().evaluate(
+                    getAtumMod(),
                     y,
                     PlaceholderContext.of(config)
             );
@@ -215,8 +215,8 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         }
         String width = config.getStringOrNull("width");
         if(width != null){
-            this.width = (int) config.getAtumMod().getApi().evaluate(
-                    config.getAtumMod(),
+            this.width = (int) getAtumMod().getApi().evaluate(
+                    getAtumMod(),
                     width,
                     PlaceholderContext.of(config)
             );
@@ -224,8 +224,8 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         }
         String height = config.getStringOrNull("height");
         if(height != null){
-            this.height = (int) config.getAtumMod().getApi().evaluate(
-                    config.getAtumMod(),
+            this.height = (int) getAtumMod().getApi().evaluate(
+                    getAtumMod(),
                     height,
                     PlaceholderContext.of(config)
             );

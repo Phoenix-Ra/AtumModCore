@@ -8,6 +8,7 @@ public interface IAnimationRenderer {
 
     /**
      * This overrides the specified height and width values and stretches the animation over the whole screen.
+     * @param b b
      */
      void setStretchImageToScreenSize(boolean b);
 
@@ -15,6 +16,7 @@ public interface IAnimationRenderer {
 
     /**
      * Only has affect if the animation isn't getting looped.
+     * @param b b
      */
      void setHideAfterLastFrame(boolean b);
 

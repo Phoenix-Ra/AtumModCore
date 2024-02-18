@@ -1,22 +1,10 @@
 package me.phoenixra.atumodcore.api.display;
 
-import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.config.Config;
-import me.phoenixra.atumodcore.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.actions.DisplayActionRegistry;
-import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerRegistry;
-import me.phoenixra.atumodcore.api.service.AtumModService;
-import me.phoenixra.atumodcore.api.tuples.PairRecord;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public interface DisplayManager{
 
@@ -28,6 +16,7 @@ public interface DisplayManager{
      * @return The element registry.
      */
     @NotNull DisplayElementRegistry getElementRegistry();
+
 
     /**
      * Get the action registry.

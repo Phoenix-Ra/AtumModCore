@@ -1,11 +1,10 @@
 package me.phoenixra.atumodcore.mod;
 
 import lombok.Getter;
+import me.phoenixra.atumconfig.api.config.ConfigType;
 import me.phoenixra.atumodcore.api.AtumAPI;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.AtumModProperties;
-import me.phoenixra.atumodcore.api.config.ConfigType;
-import me.phoenixra.atumodcore.api.service.AtumModService;
 import me.phoenixra.atumodcore.core.AtumAPIImpl;
 import me.phoenixra.atumodcore.mod.sound.SoundHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.Display;
 
 import java.io.File;
-import java.util.List;
 
 @Mod(
         modid = AtumModProperties.MOD_ID,
@@ -50,13 +48,13 @@ public class AtumModCore extends AtumMod {
                 "                       --- AtumModCore\n");
         instance = this;
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
-            getApi().createLoadableConfig(this,
+            getConfigManager().createLoadableConfig(
                     "test",
                     "",
                     ConfigType.JSON,
                     false
             );
-            getApi().createLoadableConfig(this,
+            getConfigManager().createLoadableConfig(
                     "settings",
                     "",
                     ConfigType.JSON,
@@ -137,6 +135,11 @@ public class AtumModCore extends AtumMod {
     @Override
     public @NotNull String getName() {
         return "AtumModCore";
+    }
+
+    @Override
+    public boolean supportMinecraft() {
+        return true;
     }
 
     @Override

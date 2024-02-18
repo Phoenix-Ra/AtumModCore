@@ -1,7 +1,7 @@
 package me.phoenixra.atumodcore.api.display.triggers;
 
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.config.Config;
+import me.phoenixra.atumconfig.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

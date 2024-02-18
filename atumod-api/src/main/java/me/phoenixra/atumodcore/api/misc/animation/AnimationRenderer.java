@@ -1,7 +1,7 @@
 package me.phoenixra.atumodcore.api.misc.animation;
 
+import me.phoenixra.atumconfig.api.utils.NumberUtils;
 import me.phoenixra.atumodcore.api.misc.CharacterFilter;
-import me.phoenixra.atumodcore.api.utils.NumberUtils;
 import me.phoenixra.atumodcore.api.utils.ResourceUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
@@ -50,8 +50,13 @@ public class AnimationRenderer  implements IAnimationRenderer {
      * Just create a resource directory inside /resources/assets/ and put all animation frames in it.<br>
      * The frames must be named like: 1.png, 2.png, 3.png, ...
      *
+     * @param resourceDir r
      * @param fps Frames per second. A value of -1 sets the fps to unlimited.
      * @param loop If the animation should run in an endless loop or just a single time.
+     * @param posX x
+     * @param posY y
+     * @param width w
+     * @param height h
      * @param modid The Mod ID of your mod.
      */
     public AnimationRenderer(String resourceDir, int fps, boolean loop, int posX, int posY, int width, int height, String modid) {

@@ -22,3 +22,13 @@ tasks.register('applyPropertiesForClass') {
     }
 }
 compileJava.dependsOn(applyPropertiesForClass)
+
+publishing {
+    publications {
+        jar(MavenPublication) {
+            from components.java
+            artifactId 'atumodcore-api'
+            artifact javadocJar
+        }
+    }
+}

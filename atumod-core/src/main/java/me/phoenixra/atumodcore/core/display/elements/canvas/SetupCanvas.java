@@ -1,8 +1,8 @@
 package me.phoenixra.atumodcore.core.display.elements.canvas;
 
+import me.phoenixra.atumconfig.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.config.Config;
-import me.phoenixra.atumodcore.api.config.LoadableConfig;
+import me.phoenixra.atumconfig.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
 import me.phoenixra.atumodcore.api.display.DisplayLayer;
 import me.phoenixra.atumodcore.api.display.impl.BaseCanvas;

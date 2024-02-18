@@ -2,9 +2,10 @@ package me.phoenixra.atumodcore.api.display.impl;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
+import me.phoenixra.atumconfig.api.placeholders.types.injectable.StaticPlaceholder;
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.config.Config;
-import me.phoenixra.atumodcore.api.config.LoadableConfig;
+import me.phoenixra.atumconfig.api.config.Config;
+import me.phoenixra.atumconfig.api.config.LoadableConfig;
 import me.phoenixra.atumodcore.api.display.*;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.events.display.ElementInputPressEvent;
@@ -12,7 +13,6 @@ import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.events.input.InputPressEvent;
 import me.phoenixra.atumodcore.api.events.input.InputReleaseEvent;
-import me.phoenixra.atumodcore.api.placeholders.types.injectable.StaticPlaceholder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
@@ -111,10 +111,10 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         config.addInjectablePlaceholder(
                 Lists.newArrayList(
                         new StaticPlaceholder("mouse_x", ()-> String.valueOf(
-                                config.getAtumMod().getInputHandler().getMousePosition().getFirst()
+                                getAtumMod().getInputHandler().getMousePosition().getFirst()
                         )),
                         new StaticPlaceholder("mouse_y", ()-> String.valueOf(
-                                config.getAtumMod().getInputHandler().getMousePosition().getSecond()
+                                getAtumMod().getInputHandler().getMousePosition().getSecond()
                         ))
                 )
         );

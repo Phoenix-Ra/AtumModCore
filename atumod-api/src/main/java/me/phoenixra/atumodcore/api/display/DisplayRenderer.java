@@ -1,10 +1,10 @@
 package me.phoenixra.atumodcore.api.display;
 
+import me.phoenixra.atumconfig.api.placeholders.InjectablePlaceholderList;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.data.DisplayData;
 import me.phoenixra.atumodcore.api.display.impl.BaseScreen;
 import me.phoenixra.atumodcore.api.network.data.DisplayEventData;
-import me.phoenixra.atumodcore.api.placeholders.InjectablePlaceholderList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

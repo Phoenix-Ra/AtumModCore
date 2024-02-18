@@ -37,6 +37,7 @@ public class AtumDebugger {
     /**
      * Start the task
      *
+     * @param taskToDebug the task which you want to debug
      */
     public void start(Runnable taskToDebug){
         if(!atumMod.isDebugEnabled()){
