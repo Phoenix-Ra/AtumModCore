@@ -23,12 +23,18 @@ tasks.register('applyPropertiesForClass') {
 }
 compileJava.dependsOn(applyPropertiesForClass)
 
+publish.dependsOn('reobfJar')
 publishing {
     publications {
         jar(MavenPublication) {
             from components.java
             artifactId 'atumodcore-api'
             artifact javadocJar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
         }
     }
 }
