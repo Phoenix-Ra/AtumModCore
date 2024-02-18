@@ -87,7 +87,7 @@ build{
         System.out.println("UPDATING BUILD VERSION")
     }
 }
-
+//------VERSION UPDATE FINISH------
 
 compileJava {
 
@@ -252,3 +252,15 @@ jar {
 
 
 jar.finalizedBy('reobfJar')
+
+
+publish.dependsOn('reobfJar')
+publishing {
+    publications {
+        jar(MavenPublication) {
+            from components.java
+            artifactId 'atumodcore-all'
+            artifact javadocJar
+        }
+    }
+}

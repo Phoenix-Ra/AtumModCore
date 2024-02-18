@@ -7,12 +7,9 @@ plugins {
 
 dependencies {
     compileOnly compileOnly(project(':atumod-api'))
-
     api 'org.yaml:snakeyaml:2.2'
 
 }
-
-
 group = mod_group
 version = rootProject.version
 
@@ -23,11 +20,6 @@ publishing {
             from components.java
             artifactId 'atumodcore-core'
             artifact javadocJar
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
         }
     }
 }

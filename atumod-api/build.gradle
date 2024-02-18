@@ -23,6 +23,18 @@ tasks.register('applyPropertiesForClass') {
 }
 compileJava.dependsOn(applyPropertiesForClass)
 
+shadowJar {
+    dependencies {
+        exclude(dependency ->
+                (!dependency.moduleGroup.startsWith(mod_group) &&
+                        !dependency.moduleGroup.startsWith("com.github.Phoenix-Ra.AtumConfiguration")
+                )
+
+        )
+    }
+
+}
+
 publish.dependsOn('reobfJar')
 publishing {
     publications {
@@ -30,11 +42,6 @@ publishing {
             from components.java
             artifactId 'atumodcore-api'
             artifact javadocJar
-        }
-    }
-    repositories {
-        maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
         }
     }
 }

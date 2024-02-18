@@ -10,6 +10,7 @@ import me.phoenixra.atumodcore.api.network.NetworkManager;
 import me.phoenixra.atumodcore.core.display.AtumDisplayManager;
 import me.phoenixra.atumodcore.core.input.AtumInputHandler;
 import me.phoenixra.atumodcore.core.network.AtumNetworkManager;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
