@@ -7,6 +7,7 @@ import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.annotations.RegisterDisplayElement;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
+import me.phoenixra.atumodcore.api.display.misc.resources.BufferTextureResource;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
@@ -14,6 +15,10 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Image element.
@@ -47,8 +52,16 @@ public class ElementImage extends BaseElement {
     }
 
     @Override
-    protected void onDraw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY) {
-        imageBinder.run();
+    protected void onDraw(DisplayResolution resolution,
+                          float scaleFactor, int mouseX, int mouseY) {
+        if(imageBinder!=null) {
+            imageBinder.run();
+        }else{
+            //empty image
+            Minecraft.getMinecraft().getTextureManager().bindTexture(
+                    new ResourceLocation("sss:sss")
+            );
+        }
         color.useColor();
         if(textureHeight==0||textureWidth==0){
             RenderUtils.drawCompleteImage(
@@ -76,8 +89,41 @@ public class ElementImage extends BaseElement {
         TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
         PlaceholderContext context = PlaceholderContext.of(getElementOwner().getDisplayRenderer());
         String image = config.getString("image");
-        ResourceLocation imageLocation = new ResourceLocation(image);
-        this.imageBinder = () -> textureManager.bindTexture(imageLocation);
+        if (image.startsWith("file:")){
+            File textureFile = new File(image.substring(5));
+            try {
+                BufferTextureResource bufferTextureResource = new BufferTextureResource(
+                        textureFile
+                );
+                bufferTextureResource.loadTexture();
+                imageBinder = () -> textureManager.bindTexture(
+                        bufferTextureResource.getResourceLocation()
+                );
+            }catch (Exception exception){
+                getAtumMod().getLogger().error("Something went wrong trying " +
+                        "to load texture from file: "+ image.substring(5),exception
+                );
+            }
+        }else if(image.startsWith("web:")){
+            try {
+                URL url = new URL(image.substring(4));
+                BufferTextureResource bufferTextureResource = new BufferTextureResource(
+                        url
+                );
+                bufferTextureResource.loadTexture();
+                imageBinder = () -> textureManager.bindTexture(
+                        bufferTextureResource.getResourceLocation()
+                );
+            }catch (Exception exception){
+                getAtumMod().getLogger().error("Something went wrong trying " +
+                        "to load texture from url: "+ image.substring(4), exception
+                );
+            }
+        }else {
+            ResourceLocation imageLocation = new ResourceLocation(image);
+            this.imageBinder = () -> textureManager.bindTexture(imageLocation);
+        }
+
 
         String color = config.getStringOrNull("color");
         if(color!=null){
@@ -124,5 +170,4 @@ public class ElementImage extends BaseElement {
         }catch (CloneNotSupportedException ignored){}
         return cloneImage;
     }
-
 }

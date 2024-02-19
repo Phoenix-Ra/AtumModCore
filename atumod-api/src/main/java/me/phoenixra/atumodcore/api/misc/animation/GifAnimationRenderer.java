@@ -1,7 +1,7 @@
 package me.phoenixra.atumodcore.api.misc.animation;
 
 import com.google.common.io.Files;
-import me.phoenixra.atumodcore.api.misc.resources.ExternalTextureResourceLocation;
+import me.phoenixra.atumodcore.api.display.misc.resources.BufferTextureResource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.renderer.GlStateManager;
@@ -20,7 +20,7 @@ public class GifAnimationRenderer implements IAnimationRenderer {
     private int height;
     private int x;
     private int y;
-    private List<ExternalTextureResourceLocation> resources = new ArrayList<ExternalTextureResourceLocation>();
+    private List<BufferTextureResource> resources = new ArrayList<BufferTextureResource>();
     private List<Integer> delays = new ArrayList<Integer>();
     private boolean stretch = false;
     private boolean hide = false;
@@ -71,9 +71,9 @@ public class GifAnimationRenderer implements IAnimationRenderer {
                 this.delays.clear();
 
                 for (GifFramePackage g : getGifFrames(this.resourceDir)) {
-                    ExternalTextureResourceLocation er = new ExternalTextureResourceLocation(g.gif);
+                    BufferTextureResource er = new BufferTextureResource(g.gif);
                     er.loadTexture();
-                    if (er.isReady()) {
+                    if (er.isLoaded()) {
                         this.resources.add(er);
                         this.delays.add(g.delay);
                     }
