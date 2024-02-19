@@ -59,7 +59,7 @@ public class AtumAPIImpl implements AtumAPI {
     public double evaluate(@NotNull AtumMod atumMod, @NotNull String expression, @NotNull PlaceholderContext context) {
         return Crunch.compileExpression(
                 PlaceholderManager.translatePlaceholders(
-                        getCoreMod(),
+                        atumMod,
                         expression,
                         context
                 ),
