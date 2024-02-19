@@ -56,7 +56,8 @@ public class AtumNetworkManager extends NetworkManager implements AtumModService
     }
 
 
-    @SubscribeEvent //@TODO divide it for server and client(client will clear server side staff)
+    @SideOnly(Side.SERVER)
+    @SubscribeEvent
     public void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event){
         if(event.player instanceof EntityPlayerMP){
             clearOpenedRenderersForPlayer((EntityPlayerMP) event.player);
