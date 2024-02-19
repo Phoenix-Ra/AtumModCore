@@ -1,7 +1,7 @@
 package me.phoenixra.atumodcore.api.input;
 
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.tuples.PairRecord;
+import me.phoenixra.atumconfig.api.tuples.PairRecord;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.LWJGLException;

@@ -1,8 +1,8 @@
 package me.phoenixra.atumodcore.api.display.actions;
 
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.tuples.Pair;
-import me.phoenixra.atumodcore.api.tuples.PairRecord;
+import me.phoenixra.atumconfig.api.tuples.Pair;
+import me.phoenixra.atumconfig.api.tuples.PairRecord;
 import org.jetbrains.annotations.Nullable;
 
 @FunctionalInterface

@@ -1,6 +1,6 @@
 package me.phoenixra.atumodcore.api.utils;
 
-import me.phoenixra.atumodcore.api.tuples.PairRecord;
+import me.phoenixra.atumconfig.api.tuples.PairRecord;
 
 import java.util.concurrent.ThreadLocalRandom;
 

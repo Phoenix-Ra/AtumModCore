@@ -7,7 +7,7 @@ import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.events.input.InputPressEvent;
 import me.phoenixra.atumodcore.api.events.input.InputReleaseEvent;
-import me.phoenixra.atumodcore.api.tuples.PairRecord;
+import me.phoenixra.atumconfig.api.tuples.PairRecord;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureUtil;

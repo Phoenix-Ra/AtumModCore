@@ -5,6 +5,7 @@ import lombok.Setter;
 import me.phoenixra.atumconfig.api.ConfigOwner;
 import me.phoenixra.atumconfig.api.config.ConfigManager;
 import me.phoenixra.atumconfig.core.config.AtumConfigManager;
+import me.phoenixra.atumodcore.api.config.AtumConfigManagerMod;
 import me.phoenixra.atumodcore.api.display.DisplayManager;
 import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.network.NetworkManager;
@@ -59,7 +60,7 @@ public abstract class AtumMod implements ConfigOwner {
         if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
             inputHandler = AtumAPI.getInstance().getCoreMod().getInputHandler();
             dataFolder =  new File(Minecraft.getMinecraft().mcDataDir,"config/" + getName());
-            configManager = new AtumConfigManager(this);
+            configManager = new AtumConfigManagerMod(this);
             displayManager = AtumAPI.getInstance().createDisplayManager(this);
         }
         networkManager = AtumAPI.getInstance().createNetworkManager(this);

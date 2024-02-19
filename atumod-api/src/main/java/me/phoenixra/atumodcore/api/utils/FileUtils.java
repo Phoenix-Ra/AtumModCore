@@ -2,7 +2,7 @@ package me.phoenixra.atumodcore.api.utils;
 
 import com.google.common.io.Files;
 import me.phoenixra.atumodcore.api.AtumMod;
-import me.phoenixra.atumodcore.api.tuples.PairRecord;
+import me.phoenixra.atumconfig.api.tuples.PairRecord;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 

@@ -87,7 +87,7 @@ build{
         System.out.println("UPDATING BUILD VERSION")
     }
 }
-//------VERSION UPDATE FINISH------
+//------VERSION UPDATE END------
 
 compileJava {
 
@@ -119,8 +119,7 @@ allprojects {
 
         implementation 'io.github.classgraph:classgraph:4.8.104'
 
-        implementation 'com.github.Phoenix-Ra.AtumConfiguration:api:2.0.3'
-        implementation 'com.github.Phoenix-Ra.AtumConfiguration:core:2.0.3'
+        implementation 'com.github.Phoenix-Ra:AtumConfiguration:13f46edb3c'
         //annotations
         compileOnly 'org.projectlombok:lombok:1.18.24'
         compileOnly 'org.jetbrains:annotations:23.0.0'

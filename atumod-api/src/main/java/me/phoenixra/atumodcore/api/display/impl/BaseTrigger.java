@@ -9,7 +9,7 @@ import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTrigger;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerData;
-import me.phoenixra.atumodcore.api.tuples.Pair;
+import me.phoenixra.atumconfig.api.tuples.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
