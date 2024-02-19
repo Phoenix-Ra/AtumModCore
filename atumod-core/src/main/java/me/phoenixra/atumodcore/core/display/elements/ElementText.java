@@ -119,7 +119,7 @@ public class ElementText extends BaseElement {
         }
         String text = config.getStringOrNull("text");
         if(text!=null){
-            this.text = text;
+            this.text = StringUtils.formatMinecraftColors(text);
         }
         if(getOriginWidth().getDefaultValue() == 0){
             getOriginWidth().setDefaultValue(100);
