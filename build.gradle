@@ -119,7 +119,8 @@ allprojects {
 
         implementation 'io.github.classgraph:classgraph:4.8.104'
 
-        implementation 'com.github.Phoenix-Ra:AtumConfiguration:13f46edb3c'
+        implementation 'com.github.Phoenix-Ra:AtumConfiguration:3.0.1'
+
         //annotations
         compileOnly 'org.projectlombok:lombok:1.18.24'
         compileOnly 'org.jetbrains:annotations:23.0.0'
@@ -198,8 +199,8 @@ allprojects {
         relocate("org.checkerframework", "me.phoenixra.libs.org.checkerframework")
         relocate("redempt", "me.phoenixra.libs.redempt")
         relocate("nonapi", "me.phoenixra.libs.nonapi")
-        relocate("io", "me.phoenixra.libs.io")
-        relocate("com.google", "me.phoenixra.libs.com.google")
+        relocate("io.github.classgraph", "me.phoenixra.libs.io.github.classgraph")
+        relocate("com.google.gson", "me.phoenixra.libs.com.google.gson")
 
     }
 }
