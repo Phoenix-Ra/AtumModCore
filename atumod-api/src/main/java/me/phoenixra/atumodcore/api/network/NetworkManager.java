@@ -158,7 +158,7 @@ public abstract class NetworkManager {
      * @param <REQUEST>          The request message type.
      * @param <REPLY>            The reply message type.
      */
-    protected final  <REQUEST extends IMessage, REPLY extends IMessage> void registerMessage(
+    public final  <REQUEST extends IMessage, REPLY extends IMessage> void registerMessage(
             Class<? extends IMessageHandler<REQUEST, REPLY>> messageHandler,
             Class<REQUEST> requestMessageType,
             Side side
@@ -173,7 +173,7 @@ public abstract class NetworkManager {
      * @param message The message to translate into packet form
      * @return A minecraft {@link Packet} suitable for use in minecraft APIs
      */
-    protected final Packet<?> getPacketFrom(IMessage message) {
+    public final Packet<?> getPacketFrom(IMessage message) {
         return NETWORK_CHANNEL.getPacketFrom(message);
     }
 
@@ -186,7 +186,7 @@ public abstract class NetworkManager {
      * @param player The player to send it to
      */
     @SideOnly(Side.SERVER)
-    protected final void sendTo(IMessage message, EntityPlayerMP player) {
+    public final void sendTo(IMessage message, EntityPlayerMP player) {
         NETWORK_CHANNEL.sendTo(message, player);
     }
 
@@ -198,7 +198,7 @@ public abstract class NetworkManager {
      * @param message The message to send
      */
     @SideOnly(Side.SERVER)
-    protected final void sendToAll(IMessage message) {
+    public final void sendToAll(IMessage message) {
         NETWORK_CHANNEL.sendToAll(message);
     }
 
@@ -211,7 +211,7 @@ public abstract class NetworkManager {
      * @param point The {@link NetworkRegistry.TargetPoint} around which to send
      */
     @SideOnly(Side.SERVER)
-    protected final void sendToAllAround(IMessage message,
+    public final void sendToAllAround(IMessage message,
                                          NetworkRegistry.TargetPoint point) {
         NETWORK_CHANNEL.sendToAllAround(message, point);
     }
@@ -225,7 +225,7 @@ public abstract class NetworkManager {
      * @param point The tracked {@link NetworkRegistry.TargetPoint} around which to send
      */
     @SideOnly(Side.SERVER)
-    protected final void sendToAllTracking(IMessage message,
+    public final void sendToAllTracking(IMessage message,
                                            NetworkRegistry.TargetPoint point) {
         NETWORK_CHANNEL.sendToAllTracking(message, point);
     }
@@ -240,7 +240,7 @@ public abstract class NetworkManager {
      * @param entity The tracked entity around which to send
      */
     @SideOnly(Side.SERVER)
-    protected final void sendToAllTracking(IMessage message,
+    public final void sendToAllTracking(IMessage message,
                                            Entity entity) {
         NETWORK_CHANNEL.sendToAllTracking(message, entity);
     }
@@ -253,7 +253,7 @@ public abstract class NetworkManager {
      * @param dimensionId The dimension id to target
      */
     @SideOnly(Side.SERVER)
-    protected final void sendToDimension(IMessage message,
+    public final void sendToDimension(IMessage message,
                                          int dimensionId) {
         NETWORK_CHANNEL.sendToDimension(message, dimensionId);
     }
@@ -266,7 +266,7 @@ public abstract class NetworkManager {
      * @param message The message to send
      */
     @SideOnly(Side.CLIENT)
-    protected final void sendToServer(IMessage message) {
+    public final void sendToServer(IMessage message) {
         if(Minecraft.getMinecraft().playerController==null ||
                 Minecraft.getMinecraft().isSingleplayer()) {
             return;
@@ -280,7 +280,7 @@ public abstract class NetworkManager {
      *
      * @return The network channel.
      */
-    protected final SimpleNetworkWrapper getNetwork() {
+    public final SimpleNetworkWrapper getNetwork() {
         return NETWORK_CHANNEL;
     }
 }

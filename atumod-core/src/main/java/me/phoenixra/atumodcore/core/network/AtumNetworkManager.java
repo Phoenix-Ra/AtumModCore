@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 public class AtumNetworkManager extends NetworkManager implements AtumModService {
-    private AtumMod atumMod;
+
 
     public AtumNetworkManager(AtumMod atumMod) {
         super(atumMod);
