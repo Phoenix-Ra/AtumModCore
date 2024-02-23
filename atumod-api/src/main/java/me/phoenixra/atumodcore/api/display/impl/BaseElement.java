@@ -240,7 +240,9 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
             this.outlineSize = config.getIntOrDefault("outline.size",1);
             this.hasOutline = true;
         }
-
+        if(config.hasPath("active")) {
+            active = config.getBool("active");
+        }
     }
 
 

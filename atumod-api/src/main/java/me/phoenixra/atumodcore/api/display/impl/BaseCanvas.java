@@ -284,6 +284,11 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                 if(element instanceof DisplayCanvas){
                     ((DisplayCanvas) element).setDisplayRenderer(displayRenderer);
                 }
+                if(!element.isActive()){
+                    getDisplayRenderer().getDisplayData().setElementEnabled(
+                            element.getId(),false
+                    );
+                }
             }
         }
     }
