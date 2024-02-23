@@ -10,6 +10,7 @@ import me.phoenixra.atumodcore.api.input.InputHandler;
 import me.phoenixra.atumodcore.api.network.NetworkManager;
 import me.phoenixra.atumodcore.api.service.AtumModService;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLEvent;
@@ -61,6 +62,9 @@ public abstract class AtumMod implements ConfigOwner {
             dataFolder =  new File(Minecraft.getMinecraft().mcDataDir,"config/" + getName());
             configManager = new AtumConfigManagerMod(this);
             displayManager = AtumAPI.getInstance().createDisplayManager(this);
+        }else{
+            dataFolder =  new File("config/" + getName());
+            configManager = new AtumConfigManagerMod(this);
         }
         networkManager = AtumAPI.getInstance().createNetworkManager(this);
     }
