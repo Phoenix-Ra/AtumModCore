@@ -25,12 +25,13 @@ public class MySQLDatabase implements Database {
 
     /**
      * MySQL Database.
-     * <p></p>
+     * <br><br>
      * Tries to connect to the database using the given parameters
      * after the creation of an instance
      *
      * @param atumMod  The mod instance
-     * @param host     The host
+     * @param host     The server host
+     * @param port     The server port
      * @param database The database
      * @param username The username
      * @param password The password

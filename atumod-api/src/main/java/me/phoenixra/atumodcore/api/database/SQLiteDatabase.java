@@ -25,7 +25,7 @@ public class SQLiteDatabase implements Database {
 
     /**
      * SQLite Database.
-     * <p></p>
+     * <br><br>
      * Tries to connect to the database using the given parameters
      * after the creation of an instance
      *
