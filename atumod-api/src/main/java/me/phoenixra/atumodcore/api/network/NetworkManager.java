@@ -267,10 +267,6 @@ public abstract class NetworkManager {
      */
     @SideOnly(Side.CLIENT)
     public final void sendToServer(IMessage message) {
-        if(Minecraft.getMinecraft().playerController==null ||
-                Minecraft.getMinecraft().isSingleplayer()) {
-            return;
-        }
         System.out.println("Sending to server: " + message.getClass().getSimpleName());
         NETWORK_CHANNEL.sendToServer(message);
     }
