@@ -25,7 +25,7 @@ import java.util.Arrays;
  * <br> <br>
  * Settings:
  * <ul>
- *     <li>image - image resource location</li>
+ *     <li>image - image resource location or 'web:url' or 'file:path' or 'blank'</li>
  *     <li>color - color (RGB)</li>
  *     <li>textureX - texture X</li>
  *     <li>textureY - texture Y</li>
@@ -119,6 +119,10 @@ public class ElementImage extends BaseElement {
                         "to load texture from url: "+ image.substring(4), exception
                 );
             }
+        }else if(image.equalsIgnoreCase("blank")){
+            imageBinder = () -> textureManager.bindTexture(
+                    RenderUtils.getWhiteImageResource()
+            );
         }else {
             ResourceLocation imageLocation = new ResourceLocation(image);
             this.imageBinder = () -> textureManager.bindTexture(imageLocation);
