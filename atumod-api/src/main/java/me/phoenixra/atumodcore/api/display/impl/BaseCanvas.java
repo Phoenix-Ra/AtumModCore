@@ -17,9 +17,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
+
+import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
 
 public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, Cloneable {
 
@@ -120,7 +123,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
     @Override
     public void updateBaseVariables(@NotNull Config config, @Nullable String configKey) {
-        config.clearInjectedPlaceholders();
+        config.clearInjectedPlaceholders(true);
         config.addInjectablePlaceholder(
                 Lists.newArrayList(
                         new StaticPlaceholder("mouse_x", ()-> String.valueOf(
@@ -129,11 +132,16 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                         new StaticPlaceholder("mouse_y", ()-> String.valueOf(
                                 getAtumMod().getInputHandler().getMousePosition().getSecond()
                         ))
-                )
+                ),
+                true
         );
         super.updateBaseVariables(config, configKey);
 
+        updateElements(config.getSubsection("elements"));
+    }
 
+    public void updateElements(@NotNull Config config){
+        clearElements();
         DisplayElementRegistry registry = getAtumMod().getDisplayManager().getElementRegistry();
         for(String key : config.getKeys(false)){
             Config elementSection = config.getSubsection(key);
@@ -156,8 +164,6 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             elementBaseElement.setElementOwner(this);
             this.addElement(elementBaseElement);
         }
-
-
     }
 
     @Override

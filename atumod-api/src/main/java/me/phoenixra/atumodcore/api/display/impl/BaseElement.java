@@ -215,20 +215,30 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         }
         String width = config.getStringOrNull("width");
         if(width != null){
-            this.width = (int) getAtumMod().getApi().evaluate(
-                    getAtumMod(),
-                    width,
-                    PlaceholderContext.of(config)
-            );
+            if(width.equalsIgnoreCase("max")){
+                this.width = getElementOwner()==this ?
+                        1920 : getElementOwner().getOriginWidth().getDefaultValue();
+            }else {
+                this.width = (int) getAtumMod().getApi().evaluate(
+                        getAtumMod(),
+                        width,
+                        PlaceholderContext.of(config)
+                );
+            }
             this.originWidth.setDefaultValue(this.width);
         }
         String height = config.getStringOrNull("height");
         if(height != null){
-            this.height = (int) getAtumMod().getApi().evaluate(
-                    getAtumMod(),
-                    height,
-                    PlaceholderContext.of(config)
-            );
+            if(height.equalsIgnoreCase("max")){
+                this.height = getElementOwner()==this ?
+                        1080 : getElementOwner().getOriginHeight().getDefaultValue();
+            }else {
+                this.height = (int) getAtumMod().getApi().evaluate(
+                        getAtumMod(),
+                        height,
+                        PlaceholderContext.of(config)
+                );
+            }
             this.originHeight.setDefaultValue(this.height);
         }
         Boolean fixRatio = config.getBoolOrNull("fixRatio");

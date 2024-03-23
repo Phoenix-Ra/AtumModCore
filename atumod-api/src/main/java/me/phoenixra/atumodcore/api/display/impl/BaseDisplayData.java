@@ -74,7 +74,7 @@ public class BaseDisplayData implements DisplayData {
                 "data_"+id,
                 () -> value
         );
-        displayRenderer.injectPlaceholders(placeholder);
+        displayRenderer.injectPlaceholders(false, placeholder);
         placeholders.put(id, placeholder);
         MinecraftForge.EVENT_BUS.post(new DisplayDataChangedEvent(displayRenderer,id,value,changeType));
     }
@@ -133,7 +133,7 @@ public class BaseDisplayData implements DisplayData {
         }
         InjectablePlaceholder placeholder = placeholders.get(id);
         if(placeholder == null) return;
-        displayRenderer.removeInjectablePlaceholder(
+        displayRenderer.removeInjectablePlaceholder(false,
                 placeholder
         );
         placeholders.remove(id);
@@ -146,7 +146,7 @@ public class BaseDisplayData implements DisplayData {
         dataTemp.clear();
         defaultData.clear();
         for(InjectablePlaceholder placeholder : placeholders.values()){
-            displayRenderer.removeInjectablePlaceholder(
+            displayRenderer.removeInjectablePlaceholder(false,
                     placeholder
             );
         }

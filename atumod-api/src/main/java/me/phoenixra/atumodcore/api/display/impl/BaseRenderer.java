@@ -195,7 +195,7 @@ public class BaseRenderer implements DisplayRenderer {
 
 
     @Override
-    public void addInjectablePlaceholder(@NotNull Iterable<InjectablePlaceholder> placeholders) {
+    public void addInjectablePlaceholder(@NotNull Iterable<InjectablePlaceholder> placeholders, boolean deep) {
         for (InjectablePlaceholder placeholder : placeholders) {
             if (placeholder == null) {
                 continue;
@@ -208,7 +208,7 @@ public class BaseRenderer implements DisplayRenderer {
     }
 
     @Override
-    public void removeInjectablePlaceholder(@NotNull Iterable<InjectablePlaceholder> placeholders) {
+    public void removeInjectablePlaceholder(@NotNull Iterable<InjectablePlaceholder> placeholders, boolean deep) {
         for (InjectablePlaceholder placeholder : placeholders) {
             if (placeholder == null) {
                 continue;
@@ -218,7 +218,7 @@ public class BaseRenderer implements DisplayRenderer {
     }
 
     @Override
-    public void clearInjectedPlaceholders() {
+    public void clearInjectedPlaceholders(boolean deep) {
         injections.clear();
     }
     @Override
