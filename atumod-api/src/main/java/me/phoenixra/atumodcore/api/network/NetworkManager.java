@@ -8,7 +8,7 @@ import me.phoenixra.atumodcore.api.events.network.PlayerOpenedDisplay;
 import me.phoenixra.atumodcore.api.network.data.ActiveDisplayData;
 import me.phoenixra.atumodcore.api.network.data.DisplayActionData;
 import me.phoenixra.atumodcore.api.network.data.DisplayEventData;
-import net.minecraft.client.Minecraft;
+import me.phoenixra.atumodcore.api.utils.PlayerUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
@@ -267,6 +267,7 @@ public abstract class NetworkManager {
      */
     @SideOnly(Side.CLIENT)
     public final void sendToServer(IMessage message) {
+        if(!PlayerUtils.isInMultiplayer()) return;
         System.out.println("Sending to server: " + message.getClass().getSimpleName());
         NETWORK_CHANNEL.sendToServer(message);
     }

@@ -4,6 +4,8 @@ import me.phoenixra.atumodcore.api.AtumAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -16,6 +18,21 @@ public final class PlayerUtils {
     private static File skinFile = new File(Minecraft.getMinecraft().mcDataDir, "saved_skin.png");
 
     private static boolean isLoaded = false;
+
+
+    public static boolean isInMultiplayer() {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
+            Minecraft mc = Minecraft.getMinecraft();
+            World world = mc.world;
+            if(world==null) return false;
+            if (!world.isRemote) {
+                return false;
+            }
+            return mc.getCurrentServerData() != null;
+        } else {
+            return true;
+        }
+    }
     /**
      * Binds the player's head skin texture to OpenGL
      * @return if succeeded
