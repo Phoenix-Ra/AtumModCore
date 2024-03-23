@@ -77,7 +77,17 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
         boolean positionAtBeginning = getOriginX().getDefaultValue() == 0 &&
                 getOriginY().getDefaultValue() == 0;
-
+        boolean useScissor =
+                getOriginWidth().getDefaultValue() != 1920
+                && getOriginHeight().getDefaultValue() != 1080;
+        if(useScissor) {
+            GL11.glEnable(GL_SCISSOR_TEST);
+            GL11.glScissor((int) (getX() * scaleFactor),
+                    (int) (Display.getHeight() - (getY() + getHeight()) * scaleFactor), //invert y, bcz scissor works in a bottom-left corner
+                    (int) (getWidth() * scaleFactor),
+                    (int) (getHeight() * scaleFactor)
+            );
+        }
          //translate position to the x and y to make elements relative to the canvas
         if(!positionAtBeginning) {
             GL11.glPushMatrix();
@@ -103,6 +113,9 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                 }
             }
         }
+        if(useScissor) {
+            GL11.glDisable(GL_SCISSOR_TEST);
+        }
     }
 
     @Override
@@ -122,8 +135,8 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
 
         DisplayElementRegistry registry = getAtumMod().getDisplayManager().getElementRegistry();
-        for(String key : config.getSubsection("elements").getKeys(false)){
-            Config elementSection = config.getSubsection("elements." + key);
+        for(String key : config.getKeys(false)){
+            Config elementSection = config.getSubsection(key);
             String elementType = elementSection.getStringOrDefault("template", "image");
             getAtumMod().getLogger().info("Found element: " + elementType);
             DisplayElement elementElement = registry.getElementTemplate(elementType);
@@ -187,6 +200,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         elements.clear();
         displayedElements.clear();
         displayedElementsReversed.clear();
+        displayRenderer = null;
     }
 
     @Override
