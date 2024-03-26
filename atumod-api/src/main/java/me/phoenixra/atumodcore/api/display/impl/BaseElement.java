@@ -143,8 +143,10 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         y = coords[1];
         width = coords[2];
         height = coords[3];
-        globalX = elementOwner == null ? x : elementOwner.getGlobalX() + x;
-        globalY = elementOwner == null ? y : elementOwner.getGlobalY() + y;
+        globalX = elementOwner == null || elementOwner == this
+                ? x : elementOwner.getGlobalX() + x;
+        globalY = elementOwner == null || elementOwner == this
+                ? y : elementOwner.getGlobalY() + y;
         onDraw(resolution, scaleFactor,mouseX,mouseY);
         if(outlineSelected){
             RenderUtils.drawDashedOutline(
