@@ -20,6 +20,7 @@ public class ActionOpenSingleplayer implements DisplayAction {
         BaseScreen attachedGuiScreen=data.getAttachedElement().getElementOwner()
                 .getDisplayRenderer().getAttachedGuiScreen();
         if(attachedGuiScreen == null) return;
+        attachedGuiScreen.setAutoClearData(true);
         Minecraft.getMinecraft().displayGuiScreen(
                 new GuiWorldSelection(
                         attachedGuiScreen

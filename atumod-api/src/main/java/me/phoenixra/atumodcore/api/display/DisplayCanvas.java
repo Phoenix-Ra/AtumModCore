@@ -92,4 +92,6 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
      */
     void reloadCanvas();
 
+
+
 }

@@ -1,6 +1,7 @@
 package me.phoenixra.atumodcore.api.display.impl;
 
 import lombok.Getter;
+import lombok.Setter;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayRenderer;
@@ -15,6 +16,19 @@ public class BaseScreen extends GuiScreen {
     private AtumMod atumMod;
     @Getter
     private DisplayRenderer renderer;
+
+
+    //@TODO FIX DATA UNUSED BEING SAVED IN MEMORY ISSUE
+    /**
+     * -- SETTER --
+     *  By default it is enabled.
+     *  Calls the Remove() method on screen changed.
+     *  (If screen is closed, it will be cleared anyway)
+     *
+     * @param autoClearData flag
+     */
+    @Setter
+    private boolean autoClearData;
 
     public BaseScreen(@NotNull AtumMod atumMod, @NotNull DisplayCanvas canvas, @Nullable DisplayRenderer renderer){
         this.atumMod = atumMod;
@@ -34,6 +48,7 @@ public class BaseScreen extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
+        if(autoClearData && mc.currentScreen != null) return;
         renderer.closeRenderer();
     }
 
@@ -45,4 +60,5 @@ public class BaseScreen extends GuiScreen {
     public boolean doesGuiPauseGame() {
         return super.doesGuiPauseGame();
     }
+
 }
