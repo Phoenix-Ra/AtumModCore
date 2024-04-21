@@ -8,6 +8,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
 /**
+ * TEMPORARILY DISABLED. USED ONLY 1920x1080
  * The display resolution.
  * <p>
  *      <br>
@@ -22,13 +23,20 @@ import org.lwjgl.opengl.DisplayMode;
 public enum DisplayResolution {
 
     UNRECOGNIZED(-1,0,0),
+/*
     RES_1024x728(0,1024, 728),
     RES_1280x720(1,1280, 720),
     RES_1366x768(2,1366, 768),
     RES_1600x900(3,1600, 900),
     RES_1920x1080(4,1920, 1080),
     RES_2560x1080(5,2560, 1080);
-
+*/
+    RES_1024x728(0,1920, 1080),
+    RES_1280x720(1,1920, 1080),
+    RES_1366x768(2,1920, 1080),
+    RES_1600x900(3,1920, 1080),
+    RES_1920x1080(4,1920, 1080),
+    RES_2560x1080(5,1920, 1080);
 
     private static DisplayResolution CURRENT_RESOLUTION
             = DisplayResolution.UNRECOGNIZED;
@@ -44,30 +52,33 @@ public enum DisplayResolution {
 
     @NotNull
     public static DisplayResolution from(int width, int height) {
-        for (DisplayResolution value : values()) {
+        /*for (DisplayResolution value : values()) {
             if (value.width == width && value.height == height) {
                 return value;
             }
         }
-        return DisplayResolution.UNRECOGNIZED;
+        return DisplayResolution.UNRECOGNIZED;*/
+        return RES_1920x1080;
     }
     @NotNull
     public static DisplayResolution from(int index) {
-        for (DisplayResolution value : values()) {
+        /*for (DisplayResolution value : values()) {
             if (value.index == index) {
                 return value;
             }
         }
-        return DisplayResolution.UNRECOGNIZED;
+        return DisplayResolution.UNRECOGNIZED;*/
+        return RES_1920x1080;
     }
 
 
     @NotNull
     public static DisplayResolution getCurrentResolution() {
-        return CURRENT_RESOLUTION;
+        //return CURRENT_RESOLUTION;
+        return RES_1920x1080;
     }
     public static void changeResolution(@NotNull DisplayResolution newResolution) {
-        if (Display.isResizable()) {
+       /* if (Display.isResizable()) {
             Display.setResizable(false);
         }
         if (newResolution == DisplayResolution.UNRECOGNIZED) {
@@ -92,10 +103,10 @@ public enum DisplayResolution {
 
         } catch (Exception e) {
             AtumAPI.getInstance().getCoreMod().getLogger().error("Failed to change resolution to " + newWidth + "x" + newHeight, e);
-        }
+        }*/
     }
     public static void changeResolution(int index) {
-        changeResolution(from(index));
+        //changeResolution(from(index));
     }
 
 

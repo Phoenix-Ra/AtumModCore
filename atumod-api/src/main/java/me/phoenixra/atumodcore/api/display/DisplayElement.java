@@ -370,6 +370,7 @@ public interface DisplayElement extends Cloneable{
      * @return The id
      */
     @NotNull String getId();
+
     /**
      * Get the template id of the element
      *

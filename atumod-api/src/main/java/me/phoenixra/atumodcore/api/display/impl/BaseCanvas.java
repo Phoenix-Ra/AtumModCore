@@ -378,7 +378,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
     @SubscribeEvent
     protected void onPress(InputPressEvent event) {
-        if(!isActive() && !isSetupState()){
+        if(!isActive()){
             return;
         }
 
@@ -396,7 +396,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
     @SubscribeEvent
     protected void onRelease(InputReleaseEvent event) {
-        if(!isActive() && !isSetupState()){
+        if(!isActive()){
             return;
         }
 
@@ -426,7 +426,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                 pressedShift = false;
             }
         }else if(event.getParentEvent().getType() == InputType.KEYBOARD_SHIFT
-                && !isSetupState()){
+                ){
             pressedShift = true;
         }
 

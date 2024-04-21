@@ -286,7 +286,7 @@ public class ElementChooseBool extends BaseElement {
                 getElementOwner().getDisplayRenderer()
                         .getDisplayData()
                         .removeData(displayDataAttached);
-            }else {
+            } else {
                 getElementOwner().getDisplayRenderer()
                         .getDisplayData()
                         .setData(displayDataAttached, "true");

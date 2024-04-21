@@ -86,9 +86,9 @@ public class AtumModCore extends AtumMod {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        if(FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+        /*if(FMLCommonHandler.instance().getSide() == Side.CLIENT) {
             Display.setResizable(false);
-        }
+        }*/
 
         MinecraftForge.EVENT_BUS.register(this);
 

@@ -85,11 +85,6 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
      */
     void applyResolutionOptimizerGlobally(@NotNull Config config);
 
-
-    //@TODO rework the setup state
-    boolean isSetupState();
-    void setSetupState(boolean setupState);
-
     /**
      * Reload the canvas.
      * This method reloads the canvas and all its elements.
