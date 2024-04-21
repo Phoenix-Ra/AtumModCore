@@ -361,5 +361,18 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     protected abstract BaseElement onClone(BaseElement clone);
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BaseElement)) return false;
+        BaseElement that = (BaseElement) o;
+        return Objects.equals(id, that.id)
+                && Objects.equals(templateId, that.templateId)
+                && Objects.equals(atumMod, that.atumMod);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, templateId, atumMod);
+    }
 }
