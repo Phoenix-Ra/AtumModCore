@@ -12,8 +12,8 @@ import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.annotations.RegisterOptimizedVariable;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
-import me.phoenixra.atumodcore.api.display.misc.OptimizedVariable;
-import me.phoenixra.atumodcore.api.display.misc.variables.OptimizedVariableInt;
+import me.phoenixra.atumodcore.api.display.misc.OptimizedVar;
+import me.phoenixra.atumodcore.api.display.misc.variables.OptimizedVarInt;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.utils.ClassUtils;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class BaseElement implements DisplayElement, Cloneable {
@@ -39,13 +40,13 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     private DisplayLayer layer;
 
     @Getter @Setter @RegisterOptimizedVariable
-    private OptimizedVariableInt originX;
+    private OptimizedVarInt originX;
     @Getter @Setter @RegisterOptimizedVariable
-    private OptimizedVariableInt originY;
+    private OptimizedVarInt originY;
     @Getter @Setter @RegisterOptimizedVariable
-    private OptimizedVariableInt originWidth;
+    private OptimizedVarInt originWidth;
     @Getter @Setter @RegisterOptimizedVariable
-    private OptimizedVariableInt originHeight;
+    private OptimizedVarInt originHeight;
 
     @Getter @Setter
     private int additionX;
@@ -94,7 +95,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter
     private Config settingsConfig = null;
 
-    private List<OptimizedVariable<?>> optimizedVariables;
+    private List<OptimizedVar<?>> optimizedVariables;
     private final List<Field> optimizedVariableFields = new ArrayList<>();
     private boolean initialized;
 
@@ -107,10 +108,10 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
                        @Nullable DisplayCanvas elementOwner){
         this.atumMod = atumMod;
         this.layer = layer;
-        this.originX = new OptimizedVariableInt("posX",x);
-        this.originY = new OptimizedVariableInt("posY",y);
-        this.originWidth = new OptimizedVariableInt("width",width);
-        this.originHeight = new OptimizedVariableInt("height",height);
+        this.originX = new OptimizedVarInt("posX",x);
+        this.originY = new OptimizedVarInt("posY",y);
+        this.originWidth = new OptimizedVarInt("width",width);
+        this.originHeight = new OptimizedVarInt("height",height);
         this.x =  x;
         this.y =  y;
         this.width = width;
@@ -269,7 +270,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
                                          @NotNull Config config) {
         loadOptimizedVariables();
         try {
-            for (OptimizedVariable<?> variable : optimizedVariables) {
+            for (OptimizedVar<?> variable : optimizedVariables) {
                 variable.addOptimizedValue(
                         resolution,
                         config.getStringOrNull(variable.getConfigKey())
@@ -306,11 +307,11 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         if(optimizedVariables == null){
             optimizedVariables = new ArrayList<>();
             for(Field field : ClassUtils.getAllFields(getClass(),
-                    OptimizedVariable.class)){
+                    OptimizedVar.class)){
                 if(!field.isAnnotationPresent(RegisterOptimizedVariable.class)) return;
                 field.setAccessible(true);
                 try {
-                    optimizedVariables.add((OptimizedVariable<?>) field.get(this));
+                    optimizedVariables.add((OptimizedVar<?>) field.get(this));
                     optimizedVariableFields.add(field);
                 } catch (IllegalAccessException e) {
                     getAtumMod().getLogger().error("Failed to load optimized variable: "+field.getName()+" The template: "+ getTemplateId());
@@ -345,7 +346,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
                 clone.optimizedVariables = new ArrayList<>();
                 for (Field field : optimizedVariableFields) {
                     field.setAccessible(true);
-                    OptimizedVariable<?> variable = (OptimizedVariable<?>) ((OptimizedVariable<?>) field.get(this)).clone();
+                    OptimizedVar<?> variable = (OptimizedVar<?>) ((OptimizedVar<?>) field.get(this)).clone();
                     field.set(clone, variable);
                     clone.optimizedVariables.add(variable);
                 }

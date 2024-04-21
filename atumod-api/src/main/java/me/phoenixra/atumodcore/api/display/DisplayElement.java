@@ -6,7 +6,7 @@ import me.phoenixra.atumconfig.api.config.Config;
 import me.phoenixra.atumodcore.api.display.actions.ActionArgs;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
-import me.phoenixra.atumodcore.api.display.misc.variables.OptimizedVariableInt;
+import me.phoenixra.atumodcore.api.display.misc.variables.OptimizedVarInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,7 +61,7 @@ public interface DisplayElement extends Cloneable{
      * @return The origin x coordinate
      */
     @NotNull
-    OptimizedVariableInt getOriginX();
+    OptimizedVarInt getOriginX();
 
     /**
      * Get the origin y coordinate of the element
@@ -69,7 +69,7 @@ public interface DisplayElement extends Cloneable{
      * @return The origin y coordinate
      */
     @NotNull
-    OptimizedVariableInt getOriginY();
+    OptimizedVarInt getOriginY();
 
     /**
      * Get the origin width of the element
@@ -77,7 +77,7 @@ public interface DisplayElement extends Cloneable{
      * @return The origin width
      */
     @NotNull
-    OptimizedVariableInt getOriginWidth();
+    OptimizedVarInt getOriginWidth();
 
     /**
      * Get the origin height of the element
@@ -85,7 +85,7 @@ public interface DisplayElement extends Cloneable{
      * @return The origin height
      */
     @NotNull
-    OptimizedVariableInt getOriginHeight();
+    OptimizedVarInt getOriginHeight();
 
     /**
      * Get the addition x coordinate of the element
@@ -124,28 +124,28 @@ public interface DisplayElement extends Cloneable{
      *
      * @param variable The x coordinate
      */
-    void setOriginX(OptimizedVariableInt variable);
+    void setOriginX(OptimizedVarInt variable);
 
     /**
      * Set the y origin coordinate of the element
      *
      * @param variable The y coordinate
      */
-    void setOriginY(OptimizedVariableInt variable);
+    void setOriginY(OptimizedVarInt variable);
 
     /**
      * Set the width origin of the element
      *
      * @param variable The width
      */
-    void setOriginWidth(OptimizedVariableInt variable);
+    void setOriginWidth(OptimizedVarInt variable);
 
     /**
      * Set the height origin of the element
      *
      * @param variable The height
      */
-    void setOriginHeight(OptimizedVariableInt variable);
+    void setOriginHeight(OptimizedVarInt variable);
 
     /**
      * Set the addition x coordinate of the element

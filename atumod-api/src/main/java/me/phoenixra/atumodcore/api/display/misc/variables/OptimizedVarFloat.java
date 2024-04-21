@@ -1,16 +1,15 @@
 package me.phoenixra.atumodcore.api.display.misc.variables;
 
 import lombok.Getter;
-import lombok.Setter;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
-import me.phoenixra.atumodcore.api.display.misc.OptimizedVariable;
+import me.phoenixra.atumodcore.api.display.misc.OptimizedVar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.IllegalFormatException;
 
-public class OptimizedVariableFloat implements OptimizedVariable<Float> {
+public class OptimizedVarFloat implements OptimizedVar<Float> {
 
     @NotNull
     @Getter
@@ -20,7 +19,7 @@ public class OptimizedVariableFloat implements OptimizedVariable<Float> {
 
     private HashMap<DisplayResolution, Float> values = new HashMap<>();
 
-    public OptimizedVariableFloat(@NotNull String configKey, float defaultValue) {
+    public OptimizedVarFloat(@NotNull String configKey, float defaultValue) {
         this.configKey = configKey;
         this.defaultValue = defaultValue;
     }
@@ -62,7 +61,7 @@ public class OptimizedVariableFloat implements OptimizedVariable<Float> {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        OptimizedVariableFloat clone = (OptimizedVariableFloat) super.clone();
+        OptimizedVarFloat clone = (OptimizedVarFloat) super.clone();
         clone.values = (HashMap<DisplayResolution, Float>) values.clone();
         return clone;
     }

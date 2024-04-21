@@ -1,16 +1,15 @@
 package me.phoenixra.atumodcore.api.display.misc.variables;
 
 import lombok.Getter;
-import lombok.Setter;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
-import me.phoenixra.atumodcore.api.display.misc.OptimizedVariable;
+import me.phoenixra.atumodcore.api.display.misc.OptimizedVar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.IllegalFormatException;
 
-public class OptimizedVariableBoolean implements OptimizedVariable<Boolean> {
+public class OptimizedVarBoolean implements OptimizedVar<Boolean> {
     @NotNull
     @Getter
     private String configKey;
@@ -20,7 +19,7 @@ public class OptimizedVariableBoolean implements OptimizedVariable<Boolean> {
 
     private HashMap<DisplayResolution, Boolean> values = new HashMap<>();
 
-    public OptimizedVariableBoolean(@NotNull String configKey, boolean defaultValue) {
+    public OptimizedVarBoolean(@NotNull String configKey, boolean defaultValue) {
         this.configKey = configKey;
         this.defaultValue = defaultValue;
     }
@@ -62,7 +61,7 @@ public class OptimizedVariableBoolean implements OptimizedVariable<Boolean> {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        OptimizedVariableBoolean clone = (OptimizedVariableBoolean) super.clone();
+        OptimizedVarBoolean clone = (OptimizedVarBoolean) super.clone();
         clone.values = (HashMap<DisplayResolution, Boolean>) values.clone();
         return clone;
     }

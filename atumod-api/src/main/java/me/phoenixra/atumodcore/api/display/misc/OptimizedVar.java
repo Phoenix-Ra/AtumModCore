@@ -5,7 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.IllegalFormatException;
 
-public interface OptimizedVariable<T> extends Cloneable{
+public interface OptimizedVar<T> extends Cloneable{
 
     /**
      * Get the config key.

@@ -11,7 +11,7 @@ import me.phoenixra.atumodcore.api.display.font.DisplayFont;
 import me.phoenixra.atumodcore.api.display.font.Fonts;
 import me.phoenixra.atumodcore.api.display.impl.BaseElement;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
-import me.phoenixra.atumodcore.api.display.misc.variables.OptimizedVariableInt;
+import me.phoenixra.atumodcore.api.display.misc.variables.OptimizedVarInt;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ import java.util.HashMap;
 public class ElementText extends BaseElement {
     private DisplayFont font;
     @RegisterOptimizedVariable
-    private OptimizedVariableInt optimizedFontSize;
+    private OptimizedVarInt optimizedFontSize;
     private String text = "EMPTY TEXT";
 
     private HashMap<DisplayResolution, DisplayFont> optimizedFont = new HashMap<>();
@@ -50,7 +50,7 @@ public class ElementText extends BaseElement {
     public ElementText(@NotNull AtumMod atumMod,
                        @NotNull DisplayCanvas elementOwner) {
         super(atumMod, elementOwner);
-        optimizedFontSize = new OptimizedVariableInt(
+        optimizedFontSize = new OptimizedVarInt(
                 "settings.fontSize",
                 25
         );

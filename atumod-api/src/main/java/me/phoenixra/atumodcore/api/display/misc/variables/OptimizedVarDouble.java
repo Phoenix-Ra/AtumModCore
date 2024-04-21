@@ -1,68 +1,69 @@
 package me.phoenixra.atumodcore.api.display.misc.variables;
 
 import lombok.Getter;
-import lombok.Setter;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
-import me.phoenixra.atumodcore.api.display.misc.OptimizedVariable;
+import me.phoenixra.atumodcore.api.display.misc.OptimizedVar;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.IllegalFormatException;
 
-public class OptimizedVariableLong implements OptimizedVariable<Long> {
+public class OptimizedVarDouble implements OptimizedVar<Double> {
 
     @NotNull
     @Getter
     private String configKey;
 
-    private long defaultValue;
+    private double defaultValue;
 
-    private HashMap<DisplayResolution, Long> values = new HashMap<>();
+    private HashMap<DisplayResolution, Double> values = new HashMap<>();
 
-    public OptimizedVariableLong(@NotNull String configKey, long defaultValue) {
+    public OptimizedVarDouble(@NotNull String configKey, double defaultValue) {
         this.configKey = configKey;
         this.defaultValue = defaultValue;
     }
 
     @Override
-    public @NotNull Long getDefaultValue() {
+    public @NotNull Double getDefaultValue() {
         return defaultValue;
     }
 
     @Override
-    public void setDefaultValue(@NotNull Long defaultValue) {
+    public void setDefaultValue(@NotNull Double defaultValue) {
         this.defaultValue = defaultValue;
     }
 
     @Override
-    public @NotNull Long getValue(@Nullable DisplayResolution resolution) {
+    public @NotNull Double getValue(@Nullable DisplayResolution resolution) {
         if(resolution == null) return defaultValue;
         return values.getOrDefault(resolution, defaultValue);
     }
 
     @Override
     public void addOptimizedValue(@NotNull DisplayResolution resolution,
-                                  @Nullable Long value){
+                                  @Nullable Double value) {
         if(value == null) return;
         values.put(resolution, value);
     }
 
     @Override
     public void addOptimizedValue(@NotNull DisplayResolution resolution,
-                                  @Nullable String configValue)  throws IllegalFormatException {
-        if(configValue == null) return;
-        values.put(resolution, Long.parseLong(configValue.split("\\.")[0]));
+                                  @Nullable String configValue) throws IllegalFormatException {
+        if (configValue == null) return;
+        values.put(resolution, Double.parseDouble(configValue));
     }
 
     @Override
     public void removeOptimizedValue(@NotNull DisplayResolution resolution) {
         values.remove(resolution);
     }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
-        OptimizedVariableLong clone = (OptimizedVariableLong) super.clone();
-        clone.values = (HashMap<DisplayResolution, Long>) values.clone();
+        OptimizedVarDouble clone = (OptimizedVarDouble) super.clone();
+        clone.values = (HashMap<DisplayResolution, Double>) values.clone();
         return clone;
     }
+
 }
