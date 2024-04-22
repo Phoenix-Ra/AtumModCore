@@ -47,7 +47,13 @@ public class BaseScreen extends GuiScreen {
     }
 
     @Override
+    public void initGui() {
+        renderer.getBaseCanvas().setActive(true);
+    }
+
+    @Override
     public void onGuiClosed() {
+        renderer.getBaseCanvas().setActive(false);
         if(autoClearData && mc.currentScreen != null) return;
         renderer.closeRenderer();
     }
