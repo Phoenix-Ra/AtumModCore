@@ -35,6 +35,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     private List<DisplayElement> displayedElementsReversed = new ArrayList<>();
     private boolean pressedShift;
 
+    private boolean supportScissor = true;
     private boolean initialized = false;
 
     public BaseCanvas(@NotNull AtumMod atumMod,@NotNull DisplayLayer layer,
@@ -80,8 +81,8 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
         boolean positionAtBeginning = getOriginX().getDefaultValue() == 0 &&
                 getOriginY().getDefaultValue() == 0;
-        boolean useScissor =
-                getOriginWidth().getDefaultValue() != 1920
+        boolean useScissor = supportScissor
+                && getOriginWidth().getDefaultValue() != 1920
                 && getOriginHeight().getDefaultValue() != 1080;
         if(useScissor) {
             GL11.glEnable(GL_SCISSOR_TEST);
@@ -137,6 +138,9 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         );
         super.updateBaseVariables(config, configKey);
 
+        if(config.hasPath("supportScissor")) {
+            supportScissor = config.getBool("supportScissor");
+        }
         updateElements(config.getSubsection("elements"));
     }
 
