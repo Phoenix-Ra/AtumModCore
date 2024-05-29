@@ -12,6 +12,7 @@ import me.phoenixra.atumodcore.api.display.triggers.DisplayTriggerRegistry;
 import me.phoenixra.atumodcore.api.service.AtumModService;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import me.phoenixra.atumodcore.core.display.elements.canvas.DefaultCanvas;
+
 import me.phoenixra.atumodcore.core.display.misc.GuiOptionsExtended;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiOptions;
@@ -21,6 +22,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Objects;
@@ -84,22 +86,20 @@ public class AtumDisplayManager implements DisplayManager, AtumModService {
     }
 
     @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event){
+        DisplayResolution.updateResolution();
+    }
+    @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent event){
-        if(event.getGui() instanceof GuiOptions){
-            event.setGui(new GuiOptionsExtended(
-                    null,
-                    Minecraft.getMinecraft().gameSettings
-                    )
-            );
-        }else if(event.getGui() instanceof BaseScreen){
+        if(event.getGui() instanceof BaseScreen){
             if(initResolution) return;
             //resolution default
             initResolution = true;
-
-            //config should not be null anyway
-            DisplayResolution.changeResolution(AtumAPI.getInstance().getCoreMod().getConfigManager()
-                    .getConfig("settings")
-                    .getIntOrDefault("resolution",0)
+        }else if(event.getGui() instanceof GuiOptions) {
+            event.setGui(new GuiOptionsExtended(
+                            null,
+                            Minecraft.getMinecraft().gameSettings
+                    )
             );
         }
     }

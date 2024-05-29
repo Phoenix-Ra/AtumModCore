@@ -1,7 +1,10 @@
 package me.phoenixra.atumodcore.api.display.font;
 
 import lombok.Getter;
+import me.phoenixra.atumconfig.api.tuples.PairRecord;
+import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.misc.AtumColor;
+import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
@@ -49,7 +52,7 @@ public class DisplayFont {
     /**
      * The margin on each texture.
      */
-    private static final int MARGIN = 4;
+    private static final int MARGIN = 2;
 
     /**
      * The character that invokes color in a string when rendered.
@@ -312,6 +315,8 @@ public class DisplayFont {
         // Returns if the text is empty.
         if (text.length() == 0) return;
 
+        DisplayResolution resolution = DisplayResolution.getCurrentResolution();
+        int MARGIN = resolution==DisplayResolution._4x3?1 : DisplayFont.MARGIN;
         // Pushes the matrix to store gl values.
         GL11.glPushMatrix();
 
@@ -421,22 +426,24 @@ public class DisplayFont {
                 if (obfuscated)
                     character = (char)(((int) character) + RANDOM_OFFSET);
 
+                // The character data for the given character.
+                CharacterData charData = characterData.get(character);
+                charData.updateOptimizedSize();
+
                 // Draws the character.
                 drawChar(character, characterData, x, y);
 
-                // The character data for the given character.
-                CharacterData charData = characterData.get(character);
 
                 // Draws the strikethrough line if enabled.
                 if (strikethrough)
-                    drawLine(new Vector2f(0, charData.height / 2f), new Vector2f(charData.width, charData.height / 2f), 3);
+                    drawLine(new Vector2f(0, charData.optimizedHeight / 2f), new Vector2f(charData.optimizedWidth, charData.optimizedHeight / 2f), 3);
 
                 // Draws the underline if enabled.
                 if (underlined)
-                    drawLine(new Vector2f(0, charData.height - 15), new Vector2f(charData.width, charData.height - 15), 3);
+                    drawLine(new Vector2f(0, charData.optimizedHeight - 15), new Vector2f(charData.optimizedWidth, charData.optimizedHeight - 15), 3);
 
                 // Adds to the offset.
-                x += charData.width - (2 * MARGIN);
+                x += charData.optimizedWidth - (2 * MARGIN);
             }
         }
 
@@ -458,6 +465,9 @@ public class DisplayFont {
      */
     public int getWidth(String text, int fontSize) {
         if(!isLoadedSize(fontSize)) return -1;
+        DisplayResolution resolution = DisplayResolution.getCurrentResolution();
+        int MARGIN = resolution==DisplayResolution._4x3?1 : DisplayFont.MARGIN;
+
         // The width of the string.
         float width = 0;
 
@@ -503,7 +513,7 @@ public class DisplayFont {
                 CharacterData charData = characterData.get(character);
 
                 // Adds to the offset.
-                width += (charData.width - (2 * MARGIN)) / 2;
+                width += (charData.optimizedWidth - (2 * MARGIN)) / 2;
             }
         }
 
@@ -520,6 +530,9 @@ public class DisplayFont {
      */
     public int getHeight(String text, int fontSize) {
         if(!isLoadedSize(fontSize)) return -1;
+        DisplayResolution resolution = DisplayResolution.getCurrentResolution();
+        int MARGIN = resolution==DisplayResolution._4x3?1 : DisplayFont.MARGIN;
+
         // The height of the string.
         float height = 0;
 
@@ -565,7 +578,7 @@ public class DisplayFont {
                 CharacterData charData = characterData.get(character);
 
                 // Sets the height if its bigger.
-                height = Math.max(height, charData.height);
+                height = Math.max(height, charData.optimizedHeight);
             }
         }
 
@@ -583,33 +596,13 @@ public class DisplayFont {
         // The char data that stores the character data.
         CharacterData charData = characterData.get(character);
 
-        // Binds the character data texture.
         charData.bind();
-        GL11.glPushMatrix();
-
-        // Enables blending.
-        GL11.glEnable(GL11.GL_BLEND);
-
-        // Sets the blending function.
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        // Begins drawing the quad.
-        GL11.glBegin(GL11.GL_QUADS); {
-            // Maps out where the texture should be drawn.
-            GL11.glTexCoord2f(0, 0);
-            GL11.glVertex2d(x, y);
-            GL11.glTexCoord2f(0, 1);
-            GL11.glVertex2d(x, y + charData.height);
-            GL11.glTexCoord2f(1, 1);
-            GL11.glVertex2d(x + charData.width, y + charData.height);
-            GL11.glTexCoord2f(1, 0);
-            GL11.glVertex2d(x + charData.width, y);
-        }
-        // Ends the quad.
-        GL11.glEnd();
-
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glPopMatrix();
+        RenderUtils.drawPartialImage(
+                (int) x, (int) y,
+                charData.optimizedWidth, charData.optimizedHeight,
+                0,0,
+                charData.width,  charData.height
+        );
 
         // Binds the opengl texture by the texture id.
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
@@ -699,23 +692,28 @@ public class DisplayFont {
         /**
          * The width of the character.
          */
-        public float width;
+        private int width;
 
         /**
          * The height of the character.
          */
-        public float height;
+        private int height;
 
         /**
          * The id of the character texture.
          */
         private int textureId;
 
-        public CharacterData(char character, float width, float height, int textureId) {
+        protected int optimizedWidth;
+        protected int optimizedHeight;
+
+        public CharacterData(char character, int width, int height, int textureId) {
             this.character = character;
             this.width = width;
             this.height = height;
             this.textureId = textureId;
+            updateOptimizedSize();
+            System.out.println("Char width: "+width+"  height: "+ height);
         }
 
         /**
@@ -724,6 +722,12 @@ public class DisplayFont {
         public void bind() {
             // Binds the opengl texture by the texture id.
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
+        }
+
+        private void updateOptimizedSize(){
+            int[] arr = RenderUtils.fixCoordinates(0,0, width, height,false);
+            optimizedWidth = arr[2]*3;
+            optimizedHeight = arr[3]*3;
         }
     }
 
