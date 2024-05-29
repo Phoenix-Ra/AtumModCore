@@ -92,6 +92,18 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
      */
     void reloadCanvas();
 
+    /**
+     * Set if it should support scissor
+     *
+     * @param flag true/false
+     */
+    void setSupportScissor(boolean flag);
 
+    /**
+     * Get if it should support scissor
+     *
+     * @return  true/false
+     */
+    boolean isSupportScissor();
 
 }

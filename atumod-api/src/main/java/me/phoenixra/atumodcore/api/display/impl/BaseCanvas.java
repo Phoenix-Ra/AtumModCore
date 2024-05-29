@@ -2,6 +2,7 @@ package me.phoenixra.atumodcore.api.display.impl;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
+import lombok.Setter;
 import me.phoenixra.atumconfig.api.placeholders.types.injectable.StaticPlaceholder;
 import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumconfig.api.config.Config;
@@ -35,6 +36,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     private List<DisplayElement> displayedElementsReversed = new ArrayList<>();
     private boolean pressedShift;
 
+    @Getter @Setter
     private boolean supportScissor = true;
     private boolean initialized = false;
 
@@ -45,6 +47,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
                       int height,
                       @Nullable DisplayCanvas elementOwner){
         super(atumMod,layer, x, y, width, height, elementOwner);
+
 
         this.setElementOwner(elementOwner == null ? this : elementOwner);
         if(elementOwner!=null && elementOwner.getDisplayRenderer() != null){
@@ -79,11 +82,11 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             return;
         }
 
-        boolean positionAtBeginning = getOriginX().getDefaultValue() == 0 &&
-                getOriginY().getDefaultValue() == 0;
+        boolean positionAtBeginning = getX() == 0 &&
+                getY() == 0;
         boolean useScissor = supportScissor
-                && getOriginWidth().getDefaultValue() != 1920
-                && getOriginHeight().getDefaultValue() != 1080;
+                && getWidth() != Display.getWidth()
+                && getHeight() != Display.getHeight();
         if(useScissor) {
             GL11.glEnable(GL_SCISSOR_TEST);
             GL11.glScissor((int) (getX() * scaleFactor),

@@ -20,12 +20,16 @@ import me.phoenixra.atumodcore.api.utils.RenderUtils;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
+import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
 
 public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter
@@ -148,6 +152,29 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
                 ? x : elementOwner.getGlobalX() + x;
         globalY = elementOwner == null || elementOwner == this
                 ? y : elementOwner.getGlobalY() + y;
+
+        //for canvas
+        boolean useScissor = false;
+        boolean translatePosition = false;
+        if(this instanceof DisplayCanvas){
+            translatePosition = getX() != 0 ||
+                    getY() != 0;
+            useScissor = ((DisplayCanvas)this).isSupportScissor()
+                    && getWidth() != Display.getWidth()
+                    && getHeight() != Display.getHeight();
+            if(useScissor) {
+                GL11.glEnable(GL_SCISSOR_TEST);
+                GL11.glScissor((int) (getX() * scaleFactor),
+                        (int) (Display.getHeight() - (getY() + getHeight()) * scaleFactor), //invert y, bcz scissor works in a bottom-left corner
+                        (int) (getWidth() * scaleFactor),
+                        (int) (getHeight() * scaleFactor)
+                );
+            }
+            if(translatePosition){
+                GL11.glPushMatrix();
+                GL11.glTranslatef(getX(), getY(), 0);
+            }
+        }
         onDraw(resolution, scaleFactor, mouseX, mouseY);
         if(outlineSelected){
             RenderUtils.drawDashedOutline(
@@ -166,6 +193,12 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
                     outlineSize,
                     outlineColor
             );
+        }
+        if(useScissor){
+            GL11.glDisable(GL_SCISSOR_TEST);
+        }
+        if(translatePosition){
+            GL11.glPopMatrix();
         }
     }
     protected abstract void onDraw(DisplayResolution resolution, float scaleFactor, int mouseX, int mouseY);
