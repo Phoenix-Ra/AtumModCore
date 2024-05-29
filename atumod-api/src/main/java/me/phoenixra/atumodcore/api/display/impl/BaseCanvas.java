@@ -338,7 +338,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
         //it works good because it is in linked set and it is ordered from highest to lowest layer
         for (DisplayElement element : displayedElements) {
-            if (element.isCoordinateInElement(mouseX, mouseY)) {
+            if (element.isActive() && element.isCoordinateInElement(mouseX, mouseY)) {
                 return element;
             }
         }
