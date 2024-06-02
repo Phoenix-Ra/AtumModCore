@@ -485,12 +485,18 @@ public class RenderUtils {
                 };
             }
         }
+        int outX = x==0
+                ? 0 : Math.round((float)( x / scaleX));
+        int outY = y==0
+                ? 0 : Math.round((float)(y / scaleY));
+
         return new int[]{
-                MathHelper.ceil (x / scaleX),
-                MathHelper.ceil  (y / scaleY),
-                MathHelper.ceil  (width / scaleX),
-                MathHelper.ceil (height / scaleY)
+                outX,
+                outY,
+                Math.round((float)(width / scaleX)),
+                Math.round((float)(height / scaleY))
         };
+
     }
 
     /**
