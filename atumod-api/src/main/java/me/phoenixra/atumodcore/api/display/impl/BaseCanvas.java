@@ -14,6 +14,7 @@ import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.events.input.InputPressEvent;
 import me.phoenixra.atumodcore.api.events.input.InputReleaseEvent;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
@@ -76,6 +77,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             setActive(true);
             initialized = true;
         }
+
         super.draw(resolution, scaleFactor, mouseX, mouseY);
 
         if(displayedElementsReversed.isEmpty()){

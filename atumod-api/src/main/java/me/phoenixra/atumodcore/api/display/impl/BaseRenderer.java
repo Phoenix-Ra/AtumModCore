@@ -10,16 +10,24 @@ import me.phoenixra.atumodcore.api.display.DisplayRenderer;
 import me.phoenixra.atumodcore.api.display.data.DisplayData;
 import me.phoenixra.atumodcore.api.display.misc.DisplayResolution;
 import me.phoenixra.atumodcore.api.display.triggers.DisplayTrigger;
+import me.phoenixra.atumodcore.api.misc.AtumColor;
 import me.phoenixra.atumodcore.api.misc.AtumDebugger;
 import me.phoenixra.atumodcore.api.network.data.DisplayEventData;
 import me.phoenixra.atumodcore.api.utils.RenderUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static org.lwjgl.opengl.GL11.GL_SCISSOR_TEST;
 
 public class BaseRenderer implements DisplayRenderer {
     @Getter
@@ -94,7 +102,40 @@ public class BaseRenderer implements DisplayRenderer {
         if(!init){
             initRenderer();
         }
-        baseCanvas.draw(DisplayResolution.getCurrentResolution(), RenderUtils.getScaleFactor(),mouseX,mouseY);
+       /* GlStateManager.pushMatrix();
+
+        // Reset the scale to default (ignoring GUI scale)
+        GlStateManager.matrixMode(5889);
+        GlStateManager.enableColorMaterial();
+        GlStateManager.loadIdentity();
+        GlStateManager.ortho(
+                0.0D,
+                Display.getWidth(),
+                Display.getHeight(),
+                0.0D, 1000.0D, 3000.0D
+        );
+        GlStateManager.matrixMode(5888);
+        GlStateManager.loadIdentity();
+        GlStateManager.translate(0.0F, 0.0F, -2000.0F);
+        GlStateManager.glLineWidth(1.0F);
+        GlStateManager.viewport(0, 0, Display.getWidth(), Display.getHeight());*/
+        baseCanvas.draw(
+                DisplayResolution.getCurrentResolution(),
+                RenderUtils.getScaleFactor(),
+                mouseX,mouseY
+        );
+        /*if(attachedGuiScreen!=null) {
+            Minecraft.getMinecraft().getTextureManager().bindTexture(
+                    new ResourceLocation("gtwmod:textures/main_menu/background.png")
+            );
+            RenderUtils.drawCompleteImage(
+                    0,
+                    0,
+                    Display.getWidth(),
+                    Display.getHeight()
+            );
+        }*/
+        //GlStateManager.popMatrix();
     }
 
 

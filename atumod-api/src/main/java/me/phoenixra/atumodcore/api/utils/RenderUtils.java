@@ -336,6 +336,7 @@ public class RenderUtils {
         glEnd();
         glTranslatef(-posX, -posY, 0);
         GlStateManager.disableBlend();
+
     }
 
     /**
@@ -462,7 +463,7 @@ public class RenderUtils {
                                        boolean fixRatio) {
 
 
-        double scaleX = (scaleFactorCache*0.9925/windowRatioXCache);
+        double scaleX = (scaleFactorCache*0.9919/windowRatioXCache);
         double scaleY = (scaleFactorCache/windowRatioYCache);
         if(fixRatio){
             if(scaleX > scaleY){
@@ -486,15 +487,17 @@ public class RenderUtils {
             }
         }
         int outX = x==0
-                ? 0 : Math.round((float)( x / scaleX));
+                ? 0 : Math.round((float)(x / scaleX));
         int outY = y==0
                 ? 0 : Math.round((float)(y / scaleY));
+        int outWidth =  Math.round((float)(width / scaleX));
+        int outHeight = Math.round((float)(height / scaleY));
 
         return new int[]{
                 outX,
                 outY,
-                Math.round((float)(width / scaleX)),
-                Math.round((float)(height / scaleY))
+                outWidth,
+                outHeight
         };
 
     }
@@ -509,7 +512,7 @@ public class RenderUtils {
      * @return The fixed coordinates.
      */
     public static int[] fixCoordinates(int x, int y) {
-        double scaleX = (scaleFactorCache/windowRatioXCache);
+        double scaleX = (scaleFactorCache*0.9919/windowRatioXCache);
         double scaleY = (scaleFactorCache/windowRatioYCache);
 
         return new int[]{
@@ -562,9 +565,9 @@ public class RenderUtils {
     }
 
     public static double getWindowRatioWidth(){
-        return (double) Display.getWidth()/1920;
+        return (double) Display.getWidth()/1920.0;
     }
     public static double getWindowRatioHeight(){
-        return (double)Display.getHeight()/1080;
+        return (double)Display.getHeight()/1080.0;
     }
 }

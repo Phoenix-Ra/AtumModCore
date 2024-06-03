@@ -713,7 +713,6 @@ public class DisplayFont {
             this.height = height;
             this.textureId = textureId;
             updateOptimizedSize();
-            System.out.println("Char width: "+width+"  height: "+ height);
         }
 
         /**
