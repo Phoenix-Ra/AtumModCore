@@ -320,20 +320,24 @@ public class RenderUtils {
     public static void drawCompleteImage(int posX, int posY,
                                          int width, int height)
     {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder vertexbuffer = tessellator.getBuffer();
         GlStateManager.enableBlend();
         GlStateManager.enableAlpha();
         glTranslatef(posX, posY, 0);
-        glBegin(GL_QUADS);
 
-        glTexCoord2f(0, 0);
-        glVertex3f(0, 0, 0);
-        glTexCoord2f(0, 1);
-        glVertex3f(0, height, 0);
-        glTexCoord2f(1, 1);
-        glVertex3f(width, height, 0);
-        glTexCoord2f(1, 0);
-        glVertex3f(width, 0, 0);
-        glEnd();
+        // Begin drawing the textured quad
+        vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+
+        vertexbuffer.pos(0, 0, 0).tex(0, 0).endVertex();
+        vertexbuffer.pos(0, height, 0).tex(0, 1).endVertex();
+        vertexbuffer.pos(width, height, 0).tex(1, 1).endVertex();
+        vertexbuffer.pos(width, 0, 0).tex(1, 0).endVertex();
+
+        // Draw the quad
+        tessellator.draw();
+
+
         glTranslatef(-posX, -posY, 0);
         GlStateManager.disableBlend();
 
@@ -463,8 +467,8 @@ public class RenderUtils {
                                        boolean fixRatio) {
 
 
-        double scaleX = (scaleFactorCache*0.9919/windowRatioXCache);
-        double scaleY = (scaleFactorCache/windowRatioYCache);
+        double scaleX = (scaleFactorCache*0.9919/windowRatioXCache); //TEST NEW APPROACH: 1/windowRatioXCache;
+        double scaleY = (scaleFactorCache/windowRatioYCache); //TEST NEW APPROACH: 1/windowRatioYCache;
         if(fixRatio){
             if(scaleX > scaleY){
                 boolean b = y > Display.getHeight()/2;
@@ -490,8 +494,10 @@ public class RenderUtils {
                 ? 0 : Math.round((float)(x / scaleX));
         int outY = y==0
                 ? 0 : Math.round((float)(y / scaleY));
-        int outWidth =  Math.round((float)(width / scaleX));
-        int outHeight = Math.round((float)(height / scaleY));
+        int outWidth = /*TEST NEW APPROACH: width==1920
+                ? Display.getWidth() :*/ Math.round((float)(width / scaleX));
+        int outHeight = /*TEST NEW APPROACH: height==1080
+                ? Display.getHeight() :*/ Math.round((float)(height / scaleY));
 
         return new int[]{
                 outX,
@@ -512,8 +518,8 @@ public class RenderUtils {
      * @return The fixed coordinates.
      */
     public static int[] fixCoordinates(int x, int y) {
-        double scaleX = (scaleFactorCache*0.9919/windowRatioXCache);
-        double scaleY = (scaleFactorCache/windowRatioYCache);
+        double scaleX = (scaleFactorCache*0.9919/windowRatioXCache); //TEST NEW APPROACH: 1/windowRatioXCache;
+        double scaleY = (scaleFactorCache/windowRatioYCache); //TEST NEW APPROACH: 1/windowRatioYCache;
 
         return new int[]{
                 (int) (x / scaleX),

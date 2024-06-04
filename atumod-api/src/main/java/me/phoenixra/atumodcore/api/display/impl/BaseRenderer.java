@@ -20,9 +20,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -102,11 +104,12 @@ public class BaseRenderer implements DisplayRenderer {
         if(!init){
             initRenderer();
         }
-       /* GlStateManager.pushMatrix();
 
-        // Reset the scale to default (ignoring GUI scale)
-        GlStateManager.matrixMode(5889);
-        GlStateManager.enableColorMaterial();
+       /*
+        //NEW APPROACH TO SCALING TEST
+        GlStateManager.pushMatrix();
+        GlStateManager.viewport(0, 0, Display.getWidth(), Display.getHeight());
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
         GlStateManager.loadIdentity();
         GlStateManager.ortho(
                 0.0D,
@@ -114,28 +117,33 @@ public class BaseRenderer implements DisplayRenderer {
                 Display.getHeight(),
                 0.0D, 1000.0D, 3000.0D
         );
-        GlStateManager.matrixMode(5888);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GlStateManager.loadIdentity();
-        GlStateManager.translate(0.0F, 0.0F, -2000.0F);
-        GlStateManager.glLineWidth(1.0F);
-        GlStateManager.viewport(0, 0, Display.getWidth(), Display.getHeight());*/
+        GlStateManager.translate(0.0F, 0.0F, -2000.0F);*/
+
+
         baseCanvas.draw(
                 DisplayResolution.getCurrentResolution(),
                 RenderUtils.getScaleFactor(),
                 mouseX,mouseY
         );
-        /*if(attachedGuiScreen!=null) {
+        /* //NEW APPROACH TO SCALING TEST
+        if(attachedGuiScreen!=null) {
             Minecraft.getMinecraft().getTextureManager().bindTexture(
                     new ResourceLocation("gtwmod:textures/main_menu/background.png")
             );
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
             RenderUtils.drawCompleteImage(
                     0,
                     0,
                     Display.getWidth(),
                     Display.getHeight()
             );
-        }*/
-        //GlStateManager.popMatrix();
+        }
+        GlStateManager.popMatrix();*/
     }
 
 

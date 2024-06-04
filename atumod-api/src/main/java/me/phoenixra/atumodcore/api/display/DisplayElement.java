@@ -362,7 +362,7 @@ public interface DisplayElement extends Cloneable{
      *
      * @return The layer
      */
-    @NotNull DisplayLayer getLayer();
+    int getDrawPriority();
 
     /**
      * Get the id of the element

@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
+import java.util.List;
 
 public interface DisplayCanvas extends DisplayElement, Cloneable{
 
@@ -47,7 +48,7 @@ public interface DisplayCanvas extends DisplayElement, Cloneable{
      * @return The elements displayed on the canvas.
      */
     @NotNull
-    HashSet<DisplayElement> getDisplayedElements();
+    List<DisplayElement> getDisplayElements();
 
     /**
      * Get the hovered element.

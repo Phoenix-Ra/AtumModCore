@@ -14,7 +14,6 @@ import me.phoenixra.atumodcore.api.events.display.ElementInputReleaseEvent;
 import me.phoenixra.atumodcore.api.input.InputType;
 import me.phoenixra.atumodcore.api.events.input.InputPressEvent;
 import me.phoenixra.atumodcore.api.events.input.InputReleaseEvent;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.jetbrains.annotations.NotNull;
@@ -31,23 +30,21 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Getter
     private DisplayRenderer displayRenderer;
 
-    private HashMap<DisplayLayer, LinkedHashSet<DisplayElement>> elements = new HashMap<>();
     @Getter
-    private HashSet<DisplayElement> displayedElements = new LinkedHashSet<>();
-    private List<DisplayElement> displayedElementsReversed = new ArrayList<>();
+    private List<DisplayElement> displayElements = new ArrayList<>();
     private boolean pressedShift;
 
     @Getter @Setter
     private boolean supportScissor = true;
     private boolean initialized = false;
 
-    public BaseCanvas(@NotNull AtumMod atumMod,@NotNull DisplayLayer layer,
+    public BaseCanvas(@NotNull AtumMod atumMod, int drawPriority,
                       int x,
                       int y,
                       int width,
                       int height,
                       @Nullable DisplayCanvas elementOwner){
-        super(atumMod,layer, x, y, width, height, elementOwner);
+        super(atumMod, drawPriority, x, y, width, height, elementOwner);
 
 
         this.setElementOwner(elementOwner == null ? this : elementOwner);
@@ -56,18 +53,18 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         }
     }
     public BaseCanvas(@NotNull AtumMod atumMod,
-                      @NotNull DisplayLayer layer,
+                      int drawPriority,
                       int x,
                       int y,
                       int width,
                       int height){
-       this(atumMod,layer, x, y, width, height, null);
+       this(atumMod, drawPriority, x, y, width, height, null);
     }
     public BaseCanvas(@NotNull AtumMod atumMod, @Nullable DisplayCanvas elementOwner){
-        this(atumMod,DisplayLayer.MIDDLE, 0, 0, 0, 0, elementOwner);
+        this(atumMod, 0, 0, 0, 0, 0, elementOwner);
     }
     public BaseCanvas(@NotNull AtumMod atumMod){
-        this(atumMod,DisplayLayer.MIDDLE, 0, 0, 0, 0, null);
+        this(atumMod, 0, 0, 0, 0, 0, null);
     }
 
 
@@ -80,7 +77,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
         super.draw(resolution, scaleFactor, mouseX, mouseY);
 
-        if(displayedElementsReversed.isEmpty()){
+        if(displayElements.isEmpty()){
             return;
         }
 
@@ -101,7 +98,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
         if(!positionAtBeginning) {
             GL11.glPushMatrix();
             GL11.glTranslatef(getX(), getY(), 0);
-            for (DisplayElement element : displayedElementsReversed) {
+            for (DisplayElement element : displayElements) {
                 if ((getDisplayRenderer() == null && element.isActive())
                         ||
                         (getDisplayRenderer() != null &&
@@ -112,7 +109,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             }
             GL11.glPopMatrix();
         }else{
-            for (DisplayElement element : displayedElementsReversed) {
+            for (DisplayElement element : displayElements) {
                 if ((getDisplayRenderer() == null && element.isActive())
                         ||
                         (getDisplayRenderer() != null &&
@@ -206,15 +203,11 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Override
     public void onRemove() {
         super.onRemove();
-        for(LinkedHashSet<DisplayElement> list : elements.values()){
-            for(DisplayElement element : list){
-                element.onRemove();
-            }
+        for(DisplayElement element : displayElements){
+            element.onRemove();
         }
         setActive(false);
-        elements.clear();
-        displayedElements.clear();
-        displayedElementsReversed.clear();
+        displayElements.clear();
         displayRenderer = null;
     }
 
@@ -222,13 +215,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     public void addElement(@NotNull DisplayElement element) {
 
         //add to elements
-        if(elements.containsKey(element.getLayer())){
-            elements.get(element.getLayer()).add(element);
-        }else{
-            LinkedHashSet<DisplayElement> list = new LinkedHashSet<>();
-            list.add(element);
-            elements.put(element.getLayer(), list);
-        }
+        displayElements.add(element);
         element.setElementOwner(this);
         if((element instanceof DisplayCanvas) && getDisplayRenderer() != null){
             ((DisplayCanvas) element).setDisplayRenderer(getDisplayRenderer());
@@ -255,11 +242,9 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
             if(getId().equals(id)){
                 return this;
             }
-            for (LinkedHashSet<DisplayElement> list : elements.values()) {
-                for (DisplayElement element : list) {
-                    if (element.getId().equals(id)) {
-                        return element;
-                    }
+            for (DisplayElement element : displayElements) {
+                if (element.getId().equals(id)) {
+                    return element;
                 }
             }
             return null;
@@ -268,39 +253,25 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
 
     @Override
     public void removeElement(@NotNull DisplayElement element) {
-        Set<DisplayElement> list = elements.get(element.getLayer());
-        if(list != null){
-            list.remove(element);
-        }
+        displayElements.remove(element);
         element.onRemove();
         updateDisplayedElements();
     }
 
     @Override
     public void clearElements() {
-        for (LinkedHashSet<DisplayElement> list : elements.values()) {
-            for (DisplayElement element : list) {
-                element.onRemove();
-            }
+        for (DisplayElement element : displayElements) {
+            element.onRemove();
         }
-        elements.clear();
+        displayElements.clear();
         updateDisplayedElements();
     }
 
     private void updateDisplayedElements(){
-        displayedElements.clear();
-        //add to displayedElements
-        for(DisplayLayer displayLayer : DisplayLayer.valuesOrderedFromHighest()){
-            Set<DisplayElement> list = elements.get(displayLayer);
-            if(list == null){
-                continue;
-            }
-            displayedElements.addAll(list);
-        }
-        //add to reversed set
-        displayedElementsReversed.clear();
-        displayedElementsReversed.addAll(displayedElements);
-        Collections.reverse(displayedElementsReversed);
+        //reversed sort, to have lowest priority on top
+        //of the list, to render highest priority last
+        displayElements.sort(Comparator.comparingInt(DisplayElement::getDrawPriority));
+        //Collections.reverse(displayedElementsReversed);
     }
 
 
@@ -308,16 +279,14 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Override
     public void setDisplayRenderer(@NotNull DisplayRenderer displayRenderer) {
         this.displayRenderer = displayRenderer;
-        for(LinkedHashSet<DisplayElement> list : elements.values()){
-            for(DisplayElement element : list){
-                if(element instanceof DisplayCanvas){
-                    ((DisplayCanvas) element).setDisplayRenderer(displayRenderer);
-                }
-                if(!element.isActive()){
-                    getDisplayRenderer().getDisplayData().setElementEnabled(
-                            element.getId(),false
-                    );
-                }
+        for(DisplayElement element : displayElements){
+            if(element instanceof DisplayCanvas){
+                ((DisplayCanvas) element).setDisplayRenderer(displayRenderer);
+            }
+            if(!element.isActive()){
+                getDisplayRenderer().getDisplayData().setElementEnabled(
+                        element.getId(),false
+                );
             }
         }
     }
@@ -325,10 +294,8 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     public void setActive(boolean active) {
         super.setActive(active);
         //all elements
-        for(LinkedHashSet<DisplayElement> list : elements.values()){
-            for(DisplayElement element : list){
-                element.setActive(active);
-            }
+        for(DisplayElement element : displayElements){
+            element.setActive(active);
         }
     }
 
@@ -341,8 +308,9 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Override
     public DisplayElement getHoveredElement(int mouseX, int mouseY) {
 
-        //it works good because it is in linked set and it is ordered from highest to lowest layer
-        for (DisplayElement element : displayedElements) {
+
+        for (int i = displayElements.size()-1; i>=0; i--) {
+            DisplayElement element = displayElements.get(i);
             if (element.isActive() && element.isCoordinateInElement(mouseX, mouseY)) {
                 return element;
             }
@@ -351,8 +319,9 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     }
     @Override
     public DisplayElement getElementFromCoordinates(int posX, int posY) {
-        for(DisplayElement element : displayedElements){
-            if(element.isCoordinateInElement(posX,posY)){
+        for (int i = displayElements.size()-1; i>=0; i--) {
+            DisplayElement element = displayElements.get(i);
+            if (element.isActive() && element.isCoordinateInElement(posX, posY)) {
                 return element;
             }
         }
@@ -377,7 +346,7 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Override
     public void applyResolutionOptimizer(@NotNull DisplayResolution resolution, @NotNull Config config) {
         super.applyResolutionOptimizer(resolution, config);
-        for(DisplayElement element : displayedElements){
+        for(DisplayElement element : displayElements){
             element.applyResolutionOptimizer(
                     resolution,
                     config.getSubsection("elements."+element.getId())
@@ -451,18 +420,13 @@ public abstract class BaseCanvas extends BaseElement implements DisplayCanvas, C
     @Override
     public final @NotNull DisplayElement clone() {
         BaseCanvas clone = (BaseCanvas) super.clone();
-        HashMap<DisplayLayer, LinkedHashSet<DisplayElement>> map = clone.elements;
-        clone.elements = new HashMap<>();
-        clone.displayedElementsReversed = new ArrayList<>();
-        clone.displayedElements = new LinkedHashSet<>();
+        clone.displayElements = new ArrayList<>();
         clone.setElementOwner(clone);
         clone.initialized = false;
-        for(Map.Entry<DisplayLayer, LinkedHashSet<DisplayElement>> entry : map.entrySet()){
-            for(DisplayElement element : entry.getValue()){
-                DisplayElement clonedElement = element.clone();
-                clonedElement.setElementOwner(clone);
-                clone.addElement(clonedElement);
-            }
+        for(DisplayElement element : displayElements){
+            DisplayElement clonedElement = element.clone();
+            clonedElement.setElementOwner(clone);
+            clone.addElement(clonedElement);
         }
         return clone;
     }

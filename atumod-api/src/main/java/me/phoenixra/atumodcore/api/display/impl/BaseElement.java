@@ -7,7 +7,6 @@ import me.phoenixra.atumodcore.api.AtumMod;
 import me.phoenixra.atumconfig.api.config.Config;
 import me.phoenixra.atumodcore.api.display.DisplayCanvas;
 import me.phoenixra.atumodcore.api.display.DisplayElement;
-import me.phoenixra.atumodcore.api.display.DisplayLayer;
 import me.phoenixra.atumodcore.api.display.actions.ActionData;
 import me.phoenixra.atumodcore.api.display.actions.DisplayAction;
 import me.phoenixra.atumodcore.api.display.annotations.RegisterOptimizedVariable;
@@ -41,7 +40,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     @Getter
     private final AtumMod atumMod;
     @Getter
-    private DisplayLayer layer;
+    private int drawPriority;
 
     @Getter @Setter @RegisterOptimizedVariable
     private OptimizedVarInt originX;
@@ -104,14 +103,14 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
     private boolean initialized;
 
     public BaseElement(@NotNull AtumMod atumMod,
-                       @NotNull DisplayLayer layer,
+                       int drawPriority,
                        int x,
                        int y,
                        int width,
                        int height,
                        @Nullable DisplayCanvas elementOwner){
         this.atumMod = atumMod;
-        this.layer = layer;
+        this.drawPriority = drawPriority;
         this.originX = new OptimizedVarInt("posX",x);
         this.originY = new OptimizedVarInt("posY",y);
         this.originWidth = new OptimizedVarInt("width",width);
@@ -124,7 +123,7 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
         this.elementOwner = elementOwner;
     }
     public BaseElement(@NotNull AtumMod atumMod, @Nullable DisplayCanvas elementOwner){
-        this(atumMod,DisplayLayer.MIDDLE, 0, 0, 0, 0, elementOwner);
+        this(atumMod,0, 0, 0, 0, 0, elementOwner);
     }
 
 
@@ -227,9 +226,9 @@ public abstract class BaseElement implements DisplayElement, Cloneable {
                 }
             }
         }
-        String layer = config.getStringOrNull("layer");
-        if(layer != null){
-            this.layer = DisplayLayer.valueOf(layer.toUpperCase());
+        Integer drawPriority = config.getIntOrNull("drawPriority");
+        if(drawPriority != null){
+            this.drawPriority = drawPriority;
         }
         String x = config.getStringOrNull("posX");
         if(x != null){

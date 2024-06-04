@@ -52,7 +52,7 @@ public enum DisplayResolution {
 
     private static DisplayResolution CURRENT_RESOLUTION
             = DisplayResolution.UNRECOGNIZED;
-    private static boolean init;
+    private static boolean init = false;
     private static List<PairRecord<DisplayResolution, PairRecord<Integer,Integer>>> resolutionsCache;
 
     private static int usableWidth;
